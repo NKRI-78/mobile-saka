@@ -1,0 +1,265 @@
+import 'dart:io' as io;
+import 'package:path/path.dart' as p;
+
+import 'package:path_provider/path_provider.dart';
+
+import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
+import 'package:video_player/video_player.dart';
+import 'package:http/http.dart' as http;
+import 'package:chewie/chewie.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:external_path/external_path.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+
+import 'package:saka/localization/language_constraints.dart';
+
+import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/constant.dart';
+import 'package:saka/utils/custom_themes.dart';
+import 'package:saka/utils/dimensions.dart';
+
+import 'package:saka/data/models/feed/feedmedia.dart';
+
+class PostVideo extends StatefulWidget {
+  final FeedMedia media;
+  final String caption;
+
+  const PostVideo({
+    Key? key, 
+    required this.media,
+    required this.caption,
+  }) : super(key: key);
+
+  @override
+  _PostVideoState createState() => _PostVideoState();
+}
+
+class _PostVideoState extends State<PostVideo> {
+
+  VideoPlayerController? videoPlayerC;
+  ChewieController? chewieC;
+  
+  Future<void> getData() async {
+    if(mounted) {
+      if(io.Platform.isAndroid) {
+        List<String> val = await ExternalPath.getExternalStorageDirectories();
+        List<String> ext = val;
+        String dir = "${ext[0]}/${ExternalPath.DIRECTORY_MOVIES}/${p.basename(widget.media.path!)}";
+        bool isExist = await io.File(dir).exists();
+        if(!isExist) {
+          await GallerySaver.saveVideo("${AppConstants.baseUrlFeedImg}${widget.media.path}");
+        } 
+        videoPlayerC = VideoPlayerController.file(io.File("${ext[0]}/${ExternalPath.DIRECTORY_MOVIES}/${p.basename(widget.media.path!)}"))
+        ..setLooping(false)
+        ..initialize().then((_) {
+          setState(() {});
+        });
+        chewieC = ChewieController(
+          videoPlayerController: videoPlayerC!,
+          aspectRatio: videoPlayerC!.value.aspectRatio,
+          autoPlay: false,
+          looping: false,
+        );
+      } else {
+        String dir = (await getApplicationDocumentsDirectory()).path;
+        io.File file = io.File('$dir/${p.basename(widget.media.path!)}');
+        var req = await http.get(Uri.parse("${AppConstants.baseUrlFeedImg}${widget.media.path}"));
+        var bytes = req.bodyBytes;
+        await file.writeAsBytes(bytes, flush: true);
+        videoPlayerC = VideoPlayerController.file(io.File("$dir/${p.basename(widget.media.path!)}"))
+        ..setLooping(false)
+        ..initialize().then((_) {
+          setState(() { });
+        });
+        chewieC = ChewieController(
+          videoPlayerController: videoPlayerC!,
+          aspectRatio: videoPlayerC!.value.aspectRatio,
+          autoPlay: false,
+          looping: false,
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+     
+    getData();
+  }
+
+  @override
+  void dispose() {
+    videoPlayerC!.dispose();
+    chewieC!.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildUI();
+  }
+
+  Widget buildUI() {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            Container(
+              margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
+              child: ReadMoreText(widget.caption,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                ),
+                trimLines: 2,
+                colorClickableText: ColorResources.black,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: getTranslated("READ_MORE", context),
+                trimExpandedText: getTranslated("LESS_MORE", context),
+                moreStyle: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeSmall,
+                  fontWeight: FontWeight.w600
+                ),
+                lessStyle: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeSmall,
+                  fontWeight: FontWeight.w600
+                ),
+              ),
+            ),
+
+            videoPlayerC != null
+            ? Container(
+                margin: const EdgeInsets.only(
+                  top: 30.0,
+                  bottom: 30.0
+                ),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: videoPlayerC!.value.aspectRatio,
+                      child: Chewie(
+                        controller: chewieC!,
+                      )
+                    ),
+                    // Positioned.fill(
+                    //   child: GestureDetector(
+                    //     behavior: HitTestBehavior.opaque,
+                    //     onTap: () => videoPlayerC!.value.isPlaying 
+                    //     ? videoPlayerC!.pause() 
+                    //     : videoPlayerC!.play(),
+                    //     child: Stack(
+                    //       clipBehavior: Clip.none,
+                    //       children: [
+                    //         videoPlayerC!.value.isPlaying 
+                    //         ? Container() 
+                    //         : Container(
+                    //             alignment: Alignment.center,
+                    //             child: const Icon(
+                    //               Icons.play_arrow,
+                    //               color: ColorResources.white,
+                    //               size: 80.0
+                    //             ),
+                    //           ),
+                    //         Positioned(
+                    //           bottom: 0.0,
+                    //           left: 0.0,
+                    //           right: 0.0,
+                    //           child: VideoProgressIndicator(
+                    //             videoPlayerC!,
+                    //             allowScrubbing: true,
+                    //           )
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   )
+                    // )
+                  ],
+                ),
+            ) 
+            : const SizedBox(
+              height: 200,
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primaryOrange,
+              ),
+            ),
+          ],
+        ); 
+      },
+    );
+  }
+}
+
+// import 'package:flutter/material.dart';
+
+// import 'package:chewie/chewie.dart';
+// import 'package:video_player/video_player.dart';
+
+// import 'package:saka/utils/constant.dart';
+
+// class VideoPlay extends StatefulWidget {
+//   final String dataSource;
+//   const VideoPlay({
+//     required this.dataSource,
+//     super.key
+//   });
+
+//   @override
+//   State<VideoPlay> createState() => _VideoPlayState();
+// }
+
+// class _VideoPlayState extends State<VideoPlay> {
+
+//   ChewieController? chewieC;
+//   late VideoPlayerController videoC;
+  
+//   @override 
+//   void initState() {
+//     super.initState();
+//     initializePlayer();
+//   }
+
+//   @override 
+//   void dispose() {
+//     videoC.dispose();
+//     chewieC?.dispose();
+
+//     super.dispose();
+//   }
+
+//   Future<void> initializePlayer() async {
+//     videoC = VideoPlayerController.networkUrl(Uri.parse("${AppConstants.baseUrlFeedImg}${widget.dataSource}"));
+    
+//     await Future.wait([
+//       videoC.initialize(),
+//     ]);
+
+//     chewieC = ChewieController(
+//       videoPlayerController: videoC,
+//       autoInitialize: true,
+//       aspectRatio: videoC.value.aspectRatio,
+//       autoPlay: false,
+//       looping: false,
+//     );
+
+//     setState(() { });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return chewieC != null && chewieC!.videoPlayerController.value.isInitialized
+//     ? AspectRatio(
+//         aspectRatio: videoC.value.aspectRatio,
+//         child: Chewie(
+//           controller: chewieC!
+//         ),
+//       )
+//     : Container();
+//   }
+// }

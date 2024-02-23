@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>  
+  <string name="app_name">SAKA DIRGANTARA</string>
+  <string name="default_notification_channel_id">notification</string>
+  <string name="facebook_app_id">315217200751716</string>
+  <string name="facebook_client_token">ef64b7030eff100d48c69f7b987df272</string>
+</resources>

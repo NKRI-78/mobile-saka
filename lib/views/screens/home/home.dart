@@ -1,0 +1,936 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
+import 'package:new_version_plus/new_version_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
+import 'package:draggable_float_widget/draggable_float_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:saka/services/navigation.dart';
+
+import 'package:saka/localization/language_constraints.dart';
+
+import 'package:saka/providers/store/store.dart';
+import 'package:saka/providers/inbox/inbox.dart';
+import 'package:saka/providers/ppob/ppob.dart';
+import 'package:saka/providers/banner/banner.dart';
+import 'package:saka/providers/firebase/firebase.dart';
+import 'package:saka/providers/profile/profile.dart';
+import 'package:saka/providers/news/news.dart';
+import 'package:saka/providers/auth/auth.dart';
+import 'package:saka/providers/event/event.dart';
+
+import 'package:saka/utils/helper.dart';
+import 'package:saka/utils/constant.dart';
+import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/custom_themes.dart';
+import 'package:saka/utils/dimensions.dart';
+import 'package:saka/utils/box_shadow.dart';
+
+import 'package:saka/views/basewidgets/drawer/drawer.dart';
+
+import 'package:saka/views/screens/update/update.dart';
+import 'package:saka/views/screens/store/store_index.dart';
+import 'package:saka/views/screens/comingsoon/comingsoon.dart';
+import 'package:saka/views/screens/ppob/topup/topup.dart';
+import 'package:saka/views/screens/radio/radio.dart';
+import 'package:saka/views/screens/feed/index.dart';
+import 'package:saka/views/screens/media/media.dart';
+import 'package:saka/views/screens/ppob/ppob.dart';
+import 'package:saka/views/screens/news/detail.dart';
+import 'package:saka/views/screens/eventjoin/event_join.dart';
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late FirebaseProvider fp;
+  late NewsProvider np;
+  late InboxProvider ip;
+  late BannerProvider bp;
+  late ProfileProvider pp;
+  late AuthProvider ap;
+  late StoreProvider sp;
+  late PPOBProvider ppopP;
+  late EventProvider ep;
+
+  Future<void> getData() async {
+    if(mounted) {
+      fp.initFcm(context);
+    }
+    if(mounted) {
+      ip.getInbox(context, "payment");
+    }
+    if(mounted) {
+      bp.getBanner(context);
+    }
+    if(mounted) {
+      pp.getUserProfile(context);
+    }
+    if(mounted) {
+      ap.mascot(context);
+    }
+    if(mounted) {
+      ppopP.getBalance(context);
+    }
+    if(mounted) {
+      np.getNews(context);
+    }
+    if(mounted) {
+      sp.getDataStore(context);
+    }
+    if(mounted) {
+      sp.getDataCategoryProduct(context, "commerce");  
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    fp = context.read<FirebaseProvider>();
+    np = context.read<NewsProvider>();
+    ip = context.read<InboxProvider>();
+    bp = context.read<BannerProvider>();
+    pp = context.read<ProfileProvider>();
+    ap = context.read<AuthProvider>();
+    sp = context.read<StoreProvider>();
+    ppopP = context.read<PPOBProvider>();
+    ep = context.read<EventProvider>();
+
+
+    if(mounted) { 
+      NewVersionPlus newVersion = NewVersionPlus(
+        androidId: 'com.inovasi78.saka',
+        iOSId: 'com.inovatif78.saka'
+      );
+      Future.delayed(Duration.zero, () async {
+        VersionStatus? vs = await newVersion.getVersionStatus();
+        if(vs!.canUpdate) {
+          NS.push(context, const UpdateScreen());
+        } 
+      });
+    }
+    
+    getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildUI();
+  }
+    
+  Widget buildUI() {
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: ColorResources.backgroundColor,
+      drawerEnableOpenDragGesture: false,
+      drawer: DrawerWidget(),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+      
+              RefreshIndicator(
+                backgroundColor: ColorResources.brown,
+                color: ColorResources.white,
+                onRefresh: () {
+                  return Future.sync(() {
+                    np.getNews(context);
+                    bp.getBanner(context);
+                    pp.getUserProfile(context);
+                    ip.getInbox(context, "payment");
+                    ap.mascot(context);
+                    ppopP.getBalance(context);
+                    ep.checkEvent(context);
+                    sp.getDataStore(context);
+                    sp.getDataCategoryProduct(context, "commerce");
+                  });
+                },
+                child: CustomScrollView(
+                  physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  slivers: [
+      
+                    SliverAppBar(
+                      systemOverlayStyle: SystemUiOverlayStyle.dark,
+                      backgroundColor: ColorResources.transparent,
+                      centerTitle: true,
+                      automaticallyImplyLeading: false,
+                      title: Text("SAKA DIRGANTARA",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          fontWeight: FontWeight.w600,
+                          color: ColorResources.brown
+                        ),
+                      ),
+                      actions: [
+                        Container(
+                          margin: EdgeInsets.only(right: 15.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              scaffoldKey.currentState!.openDrawer();
+                            },
+                            child: SvgPicture.asset("assets/imagesv2/svg/hamburger-menu.svg",
+                              color: ColorResources.brown,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+      
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        
+                        banner(context),
+                        infoAccount(context),
+
+                        Container(
+                          margin: EdgeInsets.only(
+                            left: 25.0, 
+                            right: 25.0,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(getTranslated("OUR_SERVICE", context),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorResources.brown
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        ourService(context),
+
+                        Container(
+                          margin: EdgeInsets.only(
+                            left: 25.0, 
+                            right: 25.0,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(getTranslated("NEWS", context),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorResources.brown
+                                )
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        newsWidget(context),
+
+                        Container(
+                          margin: EdgeInsets.only(
+                            bottom: 15.0
+                          ),
+                          alignment: Alignment.center,
+                          child: Text("@ PT Inovatif 78",
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              fontWeight: FontWeight.w600,
+                              color: ColorResources.brown
+                            ),
+                          ),
+                        )
+
+                      ])
+                    )
+                  ],
+                )
+              ),
+      
+              context.watch<AuthProvider>().mascotStatus == MascotStatus.loading 
+              ? Container() 
+              : context.read<AuthProvider>().isShow == 1  
+              ? DraggableFloatWidget(
+                  width: 120.0,
+                  height: 120.0,
+                  child: BounceIn(
+                    preferences: AnimationPreferences(autoPlay: AnimationPlayStates.Loop),
+                    child: Image.asset("assets/images/ic-jambore.png"),
+                  ),
+                  config: const DraggableFloatWidgetBaseConfig(
+                    isFullScreen: false,
+                    initPositionYInTop: false,    
+                    borderRight: 5.0,
+                    initPositionXInLeft: false,                        
+                    initPositionYMarginBorder: 100.0,
+                  ),
+                  onTap: () {
+                    NS.push(context, EventJoinScreen());
+                  },
+                )
+              : Container()
+            ],
+          );                 
+        },
+      )
+    );
+  }
+}
+
+
+Widget banner(BuildContext context) {
+return Consumer<BannerProvider>(
+  builder: (BuildContext context, BannerProvider bannerProvider, Widget? child) {
+    if(bannerProvider.bannerStatus == BannerStatus.loading)
+      return Container(
+        margin: EdgeInsets.only(
+          top: 10.0,
+          bottom: 10.0,
+          left: 25.0,
+          right: 25.0
+        ),
+        width: double.infinity,
+        height: 180.0,
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[200]!,
+          child: Container( 
+            decoration: BoxDecoration(
+              color: ColorResources.white,
+              borderRadius: BorderRadius.circular(15.0)
+            )
+          ),
+        )
+      );
+      
+    if(bannerProvider.bannerStatus == BannerStatus.empty)      
+      return Container(
+        width: double.infinity,
+        height: 180.0,
+        child: Center(
+          child: Text(getTranslated("NO_BANNER_AVAILABLE", context),
+            style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeDefault,
+              color: ColorResources.black
+            ),
+          )
+        )
+      );
+
+    if(bannerProvider.bannerStatus == BannerStatus.error)      
+      return Container(
+        width: double.infinity,
+        height: 180.0,
+        child: Center(
+          child: Text(getTranslated("THERE_WAS_PROBLEM", context),
+            style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeDefault,
+              color: ColorResources.black
+            ),
+          )
+        )
+      );
+    
+      return Container(
+        margin: EdgeInsets.only(
+          top: 10.0,
+          bottom: 10.0,
+          left: 25.0,
+          right: 25.0
+        ),
+        width: double.infinity,
+        height: 180.0,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+          
+            Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                
+                CarouselSlider.builder(
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 1.0,
+                    initialPage: 3,
+                    onPageChanged: (int i, CarouselPageChangedReason reason) {
+                      bannerProvider.setCurrentIndex(i);
+                    },
+                  ),
+                  itemCount: bannerProvider.bannerListMap.length,
+                  itemBuilder: (BuildContext context, int i, int z) {
+                    return GestureDetector(
+                      onTap: () async {
+                        await launch(bannerProvider.bannerListMap[i]["link"]);
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: CachedNetworkImage(
+                          imageUrl: "${AppConstants.baseUrlFeedImg}${bannerProvider.bannerListMap[i]["path"]}",
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      )
+                    );                  
+                  },
+                ),
+
+                Positioned(
+                  bottom: 12.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: bannerProvider.bannerListMap.map((banner) {
+                      int index = bannerProvider.bannerListMap.indexOf(banner);
+                      return TabPageSelectorIndicator(
+                        backgroundColor: index == bannerProvider.currentIndex ? ColorResources.primaryOrange : ColorResources.brown,
+                        borderColor: Colors.white,
+                        size: 10.0,
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            )
+
+          ],
+        )
+      );
+    },
+  );
+}
+
+Widget infoAccount(BuildContext context) {
+  return Container(
+    height: 125.0,
+    margin: EdgeInsets.only(
+      top: 15.0,
+      left: 40.0,
+      right: 40.0,
+      bottom: 20.0
+    ),
+    decoration: BoxDecoration(
+      color: ColorResources.white,
+      borderRadius: BorderRadius.circular(15.0),
+      boxShadow: kElevationToShadow[4],
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          ColorResources.brown.withOpacity(0.8),
+          ColorResources.brown,
+        ]
+      )
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.only(
+            top: 10.0,
+            left: 15.0,
+            right: 15.0,
+            bottom: 10.0  
+          ),
+          decoration: BoxDecoration(
+            color: ColorResources.black,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0)
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                ColorResources.black.withOpacity(0.8),
+                ColorResources.brown,
+              ]
+            ),
+            boxShadow: kElevationToShadow[4]
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Consumer<ProfileProvider>(
+                    builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
+                      if(profileProvider.profileStatus == ProfileStatus.loading) {
+                        return Text("...",
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeLarge,
+                            color: ColorResources.white
+                          ),
+                        );
+                      } 
+                      if(profileProvider.profileStatus == ProfileStatus.error) {
+                        return Text("-",
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeLarge,
+                            color: ColorResources.white
+                          ),
+                        );
+                      }      
+                      return Text(profileProvider.userProfile.fullname!,
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: ColorResources.white
+                        ),
+                      );           
+                    },
+                  ),
+                  const SizedBox(height: 5.0),
+                  Image.asset("assets/images/logo.png",
+                    width: 35.0,
+                    height: 35.0,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.all(15.0),
+          child: GestureDetector(
+            onTap: () {
+              NS.push(context, TopUpScreen());
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(getTranslated("MY_BALANCE", context),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeSmall,
+                    color: ColorResources.white
+                  ),
+                ),
+                const SizedBox(height: 5.0),
+                Consumer<PPOBProvider>(
+                  builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
+                    if(ppobProvider.balanceStatus == BalanceStatus.loading) {
+                      return Text("...",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: ColorResources.white
+                        ),
+                      );
+                    }                             
+                    if(ppobProvider.balanceStatus == BalanceStatus.error) {
+                      return Text("-",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: ColorResources.white
+                        ),
+                      );
+                    }    
+                    return Text(Helper.formatCurrency(ppobProvider.balance!),
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeLarge,
+                        color: ColorResources.white
+                      ),
+                    );           
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget ourService(BuildContext context) {
+  List menus = [
+    {
+      "id": 1,
+      "name": "Forum",
+      "asset": "forum.svg",
+      "link": FeedIndex(),
+    },
+    {
+      "id": 2,
+      "name": "Radio",
+      "asset": "radio.png",
+      "link": Container()
+    },
+    {
+      "id": 3,
+      "name": "PPOB",
+      "asset": "ppob.svg",
+      "link": PPOBScreen(),
+    },
+    {
+      "id": 4,
+      "name": "Media",
+      "asset": "media.svg",
+      "link": MediaScreen(),
+    },
+    {
+      "id": 5,
+      "name": getTranslated("SAKA_MART", context),
+      "asset": "saka-mart.svg",
+      "link": StoreScreen()
+    },
+  ];
+
+  return Container(
+    margin: EdgeInsets.only(
+      bottom: 25.0
+    ),
+    height: 190.0,
+    child: StaggeredGridView.countBuilder(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      itemCount: menus.length,
+      padding: EdgeInsets.zero,
+      crossAxisSpacing: 0.0,
+      mainAxisSpacing: 0.0,
+      physics: const NeverScrollableScrollPhysics(),
+      staggeredTileBuilder: (int i) => const StaggeredTile.count(1, 0.77),
+      itemBuilder: (BuildContext context, int i) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if(menus[i]["name"] == "Radio")
+              InkWell(
+                borderRadius: BorderRadius.circular(50.0),
+                onTap: () {
+                  if(Platform.isAndroid) {
+                    NS.push(context, RadioScreen());
+                  } else {
+                    NS.push(context, ComingSoonScreen(title: "Airmen FM"));
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 50.0,
+                    height: 50.0,
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('assets/imagesv2/${menus[i]["asset"]}',
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
+                ),
+              ),
+            if(menus[i]["name"] != "Radio")
+              InkWell(
+                borderRadius: BorderRadius.circular(50.0),
+                onTap: () {
+                  NS.push(context, menus[i]["link"]);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    width: 50.0,
+                    height: 50.0,
+                    padding: const EdgeInsets.all(8.0),
+                    child: SvgPicture.asset('assets/imagesv2/svg/${menus[i]["asset"]}',
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
+                ),
+              ),
+            SizedBox(height: 10.0),
+            Container(
+              child: Text(menus[i]["name"],
+                textAlign: TextAlign.center,
+                style: robotoRegular.copyWith(
+                  color: ColorResources.brown,
+                  fontSize: Dimensions.fontSizeSmall
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    )
+  );
+}
+
+Widget newsWidget(BuildContext context) {
+  return Consumer<NewsProvider>(
+    builder: (BuildContext context, NewsProvider newsProvider, Widget? child) {
+      if(newsProvider.getNewsStatus == GetNewsStatus.loading) {
+          return Container(
+            margin: EdgeInsets.only(
+            top: 10.0,
+            left: 25.0,
+            right: 25.0,
+            bottom: 10.0
+          ),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: 5, 
+            itemBuilder: (BuildContext context, int i) {
+              return Container(
+                margin: EdgeInsets.only(
+                  top: 8.0,
+                  bottom: 8.0
+                ),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[200]!,
+                  highlightColor: Colors.grey[300]!,
+                  child: Container(
+                    height: 120.0,
+                    decoration: BoxDecoration(
+                      color: ColorResources.white,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                ),
+              );               
+            },
+          ),
+        );
+      }
+      if(newsProvider.getNewsStatus == GetNewsStatus.empty) {
+        return Container(
+          height: 150.0,
+          child: Text(getTranslated("THERE_IS_NO_DATA", context),
+            style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeDefault,
+              color: ColorResources.black
+            ),
+          )
+        );
+      }
+      if(newsProvider.getNewsStatus == GetNewsStatus.error) {
+        return Container(
+          height: 150.0,
+          child: Text(getTranslated("THERE_WAS_PROBLEM", context),
+            style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeDefault,
+              color: ColorResources.black
+            ),
+          )
+        );
+      }
+      return Container(
+        margin: EdgeInsets.only(
+          top: 10.0,
+          left: 25.0,
+          right: 25.0,
+          bottom: 10.0
+        ),
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: newsProvider.newsData.length, 
+          itemBuilder: (BuildContext context, int i) {
+            return Container(
+              margin: EdgeInsets.only(
+                top: 8.0,
+                bottom: 8.0
+              ),
+              decoration: BoxDecoration(
+                color: ColorResources.white,
+                borderRadius: BorderRadius.circular(15.0),
+                boxShadow: boxShadow,
+              ),
+              child: Material(
+                color: ColorResources.white,
+                borderRadius: BorderRadius.circular(15.0),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(15.0),
+                  onTap: () {
+                    NS.push(context, DetailNewsScreen(
+                      title: newsProvider.newsData[i].title!,
+                      content: newsProvider.newsData[i].content!,
+                      date: newsProvider.newsData[i].created!,
+                      imageUrl: newsProvider.newsData[i].media![0].path!,
+                    ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: CachedNetworkImage(
+                              imageUrl: "${AppConstants.baseUrlImg}${newsProvider.newsData[i].media![0].path}",
+                              fit: BoxFit.fill,
+                              width: 80.0,
+                              height: 80.0,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10.0),
+                        Expanded(
+                          flex: 19,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 150.0,
+                                child: Text(newsProvider.newsData[i].title!, 
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontWeight: FontWeight.w600
+                                  )
+                                ),
+                              ),   
+                              Container(
+                                width: double.infinity,
+                                child: Text(DateFormat('dd MMM yyyy').format(newsProvider.newsData[i].created!), 
+                                  textAlign: TextAlign.end,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    color: ColorResources.dimGrey
+                                  ),
+                                ),
+                              ) 
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        ),
+      );      
+    },
+  );
+} 
+
+class IconTitleColumnButton extends StatelessWidget {
+  final String iconUrl;
+  final String title;
+  IconTitleColumnButton({
+    required this.iconUrl,
+    required this.title
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 50.0,
+          height: 50.0,
+          padding: EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: ColorResources.white, 
+            borderRadius: BorderRadius.circular(44.0)
+          ),
+          child: Image.asset(iconUrl, fit: BoxFit.scaleDown),
+        ),
+        Text(title, style: robotoRegular.copyWith(
+          fontSize: Dimensions.fontSizeSmall, 
+          color: ColorResources.dimGrey
+        )),
+      ],
+    );
+  }
+}
+
+class CustomClipPath extends CustomClipper<Path> {
+  var radius = 10.0;
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 140);
+    path.quadraticBezierTo(size.width / 2, size.height, 
+    size.width, size.height - 140);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
+}
+
+class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
+  const StickyTabBarDelegate(this.tabBar);
+
+  final TabBar tabBar;
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(color: Colors.white, child: tabBar);
+  }
+
+  @override
+  bool shouldRebuild(StickyTabBarDelegate oldDelegate) {
+    return tabBar != oldDelegate.tabBar;
+  }
+}
+
+class SliverDelegate extends SliverPersistentHeaderDelegate {
+
+  Widget child;
+  SliverDelegate({required this.child});
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  double get maxExtent => 50;
+
+  @override
+  double get minExtent => 50;
+
+  @override
+  bool shouldRebuild(SliverDelegate oldDelegate) {
+    return oldDelegate.maxExtent != 50 || oldDelegate.minExtent != 50 || child != oldDelegate.child;
+  }
+
+}
