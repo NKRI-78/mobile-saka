@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:saka/data/models/feedv2/feed.dart';
 import 'package:saka/services/navigation.dart';
 import 'package:saka/views/screens/dashboard/dashboard.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -29,11 +30,11 @@ import 'package:saka/views/screens/feed/post_detail.dart';
 
 class Posts extends StatefulWidget {
   final int i;
-  final List<GroupsBody> groupsBody;
+  final List<Forum> forum;
    
   const Posts({Key? key, 
     required this.i,
-    required this.groupsBody,
+    required this.forum,
   }) : super(key: key);
 
   @override
@@ -52,7 +53,7 @@ class _PostsState extends State<Posts> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PostDetailScreen(
-        postId: widget.groupsBody[widget.i].id!
+        postId: widget.forum[widget.i].id!
       ))),
       child: Container(
         margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
@@ -62,24 +63,24 @@ class _PostsState extends State<Posts> {
           children: [ 
             ListTile(
               dense: true,
-              leading: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage("${AppConstants.baseUrlImg}/${widget.groupsBody[widget.i].user!.profilePic!.path}"),
-                radius: 20.0,
-              ),
-              title: Text(widget.groupsBody[widget.i].user!.nickname!,
+              // leading: CircleAvatar(
+              //   backgroundColor: Colors.transparent,
+              //   backgroundImage: NetworkImage("${AppConstants.baseUrlImg}/${widget.forum[widget.i].user!.profilePic!.path}"),
+              //   radius: 20.0,
+              // ),
+              title: Text(widget.forum[widget.i].user!.username!,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                   color: ColorResources.black
                 ),
               ),
-              subtitle: Text(timeago.format((DateTime.parse(widget.groupsBody[widget.i].created!).toLocal()), locale: 'id'),
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeExtraSmall,
-                  color: ColorResources.dimGrey
-                ),
-              ),
-              trailing: context.read<ProfileProvider>().userProfile.userId == widget.groupsBody[widget.i].user!.userId! 
+              // subtitle: Text(timeago.format((DateTime.parse(widget.forum[widget.i].created!).toLocal()), locale: 'id'),
+              //   style: robotoRegular.copyWith(
+              //     fontSize: Dimensions.fontSizeExtraSmall,
+              //     color: ColorResources.dimGrey
+              //   ),
+              // ),
+              trailing: context.read<ProfileProvider>().userProfile.userId == widget.forum[widget.i].user!.username! 
               ? grantedDeletePost(context) 
               : PopupMenuButton(
                   itemBuilder: (BuildContext buildContext) { 
@@ -206,26 +207,26 @@ class _PostsState extends State<Posts> {
 
             const SizedBox(height: 5.0),
             
-            if(widget.groupsBody[widget.i].postType == PostType.text) 
-              PostText(widget.groupsBody[widget.i].content),
-            if(widget.groupsBody[widget.i].postType == PostType.link)
-              PostLink(url: widget.groupsBody[widget.i].content!.url, caption: widget.groupsBody[widget.i].content!.caption!),
-            if(widget.groupsBody[widget.i].postType == PostType.document)
-              PostDoc(
-                medias: widget.groupsBody[widget.i].content!.medias!, 
-                caption: widget.groupsBody[widget.i].content!.caption!
-              ),
-            if(widget.groupsBody[widget.i].postType == PostType.image)
-              PostImage(
-                false,
-                widget.groupsBody[widget.i].content!.medias!, 
-                widget.groupsBody[widget.i].content!.caption!
-              ),
-            if(widget.groupsBody[widget.i].postType == PostType.video)
-              PostVideo(
-                media: widget.groupsBody[widget.i].content!.medias![0],
-                caption: widget.groupsBody[widget.i].content!.caption!,
-              ),
+            // if(widget.forum[widget.i].postType == PostType.text) 
+            //   PostText(widget.forum[widget.i].content),
+            // if(widget.forum[widget.i].postType == PostType.link)
+            //   PostLink(url: widget.forum[widget.i].content!.url, caption: widget.forum[widget.i].content!.caption!),
+            // if(widget.forum[widget.i].postType == PostType.document)
+            //   PostDoc(
+            //     medias: widget.forum[widget.i].content!.medias!, 
+            //     caption: widget.forum[widget.i].content!.caption!
+            //   ),
+            // if(widget.forum[widget.i].postType == PostType.image)
+            //   PostImage(
+            //     false,
+            //     widget.forum[widget.i].content!.medias!, 
+            //     widget.forum[widget.i].content!.caption!
+            //   ),
+            // if(widget.forum[widget.i].postType == PostType.video)
+            //   PostVideo(
+            //     media: widget.forum[widget.i].content!.medias![0],
+            //     caption: widget.forum[widget.i].content!.caption!,
+            //   ),
           
             Container(
               margin: const EdgeInsets.only(
@@ -243,29 +244,29 @@ class _PostsState extends State<Posts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(widget.groupsBody[widget.i].numOfLikes.toString(), 
-                          style: robotoRegular.copyWith(
-                            color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeSmall
-                          )
-                        ),
-                        InkWell(
-                          onTap: () => context.read<FeedProvider>().like(context, widget.groupsBody[widget.i].id!, "POST"),
-                          child: Container(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Icon(
-                              Icons.thumb_up,
-                              size: 16.0,
-                              color: widget.groupsBody[widget.i].liked!.isNotEmpty 
-                              ? ColorResources.blue 
-                              : ColorResources.black
-                            ),
-                          ),
-                        )
+                        // Text(widget.forum[widget.i].numOfLikes.toString(), 
+                        //   style: robotoRegular.copyWith(
+                        //     color: ColorResources.black,
+                        //     fontSize: Dimensions.fontSizeSmall
+                        //   )
+                        // ),
+                        // InkWell(
+                        //   onTap: () => context.read<FeedProvider>().like(context, widget.forum[widget.i].id!, "POST"),
+                        //   child: Container(
+                        //     padding: const EdgeInsets.all(5.0),
+                        //     child: Icon(
+                        //       Icons.thumb_up,
+                        //       size: 16.0,
+                        //       color: widget.forum[widget.i].liked!.isNotEmpty 
+                        //       ? ColorResources.blue 
+                        //       : ColorResources.black
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
-                  Text('${widget.groupsBody[widget.i].numOfComments.toString()} ${getTranslated("COMMENT", context)}',
+                  Text('${widget.forum[widget.i].comment!.total.toString()} ${getTranslated("COMMENT", context)}',
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeSmall
                     ),
@@ -400,7 +401,7 @@ class _PostsState extends State<Posts> {
                                                       onTap: () async {
                                                         setState(() => deletePostBtn = true);
                                                         try {         
-                                                          await context.read<FeedProvider>().deletePost(context, widget.groupsBody[widget.i].id!);               
+                                                          await context.read<FeedProvider>().deletePost(context, widget.forum[widget.i].id!);               
                                                           setState(() => deletePostBtn = false);
                                                           NS.push(context, DashboardScreen());            
                                                         } catch(e, stacktrace) {

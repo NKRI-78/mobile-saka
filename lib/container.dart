@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:saka/data/repository/feedv2/feed.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saka/services/notification.dart';
@@ -81,12 +83,21 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => FeedRepo(
     sp: getIt(),
   ));
+  
+  getIt.registerLazySingleton(() => FeedRepoV2(
+    sp: getIt(),
+  ));
 
   getIt.registerLazySingleton(() => SplashRepo(
     sp: getIt()
   ));
 
   getIt.registerFactory(() => FeedProvider(
+    ar: getIt(), 
+    fr: getIt()
+  ));
+
+  getIt.registerFactory(() => FeedProviderV2(
     ar: getIt(), 
     fr: getIt()
   ));

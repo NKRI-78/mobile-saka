@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 
 import 'package:saka/services/navigation.dart';
 
@@ -30,7 +31,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   late TabController tabController;
-  late FeedProvider feedProvider;
+  late FeedProviderV2 feedProviderV2;
 
   GlobalKey g1Key = GlobalKey();
   GlobalKey g2Key = GlobalKey();
@@ -44,25 +45,17 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   Future refresh(BuildContext context) async {
     Future.sync((){
-      feedProvider.fetchGroupsMostRecent(context);
-      feedProvider.fetchGroupsMostPopular(context);
-      feedProvider.fetchGroupsSelf(context);
+      feedProviderV2.fetchFeed(context);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    feedProvider = context.read<FeedProvider>();
+    feedProviderV2 = context.read<FeedProviderV2>();
     Future.delayed(Duration.zero, () {
       if(mounted) {
-        feedProvider.fetchGroupsMostRecent(context);    
-      }
-      if(mounted) {
-        feedProvider.fetchGroupsMostPopular(context);
-      }
-      if(mounted) {
-        feedProvider.fetchGroupsSelf(context);
+        feedProviderV2.fetchFeed(context);    
       }
     });
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
@@ -105,9 +98,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
       controller: tabController,
       children: [
 
-        Consumer<FeedProvider>(
-          builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-            if (feedProvider.groupsMostRecentStatus == GroupsMostRecentStatus.loading) {
+        Consumer<FeedProviderV2>(
+          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
+            if (feedProviderv2.feedStatus == FeedStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
@@ -115,7 +108,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 ),
               );
             }
-            if (feedProvider.groupsMostRecentStatus == GroupsMostRecentStatus.empty) {
+            if (feedProviderv2.feedStatus == FeedStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
@@ -135,9 +128,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g1Key,
-                    itemCount: feedProvider.g1.nextCursor != null ? feedProvider.g1List.length + 1 : feedProvider.g1List.length,
+                    itemCount: feedProviderv2.forum.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProvider.g1List.length == i) {
+                    if (feedProviderv2.forum.length == i) {
                       return const Center(
                         child: SpinKitThreeBounce(
                           size: 20.0,
@@ -147,17 +140,17 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return Posts(
                       i: i,
-                      groupsBody: feedProvider.g1List,
+                      forum: feedProviderV2.forum,
                     );
                   }
                 ),
               ),
               onNotification: (ScrollNotification scrollInfo) {
                 if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  if (feedProvider.g1.nextCursor != null) {
-                    feedProvider.fetchGroupsMostRecentLoad(context, feedProvider.g1.nextCursor!);
-                    feedProvider.g1.nextCursor = null;
-                  }
+                  // if (feedProvider.g1.nextCursor != null) {
+                  //   feedProvider.fetchGroupsMostRecentLoad(context, feedProvider.g1.nextCursor!);
+                  //   feedProvider.g1.nextCursor = null;
+                  // }
                 }
                 return false;
               },
@@ -165,15 +158,17 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
           },
         ),
 
-        Consumer<FeedProvider>(
-          builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-            if(feedProvider.groupsMostPopularStatus == GroupsMostPopularStatus.loading) {
-              return const SpinKitThreeBounce(
-                size: 20.0,
-                color: ColorResources.primaryOrange
+        Consumer<FeedProviderV2>(
+          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
+            if (feedProviderv2.feedStatus == FeedStatus.loading) {
+              return const Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primaryOrange,
+                ),
               );
-            } 
-            if(feedProvider.groupsMostPopularStatus == GroupsMostPopularStatus.empty) {
+            }
+            if (feedProviderv2.feedStatus == FeedStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
@@ -193,9 +188,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g2Key,
-                    itemCount: feedProvider.g2.nextCursor != null ? feedProvider.g2List.length + 1 : feedProvider.g2List.length,
+                    itemCount: feedProviderv2.forum.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProvider.g2List.length == i) {
+                    if (feedProviderv2.forum.length == i) {
                       return const Center(
                         child: SpinKitThreeBounce(
                           size: 20.0,
@@ -205,17 +200,17 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return Posts(
                       i: i,
-                      groupsBody: feedProvider.g2List,
+                      forum: feedProviderv2.forum,
                     );
                   }
                 ),
               ),
               onNotification: (ScrollNotification scrollInfo) {
                 if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  if (feedProvider.g2.nextCursor != null) {
-                    feedProvider.fetchGroupsMostPopularLoad(context, feedProvider.g2.nextCursor!);
-                    feedProvider.g2.nextCursor = null;
-                  }
+                  // if (feedProvider.g2.nextCursor != null) {
+                  //   feedProvider.fetchGroupsMostPopularLoad(context, feedProvider.g2.nextCursor!);
+                  //   feedProvider.g2.nextCursor = null;
+                  // }
                 }
                 return false;
               },
@@ -223,23 +218,19 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
           },
         ),
         
-        Consumer<FeedProvider>(
-          builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-            if(feedProvider.groupsSelfStatus == GroupsSelfStatus.loading) {
+        Consumer<FeedProviderV2>(
+          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
+            if (feedProviderv2.feedStatus == FeedStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
                   color: ColorResources.primaryOrange,
-                )
+                ),
               );
-            } 
-            if(feedProvider.groupsSelfStatus == GroupsSelfStatus.empty) {
+            }
+            if (feedProviderv2.feedStatus == FeedStatus.empty) {
               return Center(
-                child: Text(getTranslated("THERE_IS_NO_POST", context), 
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault
-                  )
-                )
+                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
             }
             return NotificationListener<ScrollNotification>(
@@ -257,9 +248,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g3Key,
-                    itemCount: feedProvider.g3.nextCursor != null ? feedProvider.g3List.length + 1 : feedProvider.g3List.length,
+                    itemCount: feedProviderv2.forum.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProvider.g3List.length == i) {
+                    if (feedProviderv2.forum.length == i) {
                       return const SpinKitThreeBounce(
                         size: 20.0,
                         color: ColorResources.primaryOrange,
@@ -267,17 +258,17 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return Posts(
                       i: i,
-                      groupsBody: feedProvider.g3List,
+                      forum: feedProviderv2.forum,
                     );
                   }
                 ),
               ),
               onNotification: (ScrollNotification scrollInfo) {
                 if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  if (feedProvider.g3.nextCursor != null) {
-                    feedProvider.fetchGroupsSelfLoad(context, feedProvider.g3.nextCursor!);
-                    feedProvider.g3.nextCursor = null;
-                  }
+                  // if (feedProvider.g3.nextCursor != null) {
+                  //   feedProvider.fetchGroupsSelfLoad(context, feedProvider.g3.nextCursor!);
+                  //   feedProvider.g3.nextCursor = null;
+                  // }
                 }
                 return false;
               },
