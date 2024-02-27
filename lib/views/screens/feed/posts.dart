@@ -63,11 +63,11 @@ class _PostsState extends State<Posts> {
           children: [ 
             ListTile(
               dense: true,
-              // leading: CircleAvatar(
-              //   backgroundColor: Colors.transparent,
-              //   backgroundImage: NetworkImage("${AppConstants.baseUrlImg}/${widget.forum[widget.i].user!.profilePic!.path}"),
-              //   radius: 20.0,
-              // ),
+              leading: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: NetworkImage("${AppConstants.baseUrlImg}/${widget.forum[widget.i].user!.avatar!}"),
+                radius: 20.0,
+              ),
               title: Text(widget.forum[widget.i].user!.username!,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
@@ -207,8 +207,8 @@ class _PostsState extends State<Posts> {
 
             const SizedBox(height: 5.0),
             
+              PostText(widget.forum[widget.i].caption),
             // if(widget.forum[widget.i].postType == PostType.text) 
-            //   PostText(widget.forum[widget.i].content),
             // if(widget.forum[widget.i].postType == PostType.link)
             //   PostLink(url: widget.forum[widget.i].content!.url, caption: widget.forum[widget.i].content!.caption!),
             // if(widget.forum[widget.i].postType == PostType.document)

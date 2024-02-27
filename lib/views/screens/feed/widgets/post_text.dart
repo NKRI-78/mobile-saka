@@ -8,10 +8,10 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 class PostText extends StatefulWidget {
-  final dynamic item;
+  final dynamic text;
 
   const PostText(
-    this.item, 
+    this.text, 
     {Key? key}
   ) : super(key: key);
 
@@ -35,7 +35,7 @@ class _PostTextState extends State<PostText> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ReadMoreText(
-            widget.item.text,
+            widget.text,
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             ),

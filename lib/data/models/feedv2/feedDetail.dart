@@ -1,36 +1,36 @@
-class FeedModel {
+class FeedDetailModel {
     int? status;
     bool? error;
     String? message;
-    Data? data;
+    FeedDetailData? data;
 
-    FeedModel({
+    FeedDetailModel({
         this.status,
         this.error,
         this.message,
         this.data,
     });
 
-    factory FeedModel.fromJson(Map<String, dynamic> json) => FeedModel(
+    factory FeedDetailModel.fromJson(Map<String, dynamic> json) => FeedDetailModel(
         status: json["status"],
         error: json["error"],
         message: json["message"],
-        data: Data.fromJson(json["data"]),
+        data: FeedDetailData.fromJson(json["data"]),
     );
 }
 
-class Data {
+class FeedDetailData {
     PageDetail? pageDetail;
-    List<Forum>? forums;
+    Forum? forum;
 
-    Data({
+    FeedDetailData({
         this.pageDetail,
-        this.forums,
+        this.forum,
     });
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
+    factory FeedDetailData.fromJson(Map<String, dynamic> json) => FeedDetailData(
         pageDetail: PageDetail.fromJson(json["page_detail"]),
-        forums: List<Forum>.from(json["forums"].map((x) => Forum.fromJson(x))),
+        forum: Forum.fromJson(json["forum"]),
     );
 }
 
@@ -39,6 +39,7 @@ class Forum {
     List<Media>? media;
     String? caption;
     String? type;
+    String? createdAt;
     User? user;
     ForumComment? comment;
     CommentLike? like;
@@ -48,6 +49,7 @@ class Forum {
         this.media,
         this.caption,
         this.type,
+        this.createdAt,
         this.user,
         this.comment,
         this.like,
@@ -58,6 +60,7 @@ class Forum {
         media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
         caption: json["caption"],
         type: json["type"],
+        createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
         comment: ForumComment.fromJson(json["comment"]),
         like: CommentLike.fromJson(json["like"]),
