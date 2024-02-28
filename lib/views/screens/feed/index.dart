@@ -45,7 +45,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   Future refresh(BuildContext context) async {
     Future.sync((){
-      feedProviderV2.fetchFeed(context);
+      feedProviderV2.fetchFeedMostRecent(context);
+      feedProviderV2.fetchFeedPopuler(context);
+      feedProviderV2.fetchFeedSelf(context);
     });
   }
 
@@ -55,7 +57,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
     feedProviderV2 = context.read<FeedProviderV2>();
     Future.delayed(Duration.zero, () {
       if(mounted) {
-        feedProviderV2.fetchFeed(context);    
+        feedProviderV2.fetchFeedMostRecent(context);
+        feedProviderV2.fetchFeedPopuler(context);
+        feedProviderV2.fetchFeedSelf(context);    
       }
     });
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
@@ -128,9 +132,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g1Key,
-                    itemCount: feedProviderv2.forum.length,
+                    itemCount: feedProviderv2.forum1.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProviderv2.forum.length == i) {
+                    if (feedProviderv2.forum1.length == i) {
                       return const Center(
                         child: SpinKitThreeBounce(
                           size: 20.0,
@@ -140,7 +144,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return Posts(
                       i: i,
-                      forum: feedProviderV2.forum,
+                      forum: feedProviderV2.forum1,
                     );
                   }
                 ),
@@ -188,9 +192,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g2Key,
-                    itemCount: feedProviderv2.forum.length,
+                    itemCount: feedProviderv2.forum2.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProviderv2.forum.length == i) {
+                    if (feedProviderv2.forum2.length == i) {
                       return const Center(
                         child: SpinKitThreeBounce(
                           size: 20.0,
@@ -200,7 +204,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return Posts(
                       i: i,
-                      forum: feedProviderv2.forum,
+                      forum: feedProviderv2.forum2,
                     );
                   }
                 ),
@@ -248,9 +252,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g3Key,
-                    itemCount: feedProviderv2.forum.length,
+                    itemCount: feedProviderv2.forum3.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProviderv2.forum.length == i) {
+                    if (feedProviderv2.forum3.length == i) {
                       return const SpinKitThreeBounce(
                         size: 20.0,
                         color: ColorResources.primaryOrange,
@@ -258,7 +262,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return Posts(
                       i: i,
-                      forum: feedProviderv2.forum,
+                      forum: feedProviderv2.forum3,
                     );
                   }
                 ),

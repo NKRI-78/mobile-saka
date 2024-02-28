@@ -8,7 +8,7 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 class PostText extends StatefulWidget {
-  final dynamic text;
+  final String text;
 
   const PostText(
     this.text, 

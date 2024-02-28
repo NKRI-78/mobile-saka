@@ -8,6 +8,7 @@ import 'package:readmore/readmore.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -26,11 +27,9 @@ import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
-import 'package:saka/data/models/feed/feedmedia.dart';
-
 class PostImage extends StatefulWidget {
   final bool isDetail;
-  final List<FeedMedia> medias;
+  final List medias;
   final String caption;
 
   const PostImage(

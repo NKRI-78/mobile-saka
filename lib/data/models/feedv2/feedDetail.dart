@@ -1,40 +1,40 @@
 class FeedDetailModel {
-    int? status;
-    bool? error;
-    String? message;
-    FeedDetailData? data;
+    int status;
+    bool error;
+    String message;
+    Data data;
 
     FeedDetailModel({
-        this.status,
-        this.error,
-        this.message,
-        this.data,
+        required this.status,
+        required this.error,
+        required this.message,
+        required this.data,
     });
 
     factory FeedDetailModel.fromJson(Map<String, dynamic> json) => FeedDetailModel(
         status: json["status"],
         error: json["error"],
         message: json["message"],
-        data: FeedDetailData.fromJson(json["data"]),
+        data: Data.fromJson(json["data"]),
     );
 }
 
-class FeedDetailData {
-    PageDetail? pageDetail;
-    Forum? forum;
+class Data {
+    PageDetail pageDetail;
+    ForumDetailData forum;
 
-    FeedDetailData({
-        this.pageDetail,
-        this.forum,
+    Data({
+        required this.pageDetail,
+        required this.forum,
     });
 
-    factory FeedDetailData.fromJson(Map<String, dynamic> json) => FeedDetailData(
+    factory Data.fromJson(Map<String, dynamic> json) => Data(
         pageDetail: PageDetail.fromJson(json["page_detail"]),
-        forum: Forum.fromJson(json["forum"]),
+        forum: ForumDetailData.fromJson(json["forum"]),
     );
 }
 
-class Forum {
+class ForumDetailData {
     String? id;
     List<Media>? media;
     String? caption;
@@ -44,7 +44,7 @@ class Forum {
     ForumComment? comment;
     CommentLike? like;
 
-    Forum({
+    ForumDetailData({
         this.id,
         this.media,
         this.caption,
@@ -55,7 +55,7 @@ class Forum {
         this.like,
     });
 
-    factory Forum.fromJson(Map<String, dynamic> json) => Forum(
+    factory ForumDetailData.fromJson(Map<String, dynamic> json) => ForumDetailData(
         id: json["id"],
         media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
         caption: json["caption"],
@@ -68,12 +68,12 @@ class Forum {
 }
 
 class ForumComment {
-    int? total;
-    List<CommentElement>? comments;
+    int total;
+    List<CommentElement> comments;
 
     ForumComment({
-        this.total,
-        this.comments,
+        required this.total,
+        required this.comments,
     });
 
     factory ForumComment.fromJson(Map<String, dynamic> json) => ForumComment(
@@ -83,18 +83,18 @@ class ForumComment {
 }
 
 class CommentElement {
-    String? id;
-    String? comment;
-    User? user;
-    CommentReply? reply;
-    CommentLike? like;
+    String id;
+    String comment;
+    User user;
+    CommentReply reply;
+    CommentLike like;
 
     CommentElement({
-        this.id,
-        this.comment,
-        this.user,
-        this.reply,
-        this.like,
+        required this.id,
+        required this.comment,
+        required this.user,
+        required this.reply,
+        required this.like,
     });
 
     factory CommentElement.fromJson(Map<String, dynamic> json) => CommentElement(
@@ -107,12 +107,12 @@ class CommentElement {
 }
 
 class CommentLike {
-    int? total;
-    List<LikeElement>? likes;
+    int total;
+    List<LikeElement> likes;
 
     CommentLike({
-        this.total,
-        this.likes,
+        required this.total,
+        required this.likes,
     });
 
     factory CommentLike.fromJson(Map<String, dynamic> json) => CommentLike(
@@ -122,12 +122,12 @@ class CommentLike {
 }
 
 class LikeElement {
-    String? id;
-    User? user;
+    String id;
+    User user;
 
     LikeElement({
-        this.id,
-        this.user,
+        required this.id,
+        required this.user,
     });
 
     factory LikeElement.fromJson(Map<String, dynamic> json) => LikeElement(
@@ -137,27 +137,30 @@ class LikeElement {
 }
 
 class User {
-    String? avatar;
-    String? username;
+    String id;
+    String avatar;
+    String username;
 
     User({
-        this.avatar,
-        this.username,
+        required this.id,
+        required this.avatar,
+        required this.username,
     });
 
     factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
         avatar: json["avatar"],
         username: json["username"],
     );
 }
 
 class CommentReply {
-    int? total;
-    List<ReplyElement>? replies;
+    int total;
+    List<ReplyElement> replies;
 
     CommentReply({
-        this.total,
-        this.replies,
+        required this.total,
+        required this.replies,
     });
 
     factory CommentReply.fromJson(Map<String, dynamic> json) => CommentReply(
@@ -167,14 +170,14 @@ class CommentReply {
 }
 
 class ReplyElement {
-    String? id;
-    String? reply;
-    User? user;
+    String id;
+    String reply;
+    User user;
 
     ReplyElement({
-        this.id,
-        this.reply,
-        this.user,
+        required this.id,
+        required this.reply,
+        required this.user,
     });
 
     factory ReplyElement.fromJson(Map<String, dynamic> json) => ReplyElement(
@@ -185,12 +188,12 @@ class ReplyElement {
 }
 
 class Media {
-    String? path;
-    String? size;
+    String path;
+    String size;
 
     Media({
-        this.path,
-        this.size,
+        required this.path,
+        required this.size,
     });
 
     factory Media.fromJson(Map<String, dynamic> json) => Media(
@@ -200,24 +203,24 @@ class Media {
 }
 
 class PageDetail {
-    bool? hasMore;
-    int? total;
-    int? perPage;
-    int? nextPage;
-    int? prevPage;
-    int? currentPage;
-    String? nextUrl;
-    String? prevUrl;
+    bool hasMore;
+    int total;
+    int perPage;
+    int nextPage;
+    int prevPage;
+    int currentPage;
+    String nextUrl;
+    String prevUrl;
 
     PageDetail({
-        this.hasMore,
-        this.total,
-        this.perPage,
-        this.nextPage,
-        this.prevPage,
-        this.currentPage,
-        this.nextUrl,
-        this.prevUrl,
+        required this.hasMore,
+        required this.total,
+        required this.perPage,
+        required this.nextPage,
+        required this.prevPage,
+        required this.currentPage,
+        required this.nextUrl,
+        required this.prevUrl,
     });
 
     factory PageDetail.fromJson(Map<String, dynamic> json) => PageDetail(

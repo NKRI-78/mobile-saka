@@ -21,7 +21,7 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/data/models/feed/feedmedia.dart';
 
 class PostDoc extends StatefulWidget {
-  final List<FeedMedia> medias;
+  final List medias;
   final String caption;
 
   const PostDoc({

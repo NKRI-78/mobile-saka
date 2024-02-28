@@ -4,14 +4,12 @@ import 'package:saka/data/repository/auth/auth.dart';
 import 'package:saka/data/repository/feedv2/feed.dart';
 import 'package:saka/utils/exceptions.dart';
 
-enum FeedStatus { idle, loading, loaded, empty, error }
-
 enum FeedDetailStatus { idle, loading, loaded, empty, error }
 
-class FeedProviderV2 with ChangeNotifier {
+class FeedDetailProviderV2 with ChangeNotifier {
   final AuthRepo ar;
   final FeedRepoV2 fr;
-  FeedProviderV2({
+  FeedDetailProviderV2({
     required this.ar,
     required this.fr
   });
@@ -19,48 +17,41 @@ class FeedProviderV2 with ChangeNotifier {
   bool hasMore = true;
   int pageKey = 1;
 
-  FeedStatus _feedStatus = FeedStatus.loading;
-  FeedStatus get feedStatus => _feedStatus;
-
   FeedDetailStatus _feedDetailStatus = FeedDetailStatus.loading;
   FeedDetailStatus get feedDetailStatus => _feedDetailStatus;
-
-  void setStateFeedStatus(FeedStatus feedStatus) {
-    _feedStatus = feedStatus;
-    Future.delayed(Duration.zero, () => notifyListeners());
-  }
 
   void setStateFeedDetailStatus(FeedDetailStatus feedDetailStatus) {
     _feedDetailStatus = feedDetailStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  FeedDetailData _feedDetailData = FeedDetailData();
-  FeedDetailData get feedDetailData => _feedDetailData;
+  ForumDetailData _feedDetailData = ForumDetailData();
+  ForumDetailData get feedDetailData => _feedDetailData;
 
-  final List<Forum> _forums = [];
-  List<Forum> get forums => [..._forums];
+  final List<CommentElement> _comment = [];
+  List<CommentElement> get comment => [..._comment];
 
-  // Future<void> getFeedDetail(BuildContext context, String postId) async {
-  //   pageKey = 1;
-  //   hasMore = true;
+  Future<void> getFeedDetail(BuildContext context, String postId) async {
+    pageKey = 1;
+    hasMore = true;
 
-  //   try {
-  //     FeedDetailModel? fdm = await fr.fetchDetail(context, postId);
+    try {
+      FeedDetailModel? fdm = await fr.fetchDetail(context, postId);
+      _feedDetailData = fdm!.data.forum;
 
-  //     _forums.clear();
-  //     _forums.addAll(fdm!.data!.forum! as Iterable<Forum>);
-  //     setStateFeedDetailStatus(FeedDetailStatus.loaded);
+      _comment.clear();
+      _comment.addAll(fdm.data.forum.comment!.comments);
+      setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
-  //     if (forums.isEmpty) {
-  //       setStateFeedDetailStatus(FeedDetailStatus.empty);
-  //     }
-  //   } on CustomException catch (e) {
-  //     setStateFeedDetailStatus(FeedDetailStatus.error);
-  //     debugPrint(e.toString());
-  //   } catch (_) {
-  //     setStateFeedDetailStatus(FeedDetailStatus.error);
-  //   }
-  // }
+      if (comment.isEmpty) {
+        setStateFeedDetailStatus(FeedDetailStatus.empty);
+      }
+    } on CustomException catch (e) {
+      setStateFeedDetailStatus(FeedDetailStatus.error);
+      debugPrint(e.toString());
+    } catch (_) {
+      setStateFeedDetailStatus(FeedDetailStatus.error);
+    }
+  }
   
 }

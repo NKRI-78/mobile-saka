@@ -7,11 +7,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readmore/readmore.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:saka/data/models/feedv2/feed.dart';
-import 'package:saka/providers/feedv2/feed.dart';
+import 'package:saka/data/models/feedv2/feedDetail.dart';
+import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import 'package:saka/data/models/feed/feedposttype.dart';
 
 import 'package:saka/services/navigation.dart';
 
@@ -29,12 +29,7 @@ import 'package:saka/data/models/feed/comment.dart';
 
 import 'package:saka/views/basewidgets/loader/circular.dart';
 
-import 'package:saka/views/screens/feed/widgets/post_link.dart';
 import 'package:saka/views/screens/feed/widgets/post_text.dart';
-import 'package:saka/views/screens/feed/replies.dart';
-import 'package:saka/views/screens/feed/widgets/post_doc.dart';
-import 'package:saka/views/screens/feed/widgets/post_img.dart';
-import 'package:saka/views/screens/feed/widgets/post_video.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final String postId;
@@ -50,7 +45,7 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   bool deletePostBtn = false;
-  late FeedProviderV2 feedProviderV2;
+  late FeedDetailProviderV2 feedDetailProviderV2;
   
   TextEditingController commentC = TextEditingController();
   FocusNode commentFn = FocusNode();
@@ -58,10 +53,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   void initState() {  
     super.initState();
-    feedProviderV2 = context.read<FeedProviderV2>();
+    feedDetailProviderV2 = context.read<FeedDetailProviderV2>();
     Future.delayed(Duration.zero, () {
       if(mounted) {
-        feedProviderV2.fetchDetail(context, widget.postId);
+        feedDetailProviderV2.getFeedDetail(context, widget.postId);
       }
     });
   }
@@ -83,9 +78,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     );
   }
 
-  Widget commentText(BuildContext context, CommentContent comment) {
+  Widget commentText(BuildContext context, String comment) {
     return ReadMoreText(
-      comment.text!,
+      comment,
       style: robotoRegular.copyWith(
         fontSize: Dimensions.fontSizeDefault
       ),
@@ -101,9 +96,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Widget post(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Consumer<FeedProviderV2>(
-        builder: (BuildContext context, FeedProviderV2 feedProvider, Widget? child) {
-          if (feedProvider.feedDetailStatus == FeedDetailStatus.loading) {
+      child: Consumer<FeedDetailProviderV2>(
+        builder: (BuildContext context, FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+          if (feedDetailProviderV2.feedDetailStatus == FeedDetailStatus.loading) {
             return const SizedBox(
               height: 100.0,
               child: Center(
@@ -114,7 +109,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             );
           }
-          Forum forum = feedProviderV2.forum[0];
           return Container(
             margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
             child: Column(
@@ -125,22 +119,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   dense: true,
                   leading: CircleAvatar(
                     backgroundColor: ColorResources.transparent,
-                    backgroundImage: NetworkImage("${AppConstants.baseUrlFeedImg}/${forum.user!.avatar ?? "-"}"),
+                    backgroundImage: NetworkImage("${AppConstants.baseUrlFeedImg}/${feedDetailProviderV2.feedDetailData.user?.avatar ?? "-"}"),
                     radius: 20.0,
                   ),
-                  title: Text(forum.user!.username ?? '-',
+                  title: Text(feedDetailProviderV2.feedDetailData.user?.username ?? "-",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       color: ColorResources.black
                     ),
                   ),
-                  // subtitle: Text(timeago.format((DateTime.parse(feedProvider.post.body!.created!).toLocal()), locale: 'id'),
-                  //   style: robotoRegular.copyWith(
-                  //     fontSize: Dimensions.fontSizeExtraSmall,
-                  //     color: ColorResources.dimGrey
-                  //   ),
-                  // ),
-                  trailing: context.read<ProfileProvider>().userProfile.userId == forum.user!.username
+                  subtitle: Text(feedDetailProviderV2.feedDetailData.createdAt!,
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeExtraSmall,
+                      color: ColorResources.dimGrey
+                    ),
+                  ),
+                  trailing: context.read<ProfileProvider>().userProfile.userId == feedDetailProviderV2.feedDetailData.user?.id
                   ? grantedDeletePost(context) 
                   :  PopupMenuButton(
                       itemBuilder: (BuildContext buildContext) { 
@@ -252,7 +246,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
                 const SizedBox(height: 5.0),
                 
-                PostText(forum.caption ?? "-"),
+                PostText(feedDetailProviderV2.feedDetailData.caption ?? "-"),
                 // if (feedProvider.post.body!.postType == PostType.text)
                 // if(feedProvider.post.body!.postType == PostType.link)
                 //   PostLink(
@@ -264,12 +258,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 //     medias: feedProvider.post.body!.content!.medias!, 
                 //     caption: feedProvider.post.body!.content!.caption!
                 //   ),
-                // if (feedProvider.post.body!.postType == PostType.image)
-                //   PostImage(
-                //     true,
-                //     feedProvider.post.body!.content!.medias!, 
-                //     feedProvider.post.body!.content!.caption!,
-                //   ),
+                if (feedDetailProviderV2.feedDetailData.type == "image")
+                PostImage(
+                  true,
+                  feedDetailProviderV2.feedDetailData.media!, 
+                  feedDetailProviderV2.feedDetailData.caption!,
+                ),
                 // if (feedProvider.post.body!.postType == PostType.video)
                 //   PostVideo(
                 //     media: feedProvider.post.body!.content!.medias![0],
@@ -328,8 +322,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Forum forum = feedProviderV2.forum[0];
-    debugPrint("Caption ${forum.caption}");
+    debugPrint("Username  : ${feedDetailProviderV2.feedDetailData.user?.username}");
     return Scaffold(
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
@@ -359,7 +352,261 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             post(context)
           ];
         },
-        body: Container()      
+        body: Consumer<FeedDetailProviderV2>(
+          builder: (BuildContext context, FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+            if (feedDetailProviderV2.feedDetailStatus == FeedDetailStatus.loading) {
+              return const Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primaryOrange,
+                )
+              );
+            } 
+            if (feedDetailProviderV2.feedDetailStatus == FeedDetailStatus.empty) {
+              return Center(
+                child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault
+                  ),
+                )
+              );
+            }
+            return NotificationListener<ScrollNotification>(
+              child: ListView.separated(
+                separatorBuilder: (BuildContext context, int i) {
+                  return const SizedBox(height: 8.0);
+                },
+                physics: const BouncingScrollPhysics(),
+                itemCount: feedDetailProviderV2.feedDetailData.comment!.comments.length,
+                itemBuilder: (BuildContext context, int i) {
+                  CommentElement comment = feedDetailProviderV2.comment[i];
+                  // if (comment.comment == i) {
+                  //   return const Center(
+                  //     child: SpinKitThreeBounce(
+                  //       size: 20.0,
+                  //       color: ColorResources.primaryOrange
+                  //     )
+                  //   );
+                  // }
+                  return Column(
+                    children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: ColorResources.transparent,
+                        backgroundImage: NetworkImage("${AppConstants.baseUrlImg}${comment.user.avatar}"),
+                        radius: 20.0,
+                      ),
+                      title: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: const BoxDecoration(
+                          color: ColorResources.blueGrey,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0)
+                          )
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(comment.user.username,
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                ),
+                              ),
+                              // Text(timeago.format(DateTime.parse(feedProvider.c1List[i].created!).toLocal(), locale: 'id'),
+                              //   style: robotoRegular.copyWith(
+                              //     fontSize: Dimensions.fontSizeExtraSmall,
+                              //     color: ColorResources.dimGrey
+                              //   ),
+                              // ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 5.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // if (feedProvider.c1List[i].type == "STICKER")
+                                    //   commentSticker(context, feedProvider.c1List[i].content!),
+                                    // if (feedProvider.c1List[i].type == "TEXT")
+                                      commentText(context, comment.comment)
+                                  ],
+                                ),
+                              ),
+                            ]
+                          ),
+                        ),
+                        trailing: context.read<ProfileProvider>().userProfile.userId == comment.user.id 
+                        ? const SizedBox()
+                        : PopupMenuButton(
+                          itemBuilder: (BuildContext buildContext) { 
+                            return [
+                              PopupMenuItem(
+                                child: Text("block user",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.error,
+                                    fontSize: Dimensions.fontSizeSmall
+                                  )
+                                ), 
+                                value: "/report-user"
+                              ),
+                              PopupMenuItem(
+                                child: Text("It's spam",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.error,
+                                    fontSize: Dimensions.fontSizeSmall
+                                  )
+                                ), 
+                                value: "/report-user"
+                              ),
+                              PopupMenuItem(
+                                child: Text("Nudity or sexual activity",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.error,
+                                    fontSize: Dimensions.fontSizeSmall
+                                  )
+                                ), 
+                                value: "/report-user"
+                              ),
+                              PopupMenuItem(
+                                child: Text("False Information",
+                                  style: robotoRegular.copyWith(
+                                    color: ColorResources.error,
+                                    fontSize: Dimensions.fontSizeSmall
+                                  )
+                                ), 
+                                value: "/report-user"
+                              )
+                            ];
+                          },
+                          onSelected: (route) {
+                            if(route == "/report-user") {
+                              showAnimatedDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    child: Container(
+                                    height: 150.0,
+                                    padding: const EdgeInsets.all(10.0),
+                                    margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(height: 10.0),
+                                        const Icon(Icons.delete,
+                                          color: ColorResources.black,
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                          style: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeSmall,
+                                            fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10.0),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () => Navigator.of(context).pop(),
+                                              child: Text(getTranslated("NO", context),
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                )
+                                              )
+                                            ), 
+                                            StatefulBuilder(
+                                              builder: (BuildContext context, Function s) {
+                                              return ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor: MaterialStateProperty.all(
+                                                  ColorResources.error
+                                                ),
+                                              ),
+                                              onPressed: () async { 
+                                                Navigator.of(context, rootNavigator: true).pop(); 
+                                              },
+                                              child: Text(getTranslated("YES", context), 
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                ),
+                                              ),                           
+                                            );
+                                          })
+                                        ],
+                                      ) 
+                                    ])
+                                  )
+                                );
+                              },
+                            );
+                          }
+                        },
+                      )
+                    ),
+                    SizedBox(
+                      width: 150.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: 50.0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(comment.like.total.toString(),
+                                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    // feedProvider.like(context, feedProvider.c1List[i].id!, "COMMENT");
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Icon(Icons.thumb_up,
+                                      size: 16.0,
+                                      color: Colors.blue),
+                                  ),
+                                ),
+                              ]
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              // Navigator.push(context,
+                              //   MaterialPageRoute(
+                              //     builder: (BuildContext context) => RepliesScreen(
+                              //       id: feedProvider.c1List[i].id!,
+                              //       postId: widget.postId
+                              //     ),
+                              //   ),
+                              // );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('${getTranslated("REPLY",context)} (${comment.reply.total})',
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                fontStyle: FontStyle.italic)
+                              ),
+                            )
+                          ),
+                        ]
+                      ),
+                    )
+                  ]);
+                },
+              ),
+              // onNotification: (ScrollNotification scrollInfo) {
+              //   if (scrollInfo.metrics.pixels ==
+              //       scrollInfo.metrics.maxScrollExtent) {
+              //     if (feedProvider.c1.nextCursor != null) {
+              //       feedProvider.fetchListCommentMostRecentLoad(context, widget.postId,feedProvider.c1.nextCursor!);
+              //     }
+              //   }
+              //   return false;
+              // },
+            );
+          },
+        )      
       ),
       bottomNavigationBar: Container(
         padding: MediaQuery.of(context).viewInsets,

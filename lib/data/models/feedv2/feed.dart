@@ -39,6 +39,7 @@ class Forum {
     List<Media>? media;
     String? caption;
     String? type;
+    String? createdAt;
     User? user;
     ForumComment? comment;
     CommentLike? like;
@@ -48,6 +49,7 @@ class Forum {
         this.media,
         this.caption,
         this.type,
+        this.createdAt,
         this.user,
         this.comment,
         this.like,
@@ -58,6 +60,7 @@ class Forum {
         media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
         caption: json["caption"],
         type: json["type"],
+        createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
         comment: ForumComment.fromJson(json["comment"]),
         like: CommentLike.fromJson(json["like"]),
@@ -134,15 +137,18 @@ class LikeElement {
 }
 
 class User {
+    String? id;
     String? avatar;
     String? username;
 
     User({
+        this.id,
         this.avatar,
         this.username,
     });
 
     factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
         avatar: json["avatar"],
         username: json["username"],
     );

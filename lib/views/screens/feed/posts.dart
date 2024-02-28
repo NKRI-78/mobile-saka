@@ -74,13 +74,13 @@ class _PostsState extends State<Posts> {
                   color: ColorResources.black
                 ),
               ),
-              // subtitle: Text(timeago.format((DateTime.parse(widget.forum[widget.i].created!).toLocal()), locale: 'id'),
-              //   style: robotoRegular.copyWith(
-              //     fontSize: Dimensions.fontSizeExtraSmall,
-              //     color: ColorResources.dimGrey
-              //   ),
-              // ),
-              trailing: context.read<ProfileProvider>().userProfile.userId == widget.forum[widget.i].user!.username! 
+              subtitle: Text(widget.forum[widget.i].createdAt!,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeExtraSmall,
+                  color: ColorResources.dimGrey
+                ),
+              ),
+              trailing: context.read<ProfileProvider>().userProfile.userId == widget.forum[widget.i].user!.id! 
               ? grantedDeletePost(context) 
               : PopupMenuButton(
                   itemBuilder: (BuildContext buildContext) { 
@@ -206,26 +206,25 @@ class _PostsState extends State<Posts> {
             ),
 
             const SizedBox(height: 5.0),
-            
-              PostText(widget.forum[widget.i].caption),
-            // if(widget.forum[widget.i].postType == PostType.text) 
-            // if(widget.forum[widget.i].postType == PostType.link)
-            //   PostLink(url: widget.forum[widget.i].content!.url, caption: widget.forum[widget.i].content!.caption!),
-            // if(widget.forum[widget.i].postType == PostType.document)
-            //   PostDoc(
-            //     medias: widget.forum[widget.i].content!.medias!, 
-            //     caption: widget.forum[widget.i].content!.caption!
-            //   ),
-            // if(widget.forum[widget.i].postType == PostType.image)
-            //   PostImage(
-            //     false,
-            //     widget.forum[widget.i].content!.medias!, 
-            //     widget.forum[widget.i].content!.caption!
-            //   ),
-            // if(widget.forum[widget.i].postType == PostType.video)
+            if(widget.forum[widget.i].type == "text")
+            PostText(widget.forum[widget.i].caption!),
+            if(widget.forum[widget.i].type == "link")
+              PostLink(url: widget.forum[widget.i].caption!, caption: widget.forum[widget.i].caption!),
+            if(widget.forum[widget.i].type == "document")
+              PostDoc(
+                medias: widget.forum[widget.i].media!, 
+                caption: widget.forum[widget.i].caption!
+              ),
+            if(widget.forum[widget.i].type == "image")
+              PostImage(
+                false,
+                widget.forum[widget.i].media!, 
+                widget.forum[widget.i].caption!
+              ),
+            // if(widget.forum[widget.i].type == "video")
             //   PostVideo(
-            //     media: widget.forum[widget.i].content!.medias![0],
-            //     caption: widget.forum[widget.i].content!.caption!,
+            //     media: widget.forum[widget.i].media!,
+            //     caption: widget.forum[widget.i].caption!,
             //   ),
           
             Container(
