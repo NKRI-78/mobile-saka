@@ -18,16 +18,12 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
-import 'package:saka/data/models/feed/feedmedia.dart';
-
 class PostDoc extends StatefulWidget {
   final List medias;
-  final String caption;
 
   const PostDoc({
     Key? key, 
     required this.medias,
-    required this.caption,
   }) : super(key: key);
 
   @override
@@ -87,14 +83,6 @@ class _PostDocState extends State<PostDoc> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Text(widget.caption,
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall
-                ),
-              ),
-            ),
             const SizedBox(height: 12.0),
             Container(
               height: 56.0,

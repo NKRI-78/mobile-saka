@@ -2,7 +2,7 @@ class FeedModel {
     int? status;
     bool? error;
     String? message;
-    Data? data;
+    FeedData? data;
 
     FeedModel({
         this.status,
@@ -15,20 +15,20 @@ class FeedModel {
         status: json["status"],
         error: json["error"],
         message: json["message"],
-        data: Data.fromJson(json["data"]),
+        data: FeedData.fromJson(json["data"]),
     );
 }
 
-class Data {
+class FeedData {
     PageDetail? pageDetail;
     List<Forum>? forums;
 
-    Data({
+    FeedData({
         this.pageDetail,
         this.forums,
     });
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
+    factory FeedData.fromJson(Map<String, dynamic> json) => FeedData(
         pageDetail: PageDetail.fromJson(json["page_detail"]),
         forums: List<Forum>.from(json["forums"].map((x) => Forum.fromJson(x))),
     );

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:saka/data/models/feedv2/feed.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/services/navigation.dart';
 import 'package:saka/views/screens/dashboard/dashboard.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
 
@@ -63,10 +65,23 @@ class _PostsState extends State<Posts> {
           children: [ 
             ListTile(
               dense: true,
-              leading: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage("${AppConstants.baseUrlImg}/${widget.forum[widget.i].user!.avatar!}"),
-                radius: 20.0,
+              leading: CachedNetworkImage(
+              imageUrl: "${AppConstants.baseUrlImg}/${widget.forum[widget.i].user!.avatar!}",
+                imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: imageProvider,
+                  radius: 20.0,
+                ),
+                placeholder: (BuildContext context, String url) => const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                  radius: 20.0,
+                ),
+                errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                  radius: 20.0,
+                )
               ),
               title: Text(widget.forum[widget.i].user!.username!,
                 style: robotoRegular.copyWith(
@@ -206,26 +221,25 @@ class _PostsState extends State<Posts> {
             ),
 
             const SizedBox(height: 5.0),
-            if(widget.forum[widget.i].type == "text")
             PostText(widget.forum[widget.i].caption!),
             if(widget.forum[widget.i].type == "link")
               PostLink(url: widget.forum[widget.i].caption!, caption: widget.forum[widget.i].caption!),
             if(widget.forum[widget.i].type == "document")
+              widget.forum[widget.i].media!.isNotEmpty ?
               PostDoc(
                 medias: widget.forum[widget.i].media!, 
-                caption: widget.forum[widget.i].caption!
-              ),
+              ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
             if(widget.forum[widget.i].type == "image")
+              widget.forum[widget.i].media!.isNotEmpty ? 
               PostImage(
                 false,
                 widget.forum[widget.i].media!, 
-                widget.forum[widget.i].caption!
-              ),
-            // if(widget.forum[widget.i].type == "video")
-            //   PostVideo(
-            //     media: widget.forum[widget.i].media!,
-            //     caption: widget.forum[widget.i].caption!,
-            //   ),
+              ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+            if(widget.forum[widget.i].type == "video")
+              widget.forum[widget.i].media!.isNotEmpty ? 
+              PostVideo(
+                media: widget.forum[widget.i].media![0].path!,
+              ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
           
             Container(
               margin: const EdgeInsets.only(
@@ -400,9 +414,8 @@ class _PostsState extends State<Posts> {
                                                       onTap: () async {
                                                         setState(() => deletePostBtn = true);
                                                         try {         
-                                                          await context.read<FeedProvider>().deletePost(context, widget.forum[widget.i].id!);               
-                                                          setState(() => deletePostBtn = false);
-                                                          NS.push(context, DashboardScreen());            
+                                                          await context.read<FeedProviderV2>().deletePost(context, widget.forum[widget.i].id!);               
+                                                          setState(() => deletePostBtn = false);        
                                                         } catch(e, stacktrace) {
                                                           setState(() => deletePostBtn = false);
                                                           debugPrint(stacktrace.toString()); 

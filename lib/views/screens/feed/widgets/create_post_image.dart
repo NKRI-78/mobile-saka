@@ -14,7 +14,7 @@ import 'package:saka/container.dart';
 
 import 'package:saka/data/repository/feed/feed.dart';
 
-import 'package:saka/providers/feed/feed.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
@@ -36,19 +36,19 @@ class CreatePostImageScreen extends StatefulWidget {
 class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
-  late TextEditingController captionC;
+  late FeedProviderV2 fdv2;
   int current = 0;
   
   @override 
   void initState() {
     super.initState();
-
-    captionC = TextEditingController();
+    fdv2 = context.read<FeedProviderV2>();
+    fdv2.postC = TextEditingController();
   }
 
   @override 
   void dispose() {
-    captionC.dispose();
+    fdv2.postC.dispose();
   
     super.dispose();
   } 
@@ -149,7 +149,7 @@ class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
                 Icons.arrow_back,
                 color: ColorResources.black,
               ),
-              onPressed: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+              onPressed: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
               ? () {} : () {
                 Navigator.of(context).pop();
               },
@@ -162,54 +162,23 @@ class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
-                      onTap: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                      onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                       ? () {} : () async {
-                        String caption = captionC.text;
+                        fdv2.setStateWritePost(WritePostStatus.loading);
+                        fdv2.feedType = "image";
+                        await fdv2.post(context, "image", widget.files!);          
                         
-                        if(caption.trim().isNotEmpty) {
-                          if(caption.trim().length < 10) {
-                            ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
-                            return;
-                          }
-                        } 
-                        if(caption.trim().length > 1000) {
-                          ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMUM", context), "", ColorResources.error);
-                          return;
-                        }
-
-                        context.read<FeedProvider>().setStateWritePost(WritePostStatus.loading);
-                        
-                        if(widget.files!.length > 1) {
-                          for (int i = 0; i < widget.files!.length; i++) {
-                            String? body = await getIt<FeedRepo>().getMediaKey(context); 
-                            File files = File(widget.files![i].path);
-                            Uint8List bytes = widget.files![i].readAsBytesSync();
-                            String digestFile = sha256.convert(bytes).toString();
-                            String imageHash = base64Url.encode(HEX.decode(digestFile)); 
-                            await getIt<FeedRepo>().uploadMedia(context, body!, imageHash, files);
-                          }
-                        } else {
-                          String? body = await getIt<FeedRepo>().getMediaKey(context); 
-                          Uint8List bytes = widget.files![0].readAsBytesSync();
-                          File files = File(widget.files![0].path);
-                          String digestFile = sha256.convert(bytes).toString();
-                          String imageHash = base64Url.encode(HEX.decode(digestFile)); 
-                          await getIt<FeedRepo>().uploadMedia(context, body!, imageHash, files);
-                        }
-                        await context.read<FeedProvider>().sendPostImage(context, caption, widget.files!);          
-                        
-                        context.read<FeedProvider>().setStateWritePost(WritePostStatus.loaded);
-                        Navigator.of(context).pop();
+                        fdv2.setStateWritePost(WritePostStatus.loaded);
                       },
                       child: Container(
-                        width: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                        width:context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                         ? null : 80.0,
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           color: ColorResources.primaryOrange,
                           borderRadius: BorderRadius.circular(20.0)
                         ),
-                        child: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading  
+                        child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading  
                         ? const Loader(
                             color: ColorResources.white,
                           ) 
@@ -247,7 +216,7 @@ class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
                   ),
                   TextField(
                     maxLines: null,
-                    controller: captionC,
+                    controller: fdv2.postC,
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault
                     ),

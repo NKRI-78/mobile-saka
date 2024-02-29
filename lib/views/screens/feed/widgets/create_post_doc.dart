@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,6 @@ import 'package:crypto/crypto.dart';
 import 'package:hex/hex.dart';
 
 import 'package:saka/localization/language_constraints.dart';
-import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/container.dart';
 import 'package:saka/data/repository/feed/feed.dart';
@@ -131,7 +131,7 @@ class _CreatePostDocScreenState extends State<CreatePostDocScreen> {
                 Icons.arrow_back,
                 color: ColorResources.black,
               ),
-              onPressed: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+              onPressed: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
               ? () {} 
               : () {
                 Navigator.of(context).pop();
@@ -145,31 +145,20 @@ class _CreatePostDocScreenState extends State<CreatePostDocScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     InkWell(
-                      onTap: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () async {
+                      onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
                         String caption = captionC.text;  
-                        if(caption.trim().isNotEmpty) {
-                          if(caption.trim().length < 10) {
-                            ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
-                            return;
-                          }
-                        } 
-                        if(caption.trim().length > 1000) {
-                          ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMUM", context), "", ColorResources.error);
-                          return;
-                        }
-                        context.read<FeedProvider>().setStateWritePost(WritePostStatus.loading);
+                        context.read<FeedProviderV2>().setStateWritePost(WritePostStatus.loading);
                         String? body = await getIt<FeedRepo>().getMediaKey(context); 
                         File? files = File(widget.files!.files[0].path!);
                         Uint8List bytesFiles = files.readAsBytesSync();
                         String digestFile = sha256.convert(bytesFiles).toString();
                         String imageHash = base64Url.encode(HEX.decode(digestFile)); 
                         await getIt<FeedRepo>().uploadMedia(context, body!, imageHash, files);
-                        await context.read<FeedProvider>().sendPostDoc(context, caption, widget.files!);
-                        context.read<FeedProvider>().setStateWritePost(WritePostStatus.loaded);
-                        Navigator.of(context).pop();            
+                        await context.read<FeedProviderV2>().postVDoc(context, caption, 'document' , File(widget.files!.files.single.path!));
+                        context.read<FeedProviderV2>().setStateWritePost(WritePostStatus.loaded);          
                       },
                       child: Container(
-                        width: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                        width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                         ? null 
                         : 80.0,
                         padding: const EdgeInsets.all(8.0),
@@ -177,7 +166,7 @@ class _CreatePostDocScreenState extends State<CreatePostDocScreen> {
                           color: ColorResources.primaryOrange,
                           borderRadius: BorderRadius.circular(20.0)
                         ),
-                        child: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                        child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                         ? const Loader(
                             color: ColorResources.white,
                           ) 

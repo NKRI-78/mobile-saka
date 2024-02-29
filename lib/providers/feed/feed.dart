@@ -468,6 +468,7 @@ class FeedProvider with ChangeNotifier {
   }
 
   Future<void> sendPostImage(BuildContext context, String caption, List<File> files) async {
+    debugPrint("Jumlah Upload : ${files.length.toString()}");
     await fr.sendPostImage(context, caption, files);
     Future.delayed(Duration.zero, () {
       fetchGroupsMostRecent(context);

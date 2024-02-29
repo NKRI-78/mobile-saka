@@ -117,6 +117,11 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
             }
+            if (feedProviderv2.feedStatus == FeedStatus.error) {
+              return Center(
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
+              );
+            }
             return NotificationListener<ScrollNotification>(
               child: RefreshIndicator(
                 backgroundColor: ColorResources.primaryOrange,

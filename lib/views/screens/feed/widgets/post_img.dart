@@ -8,7 +8,6 @@ import 'package:readmore/readmore.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -30,12 +29,10 @@ import 'package:saka/utils/dimensions.dart';
 class PostImage extends StatefulWidget {
   final bool isDetail;
   final List medias;
-  final String caption;
 
   const PostImage(
     this.isDetail,
     this.medias,
-    this.caption, 
     {Key? key}
   ) : super(key: key);
 
@@ -54,31 +51,6 @@ class _PostImageState extends State<PostImage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
-          Container(
-            margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-            child: ReadMoreText(widget.caption,
-              style: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault,
-              ),
-              trimLines: 2,
-              colorClickableText: ColorResources.black,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: getTranslated("READ_MORE", context),
-              trimExpandedText: getTranslated("LESS_MORE", context),
-              moreStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-              lessStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-            ),
-          ),
           
           const SizedBox(height: 8.0),
 
@@ -87,7 +59,7 @@ class _PostImageState extends State<PostImage> {
             children: [
               Expanded(
                 child: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlImg}${widget.medias.first.path}",
+                  imageUrl: "${widget.medias.first.path}",
                   imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -134,7 +106,7 @@ class _PostImageState extends State<PostImage> {
                       children: [
 
                         CachedNetworkImage(
-                          imageUrl: "${AppConstants.baseUrlImg}${widget.medias[1].path}",
+                          imageUrl: "${widget.medias[1].path}",
                           imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                             height: 200.0,
                             decoration: BoxDecoration(
@@ -197,7 +169,7 @@ class _PostImageState extends State<PostImage> {
                       ],
                     ),
                     CachedNetworkImage(
-                      imageUrl: "${AppConstants.baseUrlImg}${widget.medias[2].path}",
+                      imageUrl: "${widget.medias[2].path}",
                       imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                         height: 200.0,
                         decoration: BoxDecoration(
@@ -248,31 +220,6 @@ class _PostImageState extends State<PostImage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
-          Container(
-            margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-            child: ReadMoreText(widget.caption,
-              style: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault,
-              ),
-              trimLines: 2,
-              colorClickableText: ColorResources.black,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: getTranslated("READ_MORE", context),
-              trimExpandedText: getTranslated("LESS_MORE", context),
-              moreStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-              lessStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-            ),
-          ),
           
           const SizedBox(height: 8.0),
 
@@ -289,7 +236,7 @@ class _PostImageState extends State<PostImage> {
               return InkWell(
                 onTap: () {
                   NS.push(context, PreviewImageScreen(
-                    img: '${AppConstants.baseUrlImg}${i.path}',
+                    img: '${i.path}',
                   ));
                 },
                 onLongPress: () async {
@@ -325,7 +272,7 @@ class _PostImageState extends State<PostImage> {
                   );
                 },
                 child: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlImg}${i.path}",
+                  imageUrl: "${i.path}",
                   imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -393,32 +340,6 @@ class _PostImageState extends State<PostImage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
-          Container(
-            margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-            child: ReadMoreText(widget.caption,
-              style: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault,
-              ),
-              trimLines: 2,
-              colorClickableText: ColorResources.black,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: getTranslated("READ_MORE", context),
-              trimExpandedText: getTranslated("LESS_MORE", context),
-              moreStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-              lessStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-            ),
-          ),
-          
           const SizedBox(height: 8.0),
 
           CarouselSlider(
@@ -434,7 +355,7 @@ class _PostImageState extends State<PostImage> {
               return InkWell(
                 onTap: () {
                   NS.push(context, PreviewImageScreen(
-                    img: '${AppConstants.baseUrlImg}${i.path}',
+                    img: '${i.path}',
                   ));
                 },
                 onLongPress: () async {
@@ -470,7 +391,7 @@ class _PostImageState extends State<PostImage> {
                   );
                 },
                 child: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlImg}${i.path}",
+                  imageUrl: "${i.path}",
                   imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -538,31 +459,6 @@ class _PostImageState extends State<PostImage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
-          Container(
-            margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-            child: ReadMoreText(widget.caption,
-              style: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault,
-              ),
-              trimLines: 2,
-              colorClickableText: ColorResources.black,
-              trimMode: TrimMode.Line,
-              trimCollapsedText: getTranslated("READ_MORE", context),
-              trimExpandedText: getTranslated("LESS_MORE", context),
-              moreStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-              lessStyle: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault, 
-                fontWeight: FontWeight.w600
-              ),
-            ),
-          ),
           
           const SizedBox(height: 8.0),
 
@@ -579,7 +475,7 @@ class _PostImageState extends State<PostImage> {
               return InkWell(
                 onTap: () {
                   NS.push(context, PreviewImageScreen(
-                    img: '${AppConstants.baseUrlImg}${i.path}',
+                    img: '${i.path}',
                   ));
                 },
                 onLongPress: () async {
@@ -615,7 +511,7 @@ class _PostImageState extends State<PostImage> {
                   );
                 },
                 child: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlImg}${i.path}",
+                  imageUrl: "${i.path}",
                   imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                     height: 200.0,
                     decoration: BoxDecoration(
@@ -682,36 +578,11 @@ class _PostImageState extends State<PostImage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-          width: 250.0,
-          child: ReadMoreText(widget.caption,
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.black
-            ),
-            trimLines: 2,
-            colorClickableText: ColorResources.black,
-            trimMode: TrimMode.Line,
-            trimCollapsedText: 'Tampilkan Lebih',
-            trimExpandedText: 'Tutup',
-            moreStyle: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.black,
-              fontWeight: FontWeight.w600
-            ),
-            lessStyle: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.black,
-              fontWeight: FontWeight.w600
-            ),
-          ),
-        ),
         const SizedBox(height: 12.0),
         InkWell(
           onTap: () {
             NS.push(context, PreviewImageScreen(
-              img: '${AppConstants.baseUrlImg}${widget.medias[0].path}',
+              img: '${widget.medias[0].path}',
             ));
           },
           onLongPress: () {
@@ -738,7 +609,7 @@ class _PostImageState extends State<PostImage> {
                               max: 2,
                               msg: "Downloading..."
                             );
-                            Response response = await Dio().get('${AppConstants.baseUrlImg}/${widget.medias[0].path}');
+                            Response response = await Dio().get('/${widget.medias[0].path}');
                             await ImageGallerySaver.saveImage(
                               Uint8List.fromList(response.data),
                               quality: 60,
@@ -764,7 +635,7 @@ class _PostImageState extends State<PostImage> {
             );
           },
           child: CachedNetworkImage(
-            imageUrl: "${AppConstants.baseUrlImg}${widget.medias[0].path}",
+            imageUrl: "${widget.medias[0].path}",
             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
               return Container(
                 width: double.infinity,

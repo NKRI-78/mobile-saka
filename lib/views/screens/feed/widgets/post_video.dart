@@ -22,13 +22,11 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/data/models/feed/feedmedia.dart';
 
 class PostVideo extends StatefulWidget {
-  final FeedMedia media;
-  final String caption;
+  final String media;
 
   const PostVideo({
     Key? key, 
     required this.media,
-    required this.caption,
   }) : super(key: key);
 
   @override
@@ -43,14 +41,7 @@ class _PostVideoState extends State<PostVideo> {
   Future<void> getData() async {
     if(mounted) {
       if(io.Platform.isAndroid) {
-        List<String> val = await ExternalPath.getExternalStorageDirectories();
-        List<String> ext = val;
-        String dir = "${ext[0]}/${ExternalPath.DIRECTORY_MOVIES}/${p.basename(widget.media.path!)}";
-        bool isExist = await io.File(dir).exists();
-        if(!isExist) {
-          await GallerySaver.saveVideo("${AppConstants.baseUrlFeedImg}${widget.media.path}");
-        } 
-        videoPlayerC = VideoPlayerController.file(io.File("${ext[0]}/${ExternalPath.DIRECTORY_MOVIES}/${p.basename(widget.media.path!)}"))
+        videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
         ..setLooping(false)
         ..initialize().then((_) {
           setState(() {});
@@ -62,12 +53,7 @@ class _PostVideoState extends State<PostVideo> {
           looping: false,
         );
       } else {
-        String dir = (await getApplicationDocumentsDirectory()).path;
-        io.File file = io.File('$dir/${p.basename(widget.media.path!)}');
-        var req = await http.get(Uri.parse("${AppConstants.baseUrlFeedImg}${widget.media.path}"));
-        var bytes = req.bodyBytes;
-        await file.writeAsBytes(bytes, flush: true);
-        videoPlayerC = VideoPlayerController.file(io.File("$dir/${p.basename(widget.media.path!)}"))
+        videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
         ..setLooping(false)
         ..initialize().then((_) {
           setState(() { });
@@ -109,29 +95,6 @@ class _PostVideoState extends State<PostVideo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-
-            Container(
-              margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-              child: ReadMoreText(widget.caption,
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                ),
-                trimLines: 2,
-                colorClickableText: ColorResources.black,
-                trimMode: TrimMode.Line,
-                trimCollapsedText: getTranslated("READ_MORE", context),
-                trimExpandedText: getTranslated("LESS_MORE", context),
-                moreStyle: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall,
-                  fontWeight: FontWeight.w600
-                ),
-                lessStyle: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall,
-                  fontWeight: FontWeight.w600
-                ),
-              ),
-            ),
-
             videoPlayerC != null
             ? Container(
                 margin: const EdgeInsets.only(

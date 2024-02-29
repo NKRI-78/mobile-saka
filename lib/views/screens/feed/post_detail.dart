@@ -8,8 +8,11 @@ import 'package:readmore/readmore.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:saka/data/models/feedv2/feedDetail.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
+import 'package:saka/views/screens/feed/widgets/post_video.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 
@@ -109,6 +112,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             );
           }
+          debugPrint(feedDetailProviderV2.feedDetailData.media!.length.toString());
           return Container(
             margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
             child: Column(
@@ -117,10 +121,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               children: [
                 ListTile(
                   dense: true,
-                  leading: CircleAvatar(
-                    backgroundColor: ColorResources.transparent,
-                    backgroundImage: NetworkImage("${AppConstants.baseUrlFeedImg}/${feedDetailProviderV2.feedDetailData.user?.avatar ?? "-"}"),
-                    radius: 20.0,
+                  leading: CachedNetworkImage(
+                  imageUrl: "${AppConstants.baseUrlFeedImg}/${feedDetailProviderV2.feedDetailData.user?.avatar ?? "-"}",
+                    imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: imageProvider,
+                      radius: 20.0,
+                    ),
+                    placeholder: (BuildContext context, String url) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      radius: 20.0,
+                    ),
+                    errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      radius: 20.0,
+                    )
                   ),
                   title: Text(feedDetailProviderV2.feedDetailData.user?.username ?? "-",
                     style: robotoRegular.copyWith(
@@ -247,28 +264,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 const SizedBox(height: 5.0),
                 
                 PostText(feedDetailProviderV2.feedDetailData.caption ?? "-"),
-                // if (feedProvider.post.body!.postType == PostType.text)
-                // if(feedProvider.post.body!.postType == PostType.link)
-                //   PostLink(
-                //     url: feedProvider.post.body!.content!.url, 
-                //     caption: feedProvider.post.body!.content!.caption!
-                //   ),
-                // if (feedProvider.post.body!.postType == PostType.document)
-                //   PostDoc(
-                //     medias: feedProvider.post.body!.content!.medias!, 
-                //     caption: feedProvider.post.body!.content!.caption!
-                //   ),
+                if (feedDetailProviderV2.feedDetailData.type == "document")
+                  feedDetailProviderV2.feedDetailData.media!.isNotEmpty ? 
+                  PostDoc(
+                    medias: feedDetailProviderV2.feedDetailData.media!, 
+                  ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
                 if (feedDetailProviderV2.feedDetailData.type == "image")
+                  feedDetailProviderV2.feedDetailData.media!.isNotEmpty ? 
                 PostImage(
-                  true,
+                  false,
                   feedDetailProviderV2.feedDetailData.media!, 
-                  feedDetailProviderV2.feedDetailData.caption!,
-                ),
-                // if (feedProvider.post.body!.postType == PostType.video)
-                //   PostVideo(
-                //     media: feedProvider.post.body!.content!.medias![0],
-                //     caption: feedProvider.post.body!.content!.caption!,
-                //   ),
+                ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                if (feedDetailProviderV2.feedDetailData.type == "video")
+                  feedDetailProviderV2.feedDetailData.media!.isNotEmpty ? 
+                  PostVideo(
+                    media: feedDetailProviderV2.feedDetailData.media![0].path,
+                  ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
   
                 // Container(
                 //   margin: const EdgeInsets.only(top: Dimensions.marginSizeExtraSmall, left: Dimensions.marginSizeDefault, right: Dimensions.marginSizeDefault),
@@ -804,9 +815,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<FeedProvider>().deletePost(context, context.read<FeedProvider>().post.body!.id!);               
+                              await context.read<FeedProviderV2>().deletePost(context, feedDetailProviderV2.feedDetailData.id!);               
                               s(() => deletePostBtn = false);
-                              Navigator.of(context, rootNavigator: true).pop(); 
                               Navigator.of(context).pop();             
                             } catch(e) {
                               s(() => deletePostBtn = false);

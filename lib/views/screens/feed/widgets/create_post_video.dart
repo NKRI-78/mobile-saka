@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:provider/provider.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:video_player/video_player.dart';
 import 'package:hex/hex.dart';
 import 'package:crypto/crypto.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/localization/language_constraints.dart';
-import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/container.dart';
 import 'package:saka/data/repository/feed/feed.dart';
 
@@ -42,7 +42,7 @@ class CreatePostVideoScreen extends StatefulWidget {
 
 class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   late VideoPlayerController videoPlayerController;
-  late TextEditingController captionC;
+  late FeedProviderV2 fdv2;
 
   File? fileX;
   double? progress;
@@ -50,7 +50,8 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   @override
   void initState() {
     super.initState();
-    captionC = TextEditingController();
+    fdv2 = context.read<FeedProviderV2>();
+    fdv2.postC = TextEditingController();
     setState(() {
       fileX = File(widget.file!.path);
     });
@@ -59,7 +60,7 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
 
   @override
   void dispose() {
-    captionC.dispose();
+    fdv2.postC.dispose();
     videoPlayerController.dispose();
 
     super.dispose();
@@ -91,7 +92,7 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                 Icons.arrow_back,
                 color: ColorResources.black,
               ),
-              onPressed: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () {
+              onPressed: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () {
                 Navigator.of(context).pop();
               },
             ),
@@ -103,37 +104,26 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
-                      onTap: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                        String caption = captionC.text;
-                        if(caption.trim().isNotEmpty) {
-                          if(caption.trim().length < 10) {
-                            ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
-                            return;
-                          }
-                        }  
-                        if(caption.trim().length > 1000) {
-                          ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
-                          return;
-                        }
-                        context.read<FeedProvider>().setStateWritePost(WritePostStatus.loading);
+                      onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
+                        fdv2.setStateWritePost(WritePostStatus.loading);
                         String? body = await getIt<FeedRepo>().getMediaKey(context); 
                         File f = File(fileX!.path);
                         Uint8List bytesFiles = f.readAsBytesSync();
                         String digestFile = sha256.convert(bytesFiles).toString();
                         String imageHash = base64Url.encode(HEX.decode(digestFile)); 
                         await getIt<FeedRepo>().uploadMedia(context, body!, imageHash, f);
-                        await context.read<FeedProvider>().sendPostVideo(context, caption, f);
-                        context.read<FeedProvider>().setStateWritePost(WritePostStatus.loaded);
-                        NS.push(context, DashboardScreen(key: UniqueKey()));
+                        fdv2.feedType = "video";
+                        await fdv2.postVideo(context, "video", f);
+                        fdv2.setStateWritePost(WritePostStatus.loaded);
                       },
                       child: Container(
-                        width: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? null : 80.0,
+                        width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           color: ColorResources.primaryOrange,
                           borderRadius: BorderRadius.circular(20.0)
                         ),
-                        child: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                        child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                         ? const Loader(
                             color: ColorResources.white,
                           ) 
@@ -171,7 +161,7 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                   ),
                   TextField(
                     maxLines: null,
-                    controller: captionC,
+                    controller: fdv2.postC,
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault
                     ),
