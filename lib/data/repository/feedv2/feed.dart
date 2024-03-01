@@ -160,4 +160,27 @@ class FeedRepoV2 {
       debugPrint(e.toString());
     }
   }
+
+  Future<void> postComment(
+      {
+      required BuildContext context,
+      required String feedId,
+      required String userId,
+      required String comment,
+      }) async {
+    try {
+      Dio dio = await DioManager.shared.getClient(context);
+      await dio.post("/api/v1/feed/reply", data: {
+        "forum_id": feedId,
+        "user_id": userId,
+        "comment": comment
+      });
+    } on DioError catch(e) {
+      debugPrint(e.toString());
+      throw CustomException(e.toString());
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+  }
+  
 }

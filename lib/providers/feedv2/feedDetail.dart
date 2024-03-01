@@ -14,6 +14,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
+  late TextEditingController commentC;
+
   bool hasMore = true;
   int pageKey = 1;
 
@@ -46,6 +48,35 @@ class FeedDetailProviderV2 with ChangeNotifier {
       if (comment.isEmpty) {
         setStateFeedDetailStatus(FeedDetailStatus.empty);
       }
+    } on CustomException catch (e) {
+      setStateFeedDetailStatus(FeedDetailStatus.error);
+      debugPrint(e.toString());
+    } catch (_) {
+      setStateFeedDetailStatus(FeedDetailStatus.error);
+    }
+  }
+
+  Future<void> postComment(
+    BuildContext context,
+    String feedId,
+    ) async {
+    try {
+      if (commentC.text.trim() == "") {
+        commentC.text = "";
+        return;
+      }
+
+      await fr.postComment(context: context, feedId: feedId, comment: commentC.text, userId: ar.getUserId().toString());
+
+      FeedDetailModel? fdm = await fr.fetchDetail(context, feedId);
+      _feedDetailData = fdm!.data.forum;
+
+      _comment.clear();
+      _comment.addAll(fdm.data.forum.comment!.comments);
+
+      commentC.text = "";
+
+      setStateFeedDetailStatus(FeedDetailStatus.loaded);
     } on CustomException catch (e) {
       setStateFeedDetailStatus(FeedDetailStatus.error);
       debugPrint(e.toString());

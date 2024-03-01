@@ -647,4 +647,6 @@ class FeedProvider with ChangeNotifier {
     }
   }
 
+  postComment(BuildContext context, String commentText, String postId) {}
+
 }

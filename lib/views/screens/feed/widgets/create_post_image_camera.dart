@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'package:saka/localization/language_constraints.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,6 @@ import 'package:hex/hex.dart';
 
 import 'package:saka/container.dart';
 import 'package:saka/data/repository/feed/feed.dart';
-import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
@@ -32,17 +32,19 @@ class CreatePostImageCameraScreen extends StatefulWidget {
 class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScreen> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
-  late TextEditingController captionC;
+  late FeedProviderV2 fdv2;
+
   
   @override 
   void initState() {
     super.initState();
-    captionC = TextEditingController();
+    fdv2 = context.read<FeedProviderV2>();
+    fdv2.postC = TextEditingController();
   }
 
   @override 
   void dispose() {
-    captionC.dispose();
+    fdv2.postC.dispose();
     super.dispose();
   }
 
@@ -75,7 +77,7 @@ class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScree
                     Icons.arrow_back,
                     color: ColorResources.black
                   ),
-                  onPressed: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () {
+                  onPressed: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () {
                     Navigator.of(context).pop();
                   },
                 ),
@@ -87,36 +89,27 @@ class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScree
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         InkWell(
-                          onTap: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                            String caption = captionC.text;
-                            if(caption.trim().isNotEmpty) {
-                              if(caption.trim().length < 10) {
-                                ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
-                                return;
-                              }
-                            } 
-                            if(caption.trim().length > 1000) {
-                              ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
-                              return;
-                            }
-                            context.read<FeedProvider>().setStateWritePost(WritePostStatus.loading);
+                          onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
+                            String caption = fdv2.postC.text;
+                            
+                            fdv2.setStateWritePost(WritePostStatus.loading);
                             String? body = await getIt<FeedRepo>().getMediaKey(context);
                             Uint8List bytes = file.readAsBytesSync();
                             String digest = sha256.convert(bytes).toString();
                             String imageHashBackground = base64Url.encode(HEX.decode(digest)); 
                             await getIt<FeedRepo>().uploadMedia(context, body!, imageHashBackground, file);
-                            await context.read<FeedProvider>().sendPostImageCamera(context, caption, file);
-                            context.read<FeedProvider>().setStateWritePost(WritePostStatus.loaded);
-                            Navigator.of(context).pop();
+                            fdv2.feedType = "image";
+                            await fdv2.postImageCamera(context, "image", file);
+                            fdv2.setStateWritePost(WritePostStatus.loaded);
                           },
                           child: Container(
-                            width: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? null : 80.0,
+                            width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,
                             padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                               color: ColorResources.primaryOrange,
                               borderRadius: BorderRadius.circular(20.0)
                             ),
-                            child: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                            child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                             ? const Loader(
                                 color: ColorResources.white,  
                               ) 
@@ -150,7 +143,7 @@ class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScree
                         margin: const EdgeInsets.only(top: 10.0, left: 16.0, right: 16.0),
                         child: TextField(
                           maxLines: null,
-                          controller: captionC,
+                          controller: fdv2.postC,
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault
                           ),

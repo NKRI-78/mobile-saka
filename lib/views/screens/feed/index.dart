@@ -104,7 +104,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
         Consumer<FeedProviderV2>(
           builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
-            if (feedProviderv2.feedStatus == FeedStatus.loading) {
+            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
@@ -112,12 +112,12 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 ),
               );
             }
-            if (feedProviderv2.feedStatus == FeedStatus.empty) {
+            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
             }
-            if (feedProviderv2.feedStatus == FeedStatus.error) {
+            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.error) {
               return Center(
                 child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
               );
@@ -169,7 +169,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
         Consumer<FeedProviderV2>(
           builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
-            if (feedProviderv2.feedStatus == FeedStatus.loading) {
+            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
@@ -177,7 +177,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 ),
               );
             }
-            if (feedProviderv2.feedStatus == FeedStatus.empty) {
+            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
@@ -229,7 +229,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
         
         Consumer<FeedProviderV2>(
           builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
-            if (feedProviderv2.feedStatus == FeedStatus.loading) {
+            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
@@ -237,7 +237,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 ),
               );
             }
-            if (feedProviderv2.feedStatus == FeedStatus.empty) {
+            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );

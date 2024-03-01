@@ -50,13 +50,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   bool deletePostBtn = false;
   late FeedDetailProviderV2 feedDetailProviderV2;
   
-  TextEditingController commentC = TextEditingController();
   FocusNode commentFn = FocusNode();
 
   @override
   void initState() {  
     super.initState();
     feedDetailProviderV2 = context.read<FeedDetailProviderV2>();
+    feedDetailProviderV2.commentC = TextEditingController();
     Future.delayed(Duration.zero, () {
       if(mounted) {
         feedDetailProviderV2.getFeedDetail(context, widget.postId);
@@ -720,7 +720,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             Expanded(
               child: TextField(
                 focusNode: commentFn,
-                controller: commentC,
+                controller: feedDetailProviderV2.commentC,
                 style: robotoRegular.copyWith(
                   color: ColorResources.black,
                   fontSize: Dimensions.fontSizeSmall
@@ -740,13 +740,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 color: ColorResources.black,
               ),
               onPressed: () async {
-                String commentText = commentC.text;
+                String commentText = feedDetailProviderV2.commentC.text;
                 if (commentText.trim().isEmpty) {
                   return;
                 }
                 commentFn.unfocus();
-                commentC.clear();
-                await context.read<FeedProvider>().sendComment(context, commentText, widget.postId);
+                feedDetailProviderV2.commentC.clear();
+                await feedDetailProviderV2.postComment(context, widget.postId);
               }
             ),
           ],
