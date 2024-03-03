@@ -10,6 +10,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/views/screens/feed/replies.dart';
 import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:saka/views/screens/feed/widgets/post_video.dart';
@@ -98,6 +99,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget post(BuildContext context) {
+    debugPrint("Post Id : ${widget.postId}");
+    debugPrint("Page : ${feedDetailProviderV2.pageKey}");
     return SliverToBoxAdapter(
       child: Consumer<FeedDetailProviderV2>(
         builder: (BuildContext context, FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
@@ -112,7 +115,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             );
           }
-          debugPrint(feedDetailProviderV2.feedDetailData.media!.length.toString());
+          debugPrint(feedDetailProviderV2.feedDetailData.forum!.media!.length.toString());
           return Container(
             margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
             child: Column(
@@ -122,7 +125,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ListTile(
                   dense: true,
                   leading: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlFeedImg}/${feedDetailProviderV2.feedDetailData.user?.avatar ?? "-"}",
+                  imageUrl: "${AppConstants.baseUrlFeedImg}/${feedDetailProviderV2.feedDetailData.forum!.user?.avatar ?? "-"}",
                     imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                       backgroundColor: Colors.transparent,
                       backgroundImage: imageProvider,
@@ -139,19 +142,19 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       radius: 20.0,
                     )
                   ),
-                  title: Text(feedDetailProviderV2.feedDetailData.user?.username ?? "-",
+                  title: Text(feedDetailProviderV2.feedDetailData.forum!.user?.username ?? "-",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       color: ColorResources.black
                     ),
                   ),
-                  subtitle: Text(feedDetailProviderV2.feedDetailData.createdAt!,
+                  subtitle: Text(feedDetailProviderV2.feedDetailData.forum!.createdAt!,
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeExtraSmall,
                       color: ColorResources.dimGrey
                     ),
                   ),
-                  trailing: context.read<ProfileProvider>().userProfile.userId == feedDetailProviderV2.feedDetailData.user?.id
+                  trailing: context.read<ProfileProvider>().userProfile.userId == feedDetailProviderV2.feedDetailData.forum!.user?.id
                   ? grantedDeletePost(context) 
                   :  PopupMenuButton(
                       itemBuilder: (BuildContext buildContext) { 
@@ -263,64 +266,61 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
                 const SizedBox(height: 5.0),
                 
-                PostText(feedDetailProviderV2.feedDetailData.caption ?? "-"),
-                if (feedDetailProviderV2.feedDetailData.type == "document")
-                  feedDetailProviderV2.feedDetailData.media!.isNotEmpty ? 
+                PostText(feedDetailProviderV2.feedDetailData.forum!.caption ?? "-"),
+                if (feedDetailProviderV2.feedDetailData.forum!.type == "document")
+                  feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
                   PostDoc(
-                    medias: feedDetailProviderV2.feedDetailData.media!, 
+                    medias: feedDetailProviderV2.feedDetailData.forum!.media!, 
                   ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-                if (feedDetailProviderV2.feedDetailData.type == "image")
-                  feedDetailProviderV2.feedDetailData.media!.isNotEmpty ? 
+                if (feedDetailProviderV2.feedDetailData.forum!.type == "image")
+                  feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
                 PostImage(
                   false,
-                  feedDetailProviderV2.feedDetailData.media!, 
+                  feedDetailProviderV2.feedDetailData.forum!.media!, 
                 ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-                if (feedDetailProviderV2.feedDetailData.type == "video")
-                  feedDetailProviderV2.feedDetailData.media!.isNotEmpty ? 
+                if (feedDetailProviderV2.feedDetailData.forum!.type == "video")
+                  feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
                   PostVideo(
-                    media: feedDetailProviderV2.feedDetailData.media![0].path,
+                    media: feedDetailProviderV2.feedDetailData.forum!.media![0].path,
                   ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
   
-                // Container(
-                //   margin: const EdgeInsets.only(top: Dimensions.marginSizeExtraSmall, left: Dimensions.marginSizeDefault, right: Dimensions.marginSizeDefault),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       SizedBox(
-                //         width: 40.0,
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             Text(feedProvider.post.body!.numOfLikes.toString(),
-                //               style: robotoRegular.copyWith(
-                //                 fontSize: Dimensions.fontSizeSmall
-                //               )
-                //             ),
-                //             InkWell(
-                //               onTap: () {
-                //                 feedProvider.like(context, feedProvider.post.body!.id!, "POST");
-                //               },
-                //               child: Container(
-                //                 padding: const EdgeInsets.all(5.0),
-                //                 child: Icon(Icons.thumb_up,
-                //                   size: 16.0,
-                //                   color: feedProvider.post.body!.liked!.isNotEmpty 
-                //                   ? Colors.blue 
-                //                   : ColorResources.black
-                //                 ),
-                //               ),
-                //             )
-                //           ],
-                //         ),
-                //       ),
-                //       Text('${feedProvider.post.body!.numOfComments.toString()} ${getTranslated("COMMENT", context)}',
-                //         style: robotoRegular.copyWith(
-                //           fontSize: Dimensions.fontSizeSmall
-                //         ),
-                //       ),
-                //     ]
-                //   )
-                // ),
+                Container(
+                  margin: const EdgeInsets.only(top: Dimensions.marginSizeExtraSmall, left: Dimensions.marginSizeDefault, right: Dimensions.marginSizeDefault),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 40.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("${feedDetailProviderV2.feedDetailData.forum!.like!.total}",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ),
+                            InkWell(
+                              onTap: () async => context.read<FeedDetailProviderV2>().toggleLike(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!)
+                              ,
+                              child: Container(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Icon(Icons.thumb_up,
+                                  size: 16.0,
+                                  color:  feedDetailProviderV2.feedDetailData.forum!.like!.likes.where((el) => el.user!.id ==  feedDetailProviderV2.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Text('${feedDetailProviderV2.feedDetailData.forum!.comment!.total} ${getTranslated("COMMENT", context)}',
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeSmall
+                        ),
+                      ),
+                    ]
+                  )
+                ),
 
               ]
             ),
@@ -333,7 +333,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Username  : ${feedDetailProviderV2.feedDetailData.user?.username}");
     return Scaffold(
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
@@ -388,7 +387,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   return const SizedBox(height: 8.0);
                 },
                 physics: const BouncingScrollPhysics(),
-                itemCount: feedDetailProviderV2.feedDetailData.comment!.comments.length,
+                itemCount: feedDetailProviderV2.feedDetailData.forum!.comment!.comments.length,
                 itemBuilder: (BuildContext context, int i) {
                   CommentElement comment = feedDetailProviderV2.comment[i];
                   // if (comment.comment == i) {
@@ -402,10 +401,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   return Column(
                     children: [
                     ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: ColorResources.transparent,
-                        backgroundImage: NetworkImage("${AppConstants.baseUrlImg}${comment.user.avatar}"),
-                        radius: 20.0,
+                      leading: CachedNetworkImage(
+                      imageUrl: "${AppConstants.baseUrlImg}${comment.user.avatar}",
+                        imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: imageProvider,
+                          radius: 20.0,
+                        ),
+                        placeholder: (BuildContext context, String url) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                          radius: 20.0,
+                        ),
+                        errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                          radius: 20.0,
+                        )
                       ),
                       title: Container(
                         padding: const EdgeInsets.all(8.0),
@@ -423,7 +435,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   fontSize: Dimensions.fontSizeDefault,
                                 ),
                               ),
-                              // Text(timeago.format(DateTime.parse(feedProvider.c1List[i].created!).toLocal(), locale: 'id'),
+                              // Text(comment.comment,
                               //   style: robotoRegular.copyWith(
                               //     fontSize: Dimensions.fontSizeExtraSmall,
                               //     color: ColorResources.dimGrey
@@ -434,9 +446,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // if (feedProvider.c1List[i].type == "STICKER")
-                                    //   commentSticker(context, feedProvider.c1List[i].content!),
-                                    // if (feedProvider.c1List[i].type == "TEXT")
                                       commentText(context, comment.comment)
                                   ],
                                 ),
@@ -445,7 +454,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           ),
                         ),
                         trailing: context.read<ProfileProvider>().userProfile.userId == comment.user.id 
-                        ? const SizedBox()
+                        ? grantedDeleteComment(context, comment.id)
                         : PopupMenuButton(
                           itemBuilder: (BuildContext buildContext) { 
                             return [
@@ -567,14 +576,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                                 ),
                                 InkWell(
-                                  onTap: () {
-                                    // feedProvider.like(context, feedProvider.c1List[i].id!, "COMMENT");
+                                  onTap: () async {
+                                    feedDetailProviderV2.toggleLikeComment(context: context, feedId: widget.postId, commentId: comment.id, feedLikes: comment.like);
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Icon(Icons.thumb_up,
                                       size: 16.0,
-                                      color: Colors.blue),
+                                      color: comment.like.likes.where((el) => el.user!.id == feedDetailProviderV2.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue),
                                   ),
                                 ),
                               ]
@@ -582,14 +591,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              // Navigator.push(context,
-                              //   MaterialPageRoute(
-                              //     builder: (BuildContext context) => RepliesScreen(
-                              //       id: feedProvider.c1List[i].id!,
-                              //       postId: widget.postId
-                              //     ),
-                              //   ),
-                              // );
+                              Navigator.push(context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => RepliesScreen(
+                                    id: comment.id,
+                                    postId: widget.postId
+                                  ),
+                                ),
+                              );
                             },
                             child: Container(
                               padding: const EdgeInsets.all(8.0),
@@ -606,15 +615,18 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   ]);
                 },
               ),
-              // onNotification: (ScrollNotification scrollInfo) {
-              //   if (scrollInfo.metrics.pixels ==
-              //       scrollInfo.metrics.maxScrollExtent) {
-              //     if (feedProvider.c1.nextCursor != null) {
-              //       feedProvider.fetchListCommentMostRecentLoad(context, widget.postId,feedProvider.c1.nextCursor!);
-              //     }
-              //   }
-              //   return false;
-              // },
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    debugPrint(feedDetailProviderV2.hasMore.toString());
+                    debugPrint("Hashmore Api : ${feedDetailProviderV2.feedDetailData.pageDetail!.hasMore.toString()}");
+                    if (feedDetailProviderV2.hasMore) {
+                      feedDetailProviderV2.loadMoreComment(context: context, postId: widget.postId);
+                    }
+                  }
+                }
+                return false;
+              },
             );
           },
         )      
@@ -740,12 +752,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 color: ColorResources.black,
               ),
               onPressed: () async {
-                String commentText = feedDetailProviderV2.commentC.text;
-                if (commentText.trim().isEmpty) {
-                  return;
-                }
-                commentFn.unfocus();
-                feedDetailProviderV2.commentC.clear();
                 await feedDetailProviderV2.postComment(context, widget.postId);
               }
             ),
@@ -815,7 +821,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<FeedProviderV2>().deletePost(context, feedDetailProviderV2.feedDetailData.id!);               
+                              await context.read<FeedProviderV2>().deletePost(context, feedDetailProviderV2.feedDetailData.forum!.id!);               
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {
@@ -845,5 +851,97 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       },
     );
   }
+
+  Widget grantedDeleteComment(context, String idComment) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext buildContext) { 
+        return [
+          PopupMenuItem(
+            child: Text(getTranslated("DELETE_POST", context),
+              style: robotoRegular.copyWith(
+                color: ColorResources.black,
+                fontSize: Dimensions.fontSizeSmall
+              )
+            ), 
+            value: "/delete-post"
+          )
+        ];
+      },
+      onSelected: (route) {
+        if(route == "/delete-post") {
+          showAnimatedDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                child: Container(
+                height: 150.0,
+                padding: const EdgeInsets.all(10.0),
+                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10.0),
+                    const Icon(
+                      Icons.delete,
+                      color: ColorResources.white,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(getTranslated("DELETE_POST", context),
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(getTranslated("NO", context),
+                            style: robotoRegular,
+                          )
+                        ), 
+                        StatefulBuilder(
+                          builder: (BuildContext context, Function s) {
+                          return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error
+                          ),
+                          onPressed: () async { 
+                          s(() => deletePostBtn = true);
+                            try {         
+                              await context.read<FeedDetailProviderV2>().deleteComment(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, deleteId: idComment);               
+                              s(() => deletePostBtn = false);
+                              Navigator.of(context).pop();             
+                            } catch(e) {
+                              s(() => deletePostBtn = false);
+                              debugPrint(e.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                          ? const Loader(
+                              color: ColorResources.white,
+                            )
+                          : Text(getTranslated("YES", context),
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            )
+                          );
+                        })
+                      ],
+                    ) 
+                  ])
+                )
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
 
 }

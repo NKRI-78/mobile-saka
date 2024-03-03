@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:saka/data/repository/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/providers/feedv2/feedReply.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saka/services/notification.dart';
@@ -103,6 +104,10 @@ Future<void> init() async {
     fr: getIt()
   ));
   getIt.registerFactory(() => FeedDetailProviderV2(
+    ar: getIt(), 
+    fr: getIt()
+  ));
+  getIt.registerFactory(() => FeedReplyProvider(
     ar: getIt(), 
     fr: getIt()
   ));

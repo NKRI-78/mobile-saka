@@ -42,7 +42,7 @@ class Forum {
     String? createdAt;
     User? user;
     ForumComment? comment;
-    CommentLike? like;
+    FeedLikes? like;
 
     Forum({
         this.id,
@@ -63,7 +63,7 @@ class Forum {
         createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
         comment: ForumComment.fromJson(json["comment"]),
-        like: CommentLike.fromJson(json["like"]),
+        like: FeedLikes.fromJson(json["like"]),
     );
 }
 
@@ -87,7 +87,7 @@ class CommentElement {
     String? comment;
     User? user;
     CommentReply? reply;
-    CommentLike? like;
+    FeedLikes? like;
 
     CommentElement({
         this.id,
@@ -102,35 +102,35 @@ class CommentElement {
         comment: json["comment"],
         user: User.fromJson(json["user"]),
         reply: CommentReply.fromJson(json["reply"]),
-        like: CommentLike.fromJson(json["like"]),
+        like: FeedLikes.fromJson(json["like"]),
     );
 }
 
-class CommentLike {
-    int? total;
-    List<LikeElement>? likes;
+class FeedLikes {
+    int total;
+    List<UserLikes> likes;
 
-    CommentLike({
-        this.total,
-        this.likes,
+    FeedLikes({
+        required this.total,
+    required this.likes,
     });
 
-    factory CommentLike.fromJson(Map<String, dynamic> json) => CommentLike(
+    factory FeedLikes.fromJson(Map<String, dynamic> json) => FeedLikes(
         total: json["total"],
-        likes: List<LikeElement>.from(json["likes"].map((x) => LikeElement.fromJson(x))),
+        likes: List<UserLikes>.from(json["likes"].map((x) => UserLikes.fromJson(x))),
     );
 }
 
-class LikeElement {
+class UserLikes {
     String? id;
     User? user;
 
-    LikeElement({
+    UserLikes({
         this.id,
         this.user,
     });
 
-    factory LikeElement.fromJson(Map<String, dynamic> json) => LikeElement(
+    factory UserLikes.fromJson(Map<String, dynamic> json) => UserLikes(
         id: json["id"],
         user: User.fromJson(json["user"]),
     );

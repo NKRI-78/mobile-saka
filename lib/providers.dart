@@ -8,6 +8,7 @@ import 'package:saka/providers/event/event.dart';
 import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/providers/feedv2/feedReply.dart';
 import 'package:saka/providers/firebase/firebase.dart';
 import 'package:saka/providers/inbox/inbox.dart';
 import 'package:saka/providers/localization/localization.dart';
@@ -39,6 +40,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<FeedProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedProviderV2>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedDetailProviderV2>()),
+  ChangeNotifierProvider(create: (_) => c.getIt<FeedReplyProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<NewsProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<LocationProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<InboxProvider>()),

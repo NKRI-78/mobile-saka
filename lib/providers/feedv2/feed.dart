@@ -29,7 +29,11 @@ class FeedProviderV2 with ChangeNotifier {
   });
 
   bool hasMore = true;
+  bool hasMore2 = true;
+  bool hasMore3 = true;
   int pageKey = 1;
+  int pageKey2 = 1;
+  int pageKey3 = 1;
 
   late TextEditingController postC;
 
@@ -92,6 +96,8 @@ class FeedProviderV2 with ChangeNotifier {
   Future<void> fetchFeedMostRecent(BuildContext context) async {
     setStateFeedRecentStatus(FeedRecentStatus.loading);
     pageKey = 1;
+    hasMore = true;
+
     try {
       FeedModel? g = await fr.fetchFeedMostRecent(context, pageKey, ar.getUserId().toString());
       _fd = g!.data!;
@@ -112,7 +118,9 @@ class FeedProviderV2 with ChangeNotifier {
   }
   Future<void> fetchFeedPopuler(BuildContext context) async {
     setStateFeedPopulerStatus(FeedPopulerStatus.loading);
-    pageKey = 1;
+    pageKey2 = 1;
+    hasMore2 = true;
+
     try {
       FeedModel? g = await fr.fetchFeedPopuler(context, pageKey, ar.getUserId().toString());
       _fd = g!.data!;
@@ -133,7 +141,9 @@ class FeedProviderV2 with ChangeNotifier {
   }
   Future<void> fetchFeedSelf(BuildContext context) async {
     setStateFeedSelfStatus(FeedSelfStatus.loading);
-    pageKey = 1;
+    pageKey3 = 1;
+    hasMore3 = true;
+
     try {
       FeedModel? g = await fr.fetchFeedSelf(context, pageKey, ar.getUserId().toString());
       _fd = g!.data!;
@@ -153,6 +163,35 @@ class FeedProviderV2 with ChangeNotifier {
     } catch (_) {
       setStateFeedSelfStatus(FeedSelfStatus.error);
     }
+  }
+
+  Future<void> loadMoreRecent({required BuildContext context}) async {
+    pageKey++;
+
+    FeedModel? g = await fr.fetchFeedMostRecent(context, pageKey, ar.getUserId().toString());
+
+    hasMore = g!.data!.pageDetail!.hasMore!;
+    _forum1.addAll(g.data!.forums!);
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  Future<void> loadMorePopuler({required BuildContext context}) async {
+    pageKey2++;
+
+    FeedModel? g = await fr.fetchFeedPopuler(context, pageKey2, ar.getUserId().toString());
+
+    hasMore2 = g!.data!.pageDetail!.hasMore!;
+    _forum2.addAll(g.data!.forums!);
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+  Future<void> loadMoreSelf({required BuildContext context}) async {
+    pageKey3++;
+
+    FeedModel? g = await fr.fetchFeedSelf(context, pageKey3, ar.getUserId().toString());
+
+    hasMore3 = g!.data!.pageDetail!.hasMore!;
+    _forum3.addAll(g.data!.forums!);
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> post(BuildContext context,String type, List<File> files) async {
@@ -339,7 +378,30 @@ class FeedProviderV2 with ChangeNotifier {
     });
   }
 
-  postComment(BuildContext context, String commentText, String postId) {}
+  Future<void> toggleLike(
+      {
+      required BuildContext context,
+      required String feedId, 
+      required FeedLikes feedLikes}) async {
+    try {
+      int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      if (idxLikes != -1) {
+        feedLikes.likes.removeAt(idxLikes);
+        feedLikes.total = feedLikes.total - 1;
+      } else {
+        feedLikes.likes.add(UserLikes(
+            user: User(
+            id: ar.getUserId().toString(),
+            avatar: "-",
+            username: "${ar.getUserfullname()}")));
+        feedLikes.total = feedLikes.total + 1;
+      }
+      await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());
+      Future.delayed(Duration.zero, () => notifyListeners());
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+    } catch (_) {}
+  }
 
   // Future<void> uploadPic(BuildContext context) async {
   //   pickedFile = [];

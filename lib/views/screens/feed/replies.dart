@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/providers/feedv2/feedReply.dart';
+import 'package:saka/views/screens/feed/widgets/post_text.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:saka/localization/language_constraints.dart';
@@ -38,6 +41,20 @@ class _RepliesScreenState extends State<RepliesScreen> {
   TextEditingController replyTextEditingController = TextEditingController();
   FocusNode replyFocusNode = FocusNode();
   bool isExpanded = false;
+  late FeedReplyProvider fdv2;
+
+  @override
+  void initState() {  
+    super.initState();
+    fdv2 = context.read<FeedReplyProvider>();
+    fdv2.commentC = TextEditingController();
+
+    Future.delayed(Duration.zero, () {
+      if(mounted) {
+        fdv2.getFeedReply(context: context, commentId: widget.id);
+      }
+    });
+  }
 
   Widget commentSticker(SingleCommentBody comment) {
     return CachedNetworkImage(
@@ -56,9 +73,9 @@ class _RepliesScreenState extends State<RepliesScreen> {
     );
   }
 
-  Widget commentText(SingleCommentBody comment) {
+  Widget commentText(String comment) {
     return ReadMoreText(
-      comment.content!.text!,
+      comment,
       trimLines: 2,
       colorClickableText: ColorResources.black,
       trimMode: TrimMode.Line,
@@ -86,9 +103,10 @@ class _RepliesScreenState extends State<RepliesScreen> {
 
   Widget comment(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Consumer<FeedProvider>(
-        builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-          if(feedProvider.singleCommentStatus == SingleCommentStatus.loading) {
+      child: Consumer<FeedReplyProvider>(
+        builder: (BuildContext context, FeedReplyProvider fdv2, Widget? child) {
+          debugPrint("Caption : ${fdv2.feedReplyData.comment!.user?.id ?? "-"}");
+          if(fdv2.feedReplyStatus == FeedReplyStatus.loading) {
             return const Center(
               child: SpinKitThreeBounce(
                 size: 20.0,
@@ -96,9 +114,18 @@ class _RepliesScreenState extends State<RepliesScreen> {
               ),
             );
           }
-          if(feedProvider.singleCommentStatus == SingleCommentStatus.empty) {
+          if(fdv2.feedReplyStatus == FeedReplyStatus.empty) {
             return Center(
               child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault
+                ),
+              )
+            );
+          }
+          if(fdv2.feedReplyStatus == FeedReplyStatus.error) {
+            return Center(
+              child: Text(getTranslated("THERE_WAS_PROBLEM", context),
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
@@ -109,21 +136,33 @@ class _RepliesScreenState extends State<RepliesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
             ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage("${AppConstants.baseUrlImg}${feedProvider.singleComment.body!.user!.profilePic!.path!}"),
-                radius: 20.0,
+              leading: CachedNetworkImage(
+              imageUrl: "${AppConstants.baseUrlImg}/${fdv2.feedReplyData.comment!.user?.avatar ?? "-"}",
+                imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: imageProvider,
+                  radius: 20.0,
+                ),
+                placeholder: (BuildContext context, String url) => const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                  radius: 20.0,
+                ),
+                errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                  radius: 20.0,
+                )
               ),
               title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(feedProvider.singleComment.body!.user!.nickname!,
+                  Text(fdv2.feedReplyData.comment!.user?.username ?? "-",
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                     ),
                   ),
-                  Text(
-                    timeago.format(DateTime.parse(feedProvider.singleComment.body!.created!).toLocal(), locale: 'id'),
+                  Text(fdv2.feedReplyData.comment!.createdAt!,
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeExtraSmall
                     ),
@@ -136,10 +175,10 @@ class _RepliesScreenState extends State<RepliesScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (feedProvider.singleComment.body!.type == "STICKER")
-                    commentSticker(feedProvider.singleComment.body!),
-                  if (feedProvider.singleComment.body!.type == "TEXT")
-                    commentText(feedProvider.singleComment.body!)
+                  // if (fdv2.singleComment.body!.type == "STICKER")
+                  //   commentSticker(fdv2.singleComment.body!),
+                  // if (fdv2.singleComment.body!.type == "TEXT")
+                  PostText(fdv2.feedReplyData.comment!.caption!)
                 ],
               )
             ),
@@ -155,27 +194,27 @@ class _RepliesScreenState extends State<RepliesScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(feedProvider.singleComment.body!.numOfLikes.toString(),
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall
-                            )
-                          ),
-                          InkWell(
-                            onTap: () =>  feedProvider.like(context, feedProvider.singleComment.body!.id!, "COMMENT"),
-                            child: Container(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Icon(Icons.thumb_up,
-                                size: 16.0,
-                                color: feedProvider.singleComment.body!.liked!.isNotEmpty ? Colors.blue : ColorResources.black,
-                              ),
-                            ),
-                          )
+                          // Text(fdv2.singleComment.body!.numOfLikes.toString(),
+                          //   style: robotoRegular.copyWith(
+                          //     fontSize: Dimensions.fontSizeSmall
+                          //   )
+                          // ),
+                          // InkWell(
+                          //   onTap: () =>  fdv2.like(context, fdv2.singleComment.body!.id!, "COMMENT"),
+                          //   child: Container(
+                          //     padding: const EdgeInsets.all(5.0),
+                          //     child: Icon(Icons.thumb_up,
+                          //       size: 16.0,
+                          //       color: fdv2.singleComment.body!.liked!.isNotEmpty ? Colors.blue : ColorResources.black,
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                     ),
-                    Text('${feedProvider.singleComment.body!.numOfReplies.toString()} ${getTranslated("REPLY", context)}',
-                      style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-                    ),
+                    // Text('${fdv2.singleComment.body!.numOfReplies.toString()} ${getTranslated("REPLY", context)}',
+                    //   style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                    // ),
                   ]
                 )
               ),
@@ -188,9 +227,6 @@ class _RepliesScreenState extends State<RepliesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
-    context.read<FeedProvider>().fetchComment(context, widget.id);
-    context.read<FeedProvider>().fetchAllReply(context, widget.id);
     
     return Scaffold(
       body: NestedScrollView(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:saka/data/models/feedv2/feed.dart';
@@ -55,7 +57,7 @@ class _PostsState extends State<Posts> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PostDetailScreen(
-        postId: widget.forum[widget.i].id!
+        postId: widget.forum[widget.i].id!,
       ))),
       child: Container(
         margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
@@ -257,25 +259,23 @@ class _PostsState extends State<Posts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Text(widget.forum[widget.i].numOfLikes.toString(), 
-                        //   style: robotoRegular.copyWith(
-                        //     color: ColorResources.black,
-                        //     fontSize: Dimensions.fontSizeSmall
-                        //   )
-                        // ),
-                        // InkWell(
-                        //   onTap: () => context.read<FeedProvider>().like(context, widget.forum[widget.i].id!, "POST"),
-                        //   child: Container(
-                        //     padding: const EdgeInsets.all(5.0),
-                        //     child: Icon(
-                        //       Icons.thumb_up,
-                        //       size: 16.0,
-                        //       color: widget.forum[widget.i].liked!.isNotEmpty 
-                        //       ? ColorResources.blue 
-                        //       : ColorResources.black
-                        //     ),
-                        //   ),
-                        // )
+                        Text('${widget.forum[widget.i].like!.total}', 
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ),
+                        InkWell(
+                          onTap: () async => context.read<FeedProviderV2>().toggleLike(context: context, feedId: widget.forum[widget.i].id!, feedLikes: widget.forum[widget.i].like!),
+                          child: Container(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 16.0,
+                              color: widget.forum[widget.i].like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

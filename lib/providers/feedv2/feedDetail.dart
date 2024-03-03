@@ -27,8 +27,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  ForumDetailData _feedDetailData = ForumDetailData();
-  ForumDetailData get feedDetailData => _feedDetailData;
+  FeedDetailData _feedDetailData = FeedDetailData();
+  FeedDetailData get feedDetailData => _feedDetailData;
 
   final List<CommentElement> _comment = [];
   List<CommentElement> get comment => [..._comment];
@@ -38,11 +38,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
     hasMore = true;
 
     try {
-      FeedDetailModel? fdm = await fr.fetchDetail(context, postId);
-      _feedDetailData = fdm!.data.forum;
+      FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, postId);
+      _feedDetailData = fdm!.data;
 
       _comment.clear();
-      _comment.addAll(fdm.data.forum.comment!.comments);
+      _comment.addAll(fdm.data.forum!.comment!.comments);
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
       if (comment.isEmpty) {
@@ -54,6 +54,16 @@ class FeedDetailProviderV2 with ChangeNotifier {
     } catch (_) {
       setStateFeedDetailStatus(FeedDetailStatus.error);
     }
+  }
+
+  Future<void> loadMoreComment({required BuildContext context, required String postId}) async {
+    pageKey++;
+
+    FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, postId);
+
+    hasMore = fdm!.data.pageDetail!.hasMore;
+    _comment.addAll(fdm.data.forum!.comment!.comments);
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> postComment(
@@ -68,11 +78,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
       await fr.postComment(context: context, feedId: feedId, comment: commentC.text, userId: ar.getUserId().toString());
 
-      FeedDetailModel? fdm = await fr.fetchDetail(context, feedId);
-      _feedDetailData = fdm!.data.forum;
+      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
+      _feedDetailData = fdm!.data;
 
       _comment.clear();
-      _comment.addAll(fdm.data.forum.comment!.comments);
+      _comment.addAll(fdm.data.forum!.comment!.comments);
 
       commentC.text = "";
 
@@ -83,6 +93,78 @@ class FeedDetailProviderV2 with ChangeNotifier {
     } catch (_) {
       setStateFeedDetailStatus(FeedDetailStatus.error);
     }
+  }
+
+  Future<void> toggleLike(
+      {
+      required BuildContext context,
+      required String feedId, 
+      required FeedLikes feedLikes}) async {
+    try {
+      int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      if (idxLikes != -1) {
+        feedLikes.likes.removeAt(idxLikes);
+        feedLikes.total = feedLikes.total - 1;
+      } else {
+        feedLikes.likes.add(UserLikes(
+            user: User(
+            id: ar.getUserId().toString(),
+            avatar: "-",
+            username: "${ar.getUserfullname()}")));
+        feedLikes.total = feedLikes.total + 1;
+      }
+      await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());
+      Future.delayed(Duration.zero, () => notifyListeners());
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+    } catch (_) {}
+  }
+
+  Future<void> toggleLikeComment(
+      {
+      required BuildContext context,
+      required String feedId, 
+      required String commentId, 
+      required FeedLikes feedLikes}) async {
+    try {
+      int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      if (idxLikes != -1) {
+        feedLikes.likes.removeAt(idxLikes);
+        feedLikes.total = feedLikes.total - 1;
+      } else {
+        feedLikes.likes.add(UserLikes(
+            user: User(
+            id: ar.getUserId().toString(),
+            avatar: "-",
+            username: "${ar.getUserfullname()}")));
+        feedLikes.total = feedLikes.total + 1;
+      }
+      await fr.toggleLikeComment(context: context, feedId: feedId, userId: ar.getUserId().toString(), commentId: commentId);
+      Future.delayed(Duration.zero, () => notifyListeners());
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+    } catch (_) {}
+  }
+
+  Future<void> deleteComment( 
+      {
+        required BuildContext context, 
+        required String feedId, 
+        required String deleteId
+      }) async {
+    try {
+      await fr.deleteComment(context, deleteId);
+
+      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
+      _feedDetailData = fdm!.data;
+
+      _comment.clear();
+      _comment.addAll(fdm.data.forum!.comment!.comments);
+      
+      setStateFeedDetailStatus(FeedDetailStatus.loaded);
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+    } catch (_) {}
   }
   
 }

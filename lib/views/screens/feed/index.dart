@@ -18,8 +18,6 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
-import 'package:saka/providers/feed/feed.dart';
-
 class FeedIndex extends StatefulWidget {
   const FeedIndex({Key? key}) : super(key: key);
 
@@ -154,12 +152,15 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   }
                 ),
               ),
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  // if (feedProvider.g1.nextCursor != null) {
-                  //   feedProvider.fetchGroupsMostRecentLoad(context, feedProvider.g1.nextCursor!);
-                  //   feedProvider.g1.nextCursor = null;
-                  // }
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    debugPrint(feedProviderv2.hasMore.toString());
+                    debugPrint("Hashmore Api : ${feedProviderv2.fd.pageDetail!.hasMore.toString()}");
+                    if (feedProviderv2.hasMore) {
+                      feedProviderv2.loadMoreRecent(context: context);
+                    }
+                  }
                 }
                 return false;
               },
@@ -180,6 +181,11 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
             if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
+              );
+            }
+            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.error) {
+              return Center(
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
               );
             }
             return NotificationListener<ScrollNotification>(
@@ -214,12 +220,15 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   }
                 ),
               ),
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  // if (feedProvider.g2.nextCursor != null) {
-                  //   feedProvider.fetchGroupsMostPopularLoad(context, feedProvider.g2.nextCursor!);
-                  //   feedProvider.g2.nextCursor = null;
-                  // }
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    debugPrint(feedProviderv2.hasMore.toString());
+                    debugPrint("Hashmore Api : ${feedProviderv2.fd.pageDetail!.hasMore.toString()}");
+                    if (feedProviderv2.hasMore2) {
+                      feedProviderv2.loadMorePopuler(context: context);
+                    }
+                  }
                 }
                 return false;
               },
@@ -240,6 +249,11 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
             if (feedProviderv2.feedSelfStatus == FeedSelfStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
+              );
+            }
+            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.error) {
+              return Center(
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
               );
             }
             return NotificationListener<ScrollNotification>(
@@ -272,12 +286,13 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   }
                 ),
               ),
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  // if (feedProvider.g3.nextCursor != null) {
-                  //   feedProvider.fetchGroupsSelfLoad(context, feedProvider.g3.nextCursor!);
-                  //   feedProvider.g3.nextCursor = null;
-                  // }
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    if (feedProviderv2.hasMore3) {
+                      feedProviderv2.loadMoreSelf(context: context);
+                    }
+                  }
                 }
                 return false;
               },

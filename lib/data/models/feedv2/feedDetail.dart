@@ -2,7 +2,7 @@ class FeedDetailModel {
     int status;
     bool error;
     String message;
-    Data data;
+    FeedDetailData data;
 
     FeedDetailModel({
         required this.status,
@@ -15,26 +15,26 @@ class FeedDetailModel {
         status: json["status"],
         error: json["error"],
         message: json["message"],
-        data: Data.fromJson(json["data"]),
+        data: FeedDetailData.fromJson(json["data"]),
     );
 }
 
-class Data {
-    PageDetail pageDetail;
-    ForumDetailData forum;
+class FeedDetailData {
+    PageDetail? pageDetail;
+    Forum? forum;
 
-    Data({
-        required this.pageDetail,
-        required this.forum,
+    FeedDetailData({
+        this.pageDetail,
+        this.forum,
     });
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
+    factory FeedDetailData.fromJson(Map<String, dynamic> json) => FeedDetailData(
         pageDetail: PageDetail.fromJson(json["page_detail"]),
-        forum: ForumDetailData.fromJson(json["forum"]),
+        forum: Forum.fromJson(json["forum"]),
     );
 }
 
-class ForumDetailData {
+class Forum {
     String? id;
     List<Media>? media;
     String? caption;
@@ -42,9 +42,9 @@ class ForumDetailData {
     String? createdAt;
     User? user;
     ForumComment? comment;
-    CommentLike? like;
+    FeedLikes? like;
 
-    ForumDetailData({
+    Forum({
         this.id,
         this.media,
         this.caption,
@@ -55,7 +55,7 @@ class ForumDetailData {
         this.like,
     });
 
-    factory ForumDetailData.fromJson(Map<String, dynamic> json) => ForumDetailData(
+    factory Forum.fromJson(Map<String, dynamic> json) => Forum(
         id: json["id"],
         media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
         caption: json["caption"],
@@ -63,7 +63,7 @@ class ForumDetailData {
         createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
         comment: ForumComment.fromJson(json["comment"]),
-        like: CommentLike.fromJson(json["like"]),
+        like: FeedLikes.fromJson(json["like"]),
     );
 }
 
@@ -87,7 +87,7 @@ class CommentElement {
     String comment;
     User user;
     CommentReply reply;
-    CommentLike like;
+    FeedLikes like;
 
     CommentElement({
         required this.id,
@@ -102,35 +102,35 @@ class CommentElement {
         comment: json["comment"],
         user: User.fromJson(json["user"]),
         reply: CommentReply.fromJson(json["reply"]),
-        like: CommentLike.fromJson(json["like"]),
+        like: FeedLikes.fromJson(json["like"]),
     );
 }
 
-class CommentLike {
+class FeedLikes {
     int total;
-    List<LikeElement> likes;
+    List<UserLikes> likes;
 
-    CommentLike({
+    FeedLikes({
         required this.total,
         required this.likes,
     });
 
-    factory CommentLike.fromJson(Map<String, dynamic> json) => CommentLike(
+    factory FeedLikes.fromJson(Map<String, dynamic> json) => FeedLikes(
         total: json["total"],
-        likes: List<LikeElement>.from(json["likes"].map((x) => LikeElement.fromJson(x))),
+        likes: List<UserLikes>.from(json["likes"].map((x) => UserLikes.fromJson(x))),
     );
 }
 
-class LikeElement {
-    String id;
-    User user;
+class UserLikes {
+    String? id;
+    User? user;
 
-    LikeElement({
-        required this.id,
-        required this.user,
+    UserLikes({
+        this.id,
+        this.user,
     });
 
-    factory LikeElement.fromJson(Map<String, dynamic> json) => LikeElement(
+    factory UserLikes.fromJson(Map<String, dynamic> json) => UserLikes(
         id: json["id"],
         user: User.fromJson(json["user"]),
     );
