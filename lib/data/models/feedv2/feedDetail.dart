@@ -37,6 +37,7 @@ class FeedDetailData {
 class Forum {
     String? id;
     List<Media>? media;
+    String? link;
     String? caption;
     String? type;
     String? createdAt;
@@ -47,6 +48,7 @@ class Forum {
     Forum({
         this.id,
         this.media,
+        this.link,
         this.caption,
         this.type,
         this.createdAt,
@@ -58,6 +60,7 @@ class Forum {
     factory Forum.fromJson(Map<String, dynamic> json) => Forum(
         id: json["id"],
         media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
+        link: json["link"],
         caption: json["caption"],
         type: json["type"],
         createdAt: json["created_at"],
@@ -85,6 +88,7 @@ class ForumComment {
 class CommentElement {
     String id;
     String comment;
+    String createdAt;
     User user;
     CommentReply reply;
     FeedLikes like;
@@ -92,6 +96,7 @@ class CommentElement {
     CommentElement({
         required this.id,
         required this.comment,
+        required this.createdAt,
         required this.user,
         required this.reply,
         required this.like,
@@ -100,6 +105,7 @@ class CommentElement {
     factory CommentElement.fromJson(Map<String, dynamic> json) => CommentElement(
         id: json["id"],
         comment: json["comment"],
+        createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
         reply: CommentReply.fromJson(json["reply"]),
         like: FeedLikes.fromJson(json["like"]),

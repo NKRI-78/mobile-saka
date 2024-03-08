@@ -7,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 
 import 'package:saka/services/navigation.dart';
+import 'package:saka/views/screens/feed/post_detail.dart';
 
 import 'package:saka/views/screens/feed/widgets/input_post.dart';
 import 'package:saka/views/screens/feed/notification.dart';
@@ -145,9 +146,16 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                         ),
                       );
                     }
-                    return Posts(
-                      i: i,
-                      forum: feedProviderV2.forum1,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
+                          feedProviderV2.fetchFeedMostRecent(context);
+                        }));
+                      },
+                      child: Posts(
+                        i: i,
+                        forum: feedProviderV2.forum1,
+                      ),
                     );
                   }
                 ),
@@ -158,6 +166,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     debugPrint(feedProviderv2.hasMore.toString());
                     debugPrint("Hashmore Api : ${feedProviderv2.fd.pageDetail!.hasMore.toString()}");
                     if (feedProviderv2.hasMore) {
+                      debugPrint("hit");
                       feedProviderv2.loadMoreRecent(context: context);
                     }
                   }
@@ -213,9 +222,16 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                         ),
                       );
                     }
-                    return Posts(
-                      i: i,
-                      forum: feedProviderv2.forum2,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
+                          feedProviderV2.fetchFeedPopuler(context);
+                        }));
+                      },
+                      child: Posts(
+                        i: i,
+                        forum: feedProviderv2.forum2,
+                      ),
                     );
                   }
                 ),
@@ -279,9 +295,16 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                         color: ColorResources.primaryOrange,
                       );
                     }
-                    return Posts(
-                      i: i,
-                      forum: feedProviderv2.forum3,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
+                          feedProviderV2.fetchFeedSelf(context);
+                        }));
+                      },
+                      child: Posts(
+                        i: i,
+                        forum: feedProviderv2.forum3,
+                      ),
                     );
                   }
                 ),

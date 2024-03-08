@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,7 +21,6 @@ import 'package:saka/views/basewidgets/preview/preview.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 

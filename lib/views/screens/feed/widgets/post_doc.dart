@@ -4,6 +4,7 @@ import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as b;
 import 'package:dio/dio.dart';
+import 'package:saka/utils/download_util.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -155,29 +156,8 @@ class _PostDocState extends State<PostDoc> {
                                         ),
                                         ElevatedButton(
                                           onPressed: () async {
-                                            ProgressDialog pr = ProgressDialog(context: context);
-                                            try {
-                                              Dio dio = Dio();
-                                              PermissionStatus status = await Permission.storage.request();
-                                              if(!status.isGranted) {
-                                                await Permission.storage.request();
-                                              } 
-                                              Directory documentsIos = await getApplicationDocumentsDirectory();
-                                              String? saveDir = Platform.isIOS ? documentsIos.path : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-                                              String url = '${AppConstants.baseUrlImg}${widget.medias[0].path}'; 
-                                              pr.show(
-                                                max: 2,
-                                                msg: getTranslated("PLEASE_WAIT", context),
-                                                progressBgColor: Colors.blue
-                                              );
-                                              await dio.download(url, "$saveDir/${b.basename(widget.medias[0].path!)}");  
-                                              pr.close();
-                                              ShowSnackbar.snackbar(context,"${getTranslated("DOCUMENT_SAVED", context)} $saveDir", "", ColorResources.success);
-                                              Navigator.of(context, rootNavigator: true).pop();
-                                            } catch(e) {
-                                              pr.close();
-                                              ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
-                                            }
+                                            await DownloadHelper.downloadDoc(context: context, url: "${AppConstants.baseUrlFeedMedia}${widget.medias[0].path}");
+                                            Navigator.of(context, rootNavigator: true).pop();
                                           },
                                           child: Text(getTranslated("YES", context),
                                             style: robotoRegular.copyWith(

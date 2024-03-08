@@ -1,22 +1,15 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:crypto/crypto.dart';
-import 'package:hex/hex.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
-import 'package:saka/container.dart';
 
-import 'package:saka/data/repository/feed/feed.dart';
 
 import 'package:saka/providers/feedv2/feed.dart';
 
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
 
 import 'package:saka/utils/dimensions.dart';

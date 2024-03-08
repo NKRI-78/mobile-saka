@@ -7,7 +7,6 @@ import 'package:crypto/crypto.dart';
 import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hex/hex.dart';
@@ -90,8 +89,6 @@ class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScree
                       children: [
                         InkWell(
                           onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                            String caption = fdv2.postC.text;
-                            
                             fdv2.setStateWritePost(WritePostStatus.loading);
                             String? body = await getIt<FeedRepo>().getMediaKey(context);
                             Uint8List bytes = file.readAsBytesSync();

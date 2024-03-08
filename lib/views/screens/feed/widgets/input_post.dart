@@ -228,7 +228,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
                     Consumer<ProfileProvider>(
                       builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                         return CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlImg}${profileProvider.userProfile.profilePic}",
+                        imageUrl: "${AppConstants.baseUrlFeedImg}/${profileProvider.userProfile.profilePic}",
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,

@@ -9,7 +9,6 @@ import 'package:hex/hex.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
-import 'package:saka/services/navigation.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/container.dart';
@@ -19,10 +18,8 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
 
-import 'package:saka/views/screens/dashboard/dashboard.dart';
 
 class CreatePostVideoScreen extends StatefulWidget {
   final Uint8List? thumbnail;

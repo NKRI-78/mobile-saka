@@ -4,7 +4,7 @@ import 'package:timeago/src/messages/lookupmessages.dart';
 import 'package:saka/data/models/language/language.dart';
 
 class AppConstants {
-  static const String baseUrl = 'https://api-saka.connexist.id';
+  static const String baseUrl = 'https://saka.inovatif78.com';
   static const String baseUrlDisbursementDenom = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/denom';
   static const String baseUrlEcommerceDeliveryTimeslots = '$switchToBaseUrl/commerce-saka/pub/v1/ninja/deliveryTimeSlots';
   static const String baseUrlDisbursementBank = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/bank';

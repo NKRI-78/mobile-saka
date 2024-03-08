@@ -154,7 +154,6 @@ class FeedProviderV2 with ChangeNotifier {
       debugPrint("Jumlah forum : ${_forum3.length}");
 
       if (_forum3.isEmpty) {
-        debugPrint("Kosong");
         setStateFeedSelfStatus(FeedSelfStatus.empty);
       }
     } on CustomException catch (e) {
@@ -198,9 +197,11 @@ class FeedProviderV2 with ChangeNotifier {
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
+      setStateWritePost(WritePostStatus.loaded);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
     if(postC.text.trim().length > 1000) {
+      setStateWritePost(WritePostStatus.loaded);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
@@ -215,6 +216,7 @@ class FeedProviderV2 with ChangeNotifier {
         feedType: type, 
         media: 'hello.jpg', 
         caption: postC.text, 
+        link: '', 
       );
     }
 
@@ -225,7 +227,8 @@ class FeedProviderV2 with ChangeNotifier {
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: 'hello.jpg', 
+        media: 'hello.jpg',
+        link: '', 
         caption: postC.text, 
       );
       for (File p in files) {
@@ -249,9 +252,11 @@ class FeedProviderV2 with ChangeNotifier {
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
+      setStateWritePost(WritePostStatus.loaded);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
     if(postC.text.trim().length > 1000) {
+      setStateWritePost(WritePostStatus.loaded);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
@@ -264,7 +269,8 @@ class FeedProviderV2 with ChangeNotifier {
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: 'hello.jpg', 
+        media: 'hello.jpg',
+        link: '', 
         caption: postC.text, 
       );
     }
@@ -277,6 +283,7 @@ class FeedProviderV2 with ChangeNotifier {
         userId: ar.getUserId().toString(), 
         feedType: type, 
         media: 'hello.jpg', 
+        link: '',
         caption: postC.text, 
       );
       Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(files.path));
@@ -300,9 +307,11 @@ class FeedProviderV2 with ChangeNotifier {
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
+      setStateWritePost(WritePostStatus.loaded);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
     if(postC.text.trim().length > 1000) {
+      setStateWritePost(WritePostStatus.loaded);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
@@ -315,6 +324,7 @@ class FeedProviderV2 with ChangeNotifier {
         userId: ar.getUserId().toString(), 
         feedType: type, 
         media: 'hello.jpg', 
+        link: '',
         caption: postC.text, 
       );
       Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: files);
@@ -332,14 +342,77 @@ class FeedProviderV2 with ChangeNotifier {
       fetchFeedPopuler(context);
     });
   }
+  Future<void> postLink(BuildContext context,String type, String link) async {
+    setStateWritePost(WritePostStatus.loading);
+    String feedId = const Uuid().v4();
+    
+    if (postC.text.trim().isEmpty) {
+      setStateWritePost(WritePostStatus.loaded);
+      return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+    }
+    if(postC.text.trim().length > 1000) {
+      setStateWritePost(WritePostStatus.loaded);
+      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      return;
+    }
+
+    if(postC.text.trim().isNotEmpty) {
+      if(postC.text.trim().length < 10) {
+        setStateWritePost(WritePostStatus.loaded);
+        ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
+        return;
+      }
+    } 
+    if(postC.text.trim().length > 1000) {
+      setStateWritePost(WritePostStatus.loaded);
+      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      return;
+    }
+    if(link.trim().isEmpty) {
+      setStateWritePost(WritePostStatus.loaded);
+      ShowSnackbar.snackbar(context, getTranslated("URL_IS_REQUIRED", context), "", ColorResources.error);
+      return;
+    } 
+    bool validURL = Uri.parse(link.trim()).isAbsolute;
+    if(!validURL) {
+      setStateWritePost(WritePostStatus.loaded);
+      ShowSnackbar.snackbar(context, getTranslated("URL_FORMAT", context), "", ColorResources.error);
+      return;
+    }
+
+    if (feedType == "link") {
+      await fr.post(
+        context: context, 
+        feedId: feedId,
+        appName: 'saka', 
+        userId: ar.getUserId().toString(), 
+        feedType: type, 
+        media: 'hello.jpg',
+        link: link, 
+        caption: postC.text, 
+      );
+    }
+
+    Future.delayed(Duration.zero, () {
+      NS.pop(context);
+    });
+    setStateWritePost(WritePostStatus.loaded);
+    Future.delayed(Duration.zero, () {
+      fetchFeedSelf(context);
+      fetchFeedMostRecent(context);
+      fetchFeedPopuler(context);
+    });
+  }
   Future<void> postVDoc(BuildContext context, String caption ,String type, File files) async {
     setStateWritePost(WritePostStatus.loading);
     String feedId = const Uuid().v4();
     
     if (caption.trim().isEmpty) {
+      setStateWritePost(WritePostStatus.loaded);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
     if(caption.trim().length > 1000) {
+      setStateWritePost(WritePostStatus.loaded);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
@@ -351,6 +424,7 @@ class FeedProviderV2 with ChangeNotifier {
       userId: ar.getUserId().toString(), 
       feedType: type, 
       media: 'hello.jpg', 
+      link: '',
       caption: caption, 
     );
     Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: files);

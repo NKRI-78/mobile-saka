@@ -28,7 +28,6 @@ class _PostTextState extends State<PostText> {
   
   Widget buildUI() {
     return Container(
-      margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
       width: 250.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -10,11 +10,12 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/utils/date_util.dart';
 import 'package:saka/views/screens/feed/replies.dart';
 import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
+import 'package:saka/views/screens/feed/widgets/post_link.dart';
 import 'package:saka/views/screens/feed/widgets/post_video.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 
 import 'package:saka/services/navigation.dart';
@@ -99,8 +100,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget post(BuildContext context) {
-    debugPrint("Post Id : ${widget.postId}");
-    debugPrint("Page : ${feedDetailProviderV2.pageKey}");
     return SliverToBoxAdapter(
       child: Consumer<FeedDetailProviderV2>(
         builder: (BuildContext context, FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
@@ -115,7 +114,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             );
           }
-          debugPrint(feedDetailProviderV2.feedDetailData.forum!.media!.length.toString());
           return Container(
             margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
             child: Column(
@@ -148,7 +146,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       color: ColorResources.black
                     ),
                   ),
-                  subtitle: Text(feedDetailProviderV2.feedDetailData.forum!.createdAt!,
+                  subtitle: Text(DateHelper.formatDateTime(feedDetailProviderV2.feedDetailData.forum!.createdAt!, context),
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeExtraSmall,
                       color: ColorResources.dimGrey
@@ -263,10 +261,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     },
                   )
                 ),
-
+          
                 const SizedBox(height: 5.0),
                 
-                PostText(feedDetailProviderV2.feedDetailData.forum!.caption ?? "-"),
+                Container(
+                  margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
+                  child: PostText(feedDetailProviderV2.feedDetailData.forum!.caption ?? "-")
+                ),
+                if(feedDetailProviderV2.feedDetailData.forum!.type == "link")
+                  PostLink(url: feedDetailProviderV2.feedDetailData.forum!.link ?? "-"),
                 if (feedDetailProviderV2.feedDetailData.forum!.type == "document")
                   feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
                   PostDoc(
@@ -283,7 +286,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   PostVideo(
                     media: feedDetailProviderV2.feedDetailData.forum!.media![0].path,
                   ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-  
+            
                 Container(
                   margin: const EdgeInsets.only(top: Dimensions.marginSizeExtraSmall, left: Dimensions.marginSizeDefault, right: Dimensions.marginSizeDefault),
                   child: Row(
@@ -321,7 +324,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     ]
                   )
                 ),
-
+          
               ]
             ),
           );
@@ -381,252 +384,265 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 )
               );
             }
-            return NotificationListener<ScrollNotification>(
-              child: ListView.separated(
-                separatorBuilder: (BuildContext context, int i) {
-                  return const SizedBox(height: 8.0);
-                },
-                physics: const BouncingScrollPhysics(),
-                itemCount: feedDetailProviderV2.feedDetailData.forum!.comment!.comments.length,
-                itemBuilder: (BuildContext context, int i) {
-                  CommentElement comment = feedDetailProviderV2.comment[i];
-                  // if (comment.comment == i) {
-                  //   return const Center(
-                  //     child: SpinKitThreeBounce(
-                  //       size: 20.0,
-                  //       color: ColorResources.primaryOrange
-                  //     )
-                  //   );
-                  // }
-                  return Column(
-                    children: [
-                    ListTile(
-                      leading: CachedNetworkImage(
-                      imageUrl: "${AppConstants.baseUrlImg}${comment.user.avatar}",
-                        imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: imageProvider,
-                          radius: 20.0,
-                        ),
-                        placeholder: (BuildContext context, String url) => const CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                          radius: 20.0,
-                        ),
-                        errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                          radius: 20.0,
-                        )
-                      ),
-                      title: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: const BoxDecoration(
-                          color: ColorResources.blueGrey,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0)
-                          )
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(comment.user.username,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                ),
-                              ),
-                              // Text(comment.comment,
-                              //   style: robotoRegular.copyWith(
-                              //     fontSize: Dimensions.fontSizeExtraSmall,
-                              //     color: ColorResources.dimGrey
-                              //   ),
-                              // ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 5.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                      commentText(context, comment.comment)
-                                  ],
-                                ),
-                              ),
-                            ]
-                          ),
-                        ),
-                        trailing: context.read<ProfileProvider>().userProfile.userId == comment.user.id 
-                        ? grantedDeleteComment(context, comment.id)
-                        : PopupMenuButton(
-                          itemBuilder: (BuildContext buildContext) { 
-                            return [
-                              PopupMenuItem(
-                                child: Text("block user",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.error,
-                                    fontSize: Dimensions.fontSizeSmall
-                                  )
-                                ), 
-                                value: "/report-user"
-                              ),
-                              PopupMenuItem(
-                                child: Text("It's spam",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.error,
-                                    fontSize: Dimensions.fontSizeSmall
-                                  )
-                                ), 
-                                value: "/report-user"
-                              ),
-                              PopupMenuItem(
-                                child: Text("Nudity or sexual activity",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.error,
-                                    fontSize: Dimensions.fontSizeSmall
-                                  )
-                                ), 
-                                value: "/report-user"
-                              ),
-                              PopupMenuItem(
-                                child: Text("False Information",
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.error,
-                                    fontSize: Dimensions.fontSizeSmall
-                                  )
-                                ), 
-                                value: "/report-user"
-                              )
-                            ];
-                          },
-                          onSelected: (route) {
-                            if(route == "/report-user") {
-                              showAnimatedDialog(
-                                context: context,
-                                builder: (context) {
-                                  return Dialog(
-                                    child: Container(
-                                    height: 150.0,
-                                    padding: const EdgeInsets.all(10.0),
-                                    margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(height: 10.0),
-                                        const Icon(Icons.delete,
-                                          color: ColorResources.black,
-                                        ),
-                                        const SizedBox(height: 10.0),
-                                        Text(getTranslated("ARE_YOU_SURE_REPORT", context),
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            fontWeight: FontWeight.w600
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10.0),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () => Navigator.of(context).pop(),
-                                              child: Text(getTranslated("NO", context),
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeSmall
-                                                )
-                                              )
-                                            ), 
-                                            StatefulBuilder(
-                                              builder: (BuildContext context, Function s) {
-                                              return ElevatedButton(
-                                              style: ButtonStyle(
-                                                backgroundColor: MaterialStateProperty.all(
-                                                  ColorResources.error
-                                                ),
-                                              ),
-                                              onPressed: () async { 
-                                                Navigator.of(context, rootNavigator: true).pop(); 
-                                              },
-                                              child: Text(getTranslated("YES", context), 
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeSmall
-                                                ),
-                                              ),                           
-                                            );
-                                          })
-                                        ],
-                                      ) 
-                                    ])
-                                  )
-                                );
-                              },
-                            );
-                          }
-                        },
-                      )
-                    ),
-                    SizedBox(
-                      width: 150.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: 50.0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(comment.like.total.toString(),
-                                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    feedDetailProviderV2.toggleLikeComment(context: context, feedId: widget.postId, commentId: comment.id, feedLikes: comment.like);
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Icon(Icons.thumb_up,
-                                      size: 16.0,
-                                      color: comment.like.likes.where((el) => el.user!.id == feedDetailProviderV2.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue),
-                                  ),
-                                ),
-                              ]
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => RepliesScreen(
-                                    id: comment.id,
-                                    postId: widget.postId
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('${getTranslated("REPLY",context)} (${comment.reply.total})',
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall,
-                                fontStyle: FontStyle.italic)
-                              ),
-                            )
-                          ),
-                        ]
-                      ),
-                    )
-                  ]);
-                },
-              ),
-              onNotification: (ScrollNotification notification) {
-                if (notification is ScrollEndNotification) {
+            return RefreshIndicator(
+              onRefresh: () {
+              return Future.sync(() {
+                  feedDetailProviderV2.getFeedDetail(context, widget.postId);
+                });
+              },
+              child: NotificationListener(
+                onNotification: (notification) {
+                  if (notification is ScrollEndNotification) {
                   if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    debugPrint(feedDetailProviderV2.hasMore.toString());
-                    debugPrint("Hashmore Api : ${feedDetailProviderV2.feedDetailData.pageDetail!.hasMore.toString()}");
                     if (feedDetailProviderV2.hasMore) {
                       feedDetailProviderV2.loadMoreComment(context: context, postId: widget.postId);
                     }
                   }
                 }
                 return false;
-              },
+                },
+                child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int i) {
+                    return const SizedBox(height: 8.0);
+                  },
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: feedDetailProviderV2.comments.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    CommentElement comment = feedDetailProviderV2.comments[i];
+                    // if (comment.comment.length == i) {
+                    //   return const Center(
+                    //     child: SpinKitThreeBounce(
+                    //       size: 20.0,
+                    //       color: ColorResources.primaryOrange
+                    //     )
+                    //   );
+                    // }
+                    return Column(
+                      children: [
+                      ListTile(
+                        leading: CachedNetworkImage(
+                        imageUrl: "${AppConstants.baseUrlFeedImg}/${comment.user.avatar}",
+                          imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: imageProvider,
+                            radius: 20.0,
+                          ),
+                          placeholder: (BuildContext context, String url) => const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                            radius: 20.0,
+                          ),
+                          errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                            radius: 20.0,
+                          )
+                        ),
+                        title: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            color: ColorResources.blueGrey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0)
+                            )
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(comment.user.username,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                  ),
+                                ),
+                                Text(DateHelper.formatDateTime(comment.createdAt, context),
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    color: ColorResources.dimGrey
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 5.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                        commentText(context, comment.comment)
+                                    ],
+                                  ),
+                                ),
+                              ]
+                            ),
+                          ),
+                          trailing: context.read<ProfileProvider>().userProfile.userId == comment.user.id 
+                          ? grantedDeleteComment(context, comment.id)
+                          : PopupMenuButton(
+                            itemBuilder: (BuildContext buildContext) { 
+                              return [
+                                PopupMenuItem(
+                                  child: Text("block user",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                ),
+                                PopupMenuItem(
+                                  child: Text("It's spam",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                ),
+                                PopupMenuItem(
+                                  child: Text("Nudity or sexual activity",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                ),
+                                PopupMenuItem(
+                                  child: Text("False Information",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                )
+                              ];
+                            },
+                            onSelected: (route) {
+                              if(route == "/report-user") {
+                                showAnimatedDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: Container(
+                                      height: 150.0,
+                                      padding: const EdgeInsets.all(10.0),
+                                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(height: 10.0),
+                                          const Icon(Icons.delete,
+                                            color: ColorResources.black,
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall,
+                                              fontWeight: FontWeight.w600
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: Text(getTranslated("NO", context),
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeSmall
+                                                  )
+                                                )
+                                              ), 
+                                              StatefulBuilder(
+                                                builder: (BuildContext context, Function s) {
+                                                return ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all(
+                                                    ColorResources.error
+                                                  ),
+                                                ),
+                                                onPressed: () async { 
+                                                  Navigator.of(context, rootNavigator: true).pop(); 
+                                                },
+                                                child: Text(getTranslated("YES", context), 
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeSmall
+                                                  ),
+                                                ),                           
+                                              );
+                                            })
+                                          ],
+                                        ) 
+                                      ])
+                                    )
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        )
+                      
+                      ),
+                      SizedBox(
+                        width: 150.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                              width: 50.0,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(comment.like.total.toString(),
+                                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      feedDetailProviderV2.toggleLikeComment(
+                                        context: context, 
+                                        feedId: widget.postId, 
+                                        commentId: comment.id, 
+                                        feedLikes: comment.like
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Icon(Icons.thumb_up,
+                                        size: 16.0,
+                                        color: comment.like.likes.where(
+                                          (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
+                                        ).isEmpty ? ColorResources.black : ColorResources.blue),
+                                    ),
+                                  ),
+                                ]
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context, NS.fromLeft(RepliesScreen(
+                                  id: comment.id,
+                                  postId: widget.postId,
+                                  index: i,
+                                ))).then((_) => setState(() {
+                                  feedDetailProviderV2.getFeedDetail(context, widget.postId);
+                                }));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('${getTranslated("REPLY",context)} (${comment.reply.total})',
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  fontStyle: FontStyle.italic)
+                                ),
+                              )
+                            ),
+                          ]
+                        ),
+                      )
+                    ]);
+                  
+                  },
+                ),
+              ),
             );
           },
         )      
@@ -641,94 +657,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             const SizedBox(width: 16.0),
-            Material(
-              color: ColorResources.white,
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 1.0),
-                child: IconButton(
-                  color: ColorResources.black,
-                  icon: const Icon(Icons.face),
-                  onPressed: () {
-                    showCupertinoModalBottomSheet(
-                      expand: true,
-                      context: context,
-                      backgroundColor: ColorResources.transparent,
-                      builder: (context) => Scaffold(
-                       body: SingleChildScrollView(
-                        child: Consumer<FeedProvider>(
-                          builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-                            if (feedProvider.stickerStatus == StickerStatus.loading) {
-                              return const Center(
-                                child: SizedBox(
-                                  width: 15.0,
-                                  height: 15.0,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryOrange)
-                                  )
-                                )
-                              );
-                            }
-                            if (feedProvider.stickerStatus == StickerStatus.empty) {
-                              return Center(
-                                child: Text(getTranslated("THERE_IS_NO_STICKER", context),
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall
-                                ),
-                              ));
-                            }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: feedProvider.sticker.body!.length,
-                              itemBuilder: (BuildContext context, int i) {
-                                return Container(
-                                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
-                                  child: GridView.builder(
-                                    scrollDirection: Axis.vertical,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 0.0,
-                                      mainAxisSpacing: 0.0,
-                                      childAspectRatio: 3 / 1
-                                    ),
-                                    itemCount: feedProvider.sticker.body![i].stickers!.length,
-                                    itemBuilder: (BuildContext ontext, int z) {
-                                      return InkWell(
-                                        onTap: () async {
-                                          await context.read<FeedProvider>().sendComment(context, feedProvider.sticker.body![i].stickers![z].url!, widget.postId, "STICKER");
-                                          Navigator.pop(context);
-                                        },
-                                        child: CachedNetworkImage(
-                                          imageUrl: '${AppConstants.baseUrlImg}${feedProvider.sticker.body![i].stickers![z].url}',
-                                          imageBuilder: (BuildContext context, ImageProvider<Object> image) {
-                                            return Container(
-                                              padding: const EdgeInsets.all(8.0),
-                                              width: 30.0,
-                                              height: 30.0,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: image
-                                                )
-                                              )
-                                            );  
-                                          },
-                                        )
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          })
-                        )
-                      )
-                    );
-                  },
-                ),
-              ),
-            ),
             Expanded(
               child: TextField(
                 focusNode: commentFn,
@@ -857,7 +785,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
-            child: Text(getTranslated("DELETE_POST", context),
+            child: Text(getTranslated("DELETE_COMMENT", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall
@@ -887,7 +815,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       color: ColorResources.white,
                     ),
                     const SizedBox(height: 10.0),
-                    Text(getTranslated("DELETE_POST", context),
+                    Text(getTranslated("DELETE_COMMENT", context),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.w600

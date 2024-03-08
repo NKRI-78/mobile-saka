@@ -30,8 +30,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
   FeedDetailData _feedDetailData = FeedDetailData();
   FeedDetailData get feedDetailData => _feedDetailData;
 
-  final List<CommentElement> _comment = [];
-  List<CommentElement> get comment => [..._comment];
+  List<CommentElement> _comments = [];
+  List<CommentElement> get comments => [..._comments];
 
   Future<void> getFeedDetail(BuildContext context, String postId) async {
     pageKey = 1;
@@ -41,11 +41,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
       FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, postId);
       _feedDetailData = fdm!.data;
 
-      _comment.clear();
-      _comment.addAll(fdm.data.forum!.comment!.comments);
+      _comments.clear();
+      _comments.addAll(fdm.data.forum!.comment!.comments);
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
-      if (comment.isEmpty) {
+      if (comments.isEmpty) {
         setStateFeedDetailStatus(FeedDetailStatus.empty);
       }
     } on CustomException catch (e) {
@@ -59,10 +59,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
   Future<void> loadMoreComment({required BuildContext context, required String postId}) async {
     pageKey++;
 
-    FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, postId);
+    FeedDetailModel? g = await fr.fetchDetail(context, pageKey, postId);
 
-    hasMore = fdm!.data.pageDetail!.hasMore;
-    _comment.addAll(fdm.data.forum!.comment!.comments);
+    hasMore = g!.data.pageDetail!.hasMore;
+    _comments.addAll(g.data.forum!.comment!.comments);
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
@@ -81,8 +81,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
       FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
       _feedDetailData = fdm!.data;
 
-      _comment.clear();
-      _comment.addAll(fdm.data.forum!.comment!.comments);
+      _comments.clear();
+      _comments.addAll(fdm.data.forum!.comment!.comments);
 
       commentC.text = "";
 
@@ -142,8 +142,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
       await fr.toggleLikeComment(context: context, feedId: feedId, userId: ar.getUserId().toString(), commentId: commentId);
       Future.delayed(Duration.zero, () => notifyListeners());
     } on CustomException catch (e) {
-      debugPrint(e.toString());
-    } catch (_) {}
+      debugPrint("Error like : ${e.toString()}");
+    } catch (e) {
+      debugPrint("Error like : ${e.toString()}");
+    }
   }
 
   Future<void> deleteComment( 
@@ -158,13 +160,12 @@ class FeedDetailProviderV2 with ChangeNotifier {
       FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
       _feedDetailData = fdm!.data;
 
-      _comment.clear();
-      _comment.addAll(fdm.data.forum!.comment!.comments);
+      _comments.clear();
+      _comments.addAll(fdm.data.forum!.comment!.comments);
       
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
     } catch (_) {}
   }
-  
 }

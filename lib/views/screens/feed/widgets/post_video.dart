@@ -1,25 +1,14 @@
 import 'dart:io' as io;
-import 'package:path/path.dart' as p;
 
-import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
-import 'package:http/http.dart' as http;
 import 'package:chewie/chewie.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:external_path/external_path.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 
-import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
-import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/dimensions.dart';
 
-import 'package:saka/data/models/feed/feedmedia.dart';
 
 class PostVideo extends StatefulWidget {
   final String media;

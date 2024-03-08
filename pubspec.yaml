@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  open_file_plus: ^3.4.1
 
 dependency_overrides:
   wakelock_windows: any

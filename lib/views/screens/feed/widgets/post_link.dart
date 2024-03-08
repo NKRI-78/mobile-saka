@@ -7,13 +7,11 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 class PostLink extends StatefulWidget {
-  final dynamic url;
-  final String caption;
+  final String url;
 
   const PostLink({
     Key? key, 
-    this.url,
-    required this.caption
+    required this.url,
   }) : super(key: key);
 
   @override
@@ -30,24 +28,13 @@ class _PostLinkState extends State<PostLink> {
   
   Widget buildUI() {
     List<String?> urls =  [
-      widget.url!
+      widget.url
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-
-        Container(
-          margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-          child: Text(widget.caption,
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeSmall
-            ),
-          ),
-        ),
-        
         const SizedBox(height: 12.0),
-
         Container(
           margin: const EdgeInsets.only(
             left: Dimensions.marginSizeDefault, 

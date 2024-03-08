@@ -37,6 +37,7 @@ class FeedData {
 class Forum {
     String? id;
     List<Media>? media;
+    String? link;
     String? caption;
     String? type;
     String? createdAt;
@@ -47,6 +48,7 @@ class Forum {
     Forum({
         this.id,
         this.media,
+        this.link,
         this.caption,
         this.type,
         this.createdAt,
@@ -58,6 +60,7 @@ class Forum {
     factory Forum.fromJson(Map<String, dynamic> json) => Forum(
         id: json["id"],
         media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
+        link: json["link"],
         caption: json["caption"],
         type: json["type"],
         createdAt: json["created_at"],

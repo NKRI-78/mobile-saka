@@ -76,17 +76,20 @@ class CommentReply {
 class ReplyElement {
     String id;
     String reply;
+    String createdAt;
     User user;
 
     ReplyElement({
         required this.id,
         required this.reply,
+        required this.createdAt,
         required this.user,
     });
 
     factory ReplyElement.fromJson(Map<String, dynamic> json) => ReplyElement(
         id: json["id"],
         reply: json["reply"],
+        createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
     );
 }

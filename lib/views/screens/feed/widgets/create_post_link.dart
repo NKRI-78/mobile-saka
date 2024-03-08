@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:saka/localization/language_constraints.dart';
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
+import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
@@ -22,21 +20,22 @@ class _CreatePostLinkState extends State<CreatePostLink> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
  
   late ScrollController scrollController;
-  late TextEditingController captionC;
+  late FeedProviderV2 fdv2;
   late TextEditingController urlC;
 
   @override 
   void initState() {
     super.initState();
     scrollController = ScrollController();
-    captionC = TextEditingController();
+    fdv2 = context.read<FeedProviderV2>();
+    fdv2.postC = TextEditingController();
     urlC = TextEditingController();
   }
 
   @override 
   void dispose() {
     scrollController.dispose();
-    captionC.dispose();
+    fdv2.postC.dispose();
     urlC.dispose();
     super.dispose();
   }
@@ -68,7 +67,7 @@ class _CreatePostLinkState extends State<CreatePostLink> {
                       Icons.arrow_back,
                       color: ColorResources.black,
                     ),
-                    onPressed: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () {
+                    onPressed: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () {
                       Navigator.of(context).pop();
                     },
                   ),
@@ -80,39 +79,20 @@ class _CreatePostLinkState extends State<CreatePostLink> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
-                            onTap: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                              String caption = captionC.text;
+                            onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
                               String url = urlC.text;
-                              if(caption.trim().isNotEmpty) {
-                                if(caption.trim().length < 10) {
-                                  ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
-                                  return;
-                                }
-                              } 
-                              if(caption.trim().length > 1000) {
-                                ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
-                                return;
-                              }
-                              if(url.trim().isEmpty) {
-                                ShowSnackbar.snackbar(context, getTranslated("URL_IS_REQUIRED", context), "", ColorResources.error);
-                                return;
-                              } 
-                              bool validURL = Uri.parse(url.trim()).isAbsolute;
-                              if(!validURL) {
-                                ShowSnackbar.snackbar(context, getTranslated("URL_FORMAT", context), "", ColorResources.error);
-                                return;
-                              }
-                              await context.read<FeedProvider>().sendPostLink(context, caption, url);  
-                              Navigator.of(context).pop();
+                              
+                              fdv2.feedType = "link";
+                              await fdv2.postLink(context, "link", url);
                             },
                             child: Container(
-                              width: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? null : 80.0,
+                              width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,
                               padding: const EdgeInsets.all(8.0),
                               decoration: BoxDecoration(
                                 color: ColorResources.primaryOrange,
                                 borderRadius: BorderRadius.circular(20.0)
                               ),
-                              child: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
+                              child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                               ? const Loader(
                                   color: ColorResources.white,
                                 ) 
@@ -141,7 +121,7 @@ class _CreatePostLinkState extends State<CreatePostLink> {
                   margin: const EdgeInsets.only(top: 10.0, left: 16.0, right: 16.0),
                   child: TextField(
                     maxLines: null,
-                    controller: captionC,
+                    controller: fdv2.postC,
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault
                     ),
