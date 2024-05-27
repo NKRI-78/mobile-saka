@@ -151,7 +151,6 @@ class FeedProviderV2 with ChangeNotifier {
       _forum3.clear();
       _forum3.addAll(g.data!.forums!);
       setStateFeedSelfStatus(FeedSelfStatus.loaded);
-      debugPrint("Jumlah forum : ${_forum3.length}");
 
       if (_forum3.isEmpty) {
         setStateFeedSelfStatus(FeedSelfStatus.empty);

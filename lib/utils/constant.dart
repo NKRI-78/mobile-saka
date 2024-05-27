@@ -12,7 +12,7 @@ class AppConstants {
   static const String baseUrlDisbursement = 'https://pg-$switchTo.connexist.id/disbursement/api/v1';
   static const String baseUrlImg = 'http://feedapi.connexist.id/d/f';
   static const String baseUrlFeed = '$switchToBaseUrlFeed';
-  static const String baseUrlFeedV2 = '$switchToBaseUrlFeedV2';
+  static const String baseUrlFeedV2 = 'https://api-forum-general.inovatiftujuh8.com';
   static const String baseUrlFeedMedia = 'http://167.99.76.66:9000/p/f';
   static const String baseUrlFeedImg = 'http://167.99.76.66:9000/d/f';
   static const String baseUrlSocketFeed = 'https://feedapi.connexist.id:5091'; 
@@ -30,7 +30,6 @@ class AppConstants {
 
   static const String switchTo = "prod";
   static const String switchToBaseUrlFeed = "https://feedapi.connexist.id/api/v1";
-  static const String switchToBaseUrlFeedV2 = "https://api-forum-general.inovatif78.com";
   static const String switchToBaseUrl = "https://smsapi.connexist.com:8443";
 
   static const String xContextId = '603659477896';

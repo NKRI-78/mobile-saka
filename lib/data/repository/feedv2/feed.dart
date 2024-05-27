@@ -156,16 +156,10 @@ class FeedRepoV2 {
         "link": link,
         "caption": caption
       };
-      debugPrint("Data 1 : $feedId");
-      debugPrint("Data 2 : $appName");
-      debugPrint("Data 3 : $userId");
-      debugPrint("Data 4 : $feedType");
-      debugPrint("Data 5 : $media");
-      debugPrint("Data 6 : $caption");
       Dio dio = await DioManager.shared.getClient(context);
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create", data: data);
     } on DioError catch (e) {
-      debugPrint(e.message.toString());
+      debugPrint(e.response!.data.toString());
       throw CustomException(e.toString());
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());

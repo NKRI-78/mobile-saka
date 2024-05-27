@@ -163,10 +163,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               onNotification: (ScrollNotification notification) {
                 if (notification is ScrollEndNotification) {
                   if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    debugPrint(feedProviderv2.hasMore.toString());
-                    debugPrint("Hashmore Api : ${feedProviderv2.fd.pageDetail!.hasMore.toString()}");
                     if (feedProviderv2.hasMore) {
-                      debugPrint("hit");
                       feedProviderv2.loadMoreRecent(context: context);
                     }
                   }
@@ -239,8 +236,6 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               onNotification: (ScrollNotification notification) {
                 if (notification is ScrollEndNotification) {
                   if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    debugPrint(feedProviderv2.hasMore.toString());
-                    debugPrint("Hashmore Api : ${feedProviderv2.fd.pageDetail!.hasMore.toString()}");
                     if (feedProviderv2.hasMore2) {
                       feedProviderv2.loadMorePopuler(context: context);
                     }
