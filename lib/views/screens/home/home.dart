@@ -31,7 +31,6 @@ import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/providers/event/event.dart';
 
 import 'package:saka/utils/helper.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -388,7 +387,7 @@ return Consumer<BannerProvider>(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: CachedNetworkImage(
-                          imageUrl: "${AppConstants.baseUrlFeedImg}${bannerProvider.bannerListMap[i]["path"]}",
+                          imageUrl: "${bannerProvider.bannerListMap[i]["path"]}",
                           fit: BoxFit.fill,
                           width: double.infinity,
                           height: double.infinity,
@@ -787,7 +786,7 @@ Widget newsWidget(BuildContext context) {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15.0),
                             child: CachedNetworkImage(
-                              imageUrl: "${AppConstants.baseUrlImg}${newsProvider.newsData[i].media![0].path}",
+                              imageUrl: "${newsProvider.newsData[i].media![0].path}",
                               fit: BoxFit.fill,
                               width: 80.0,
                               height: 80.0,

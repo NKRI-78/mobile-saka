@@ -1,20 +1,10 @@
-import 'dart:io';
-
-import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as b;
-import 'package:dio/dio.dart';
 import 'package:saka/utils/download_util.dart';
-import 'package:sn_progress_dialog/progress_dialog.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
-
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -156,7 +146,7 @@ class _PostDocState extends State<PostDoc> {
                                         ),
                                         ElevatedButton(
                                           onPressed: () async {
-                                            await DownloadHelper.downloadDoc(context: context, url: "${AppConstants.baseUrlFeedMedia}${widget.medias[0].path}");
+                                            await DownloadHelper.downloadDoc(context: context, url: "${widget.medias[0].path}");
                                             Navigator.of(context, rootNavigator: true).pop();
                                           },
                                           child: Text(getTranslated("YES", context),

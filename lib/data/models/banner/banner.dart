@@ -66,7 +66,7 @@ class BannerMedia {
   });
 
   int? mediaId;
-  String? status;
+  int? status;
   String? contentType;
   int? fileLength;
   String? originalName;

@@ -17,7 +17,6 @@ import 'package:saka/data/models/feed/notification.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
@@ -137,7 +136,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: ColorResources.black,
-                        backgroundImage: NetworkImage("${AppConstants.baseUrlImg}/${feedProvider.notificationList[i].refUser!.profilePic!.path}"),
+                        backgroundImage: NetworkImage("${feedProvider.notificationList[i].refUser!.profilePic!.path}"),
                         radius: 20.0,
                       ),
                       title: Text(

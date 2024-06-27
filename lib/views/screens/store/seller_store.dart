@@ -9,7 +9,6 @@ import 'package:saka/providers/store/store.dart';
 
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/extension.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
@@ -98,7 +97,7 @@ class _SellerStoreScreenState extends State<SellerStoreScreen> with TickerProvid
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(45),
                           child: CachedNetworkImage(
-                            imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.sellerStoreModel.body?.picture?.path}",
+                            imageUrl: "${storeProvider.sellerStoreModel.body?.picture?.path}",
                             fit: BoxFit.cover,
                             placeholder: (BuildContext context, String url) => const Loader(
                               color: ColorResources.primaryOrange,

@@ -12,7 +12,6 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/constant.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
 
@@ -474,7 +473,7 @@ class _SellerTransactionOrderScreenState extends State<SellerTransactionOrderScr
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmReceive.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmReceive.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) =>
                                             Center(
@@ -735,7 +734,7 @@ class _SellerTransactionOrderScreenState extends State<SellerTransactionOrderScr
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmPacking.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmPacking.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) =>
                                             Center(
@@ -995,7 +994,7 @@ class _SellerTransactionOrderScreenState extends State<SellerTransactionOrderScr
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmPickupShipping.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmPickupShipping.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) =>
                                             Center(
@@ -1221,7 +1220,7 @@ class _SellerTransactionOrderScreenState extends State<SellerTransactionOrderScr
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmDelivered.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmDelivered.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) =>
                                             Center(
@@ -1447,7 +1446,7 @@ class _SellerTransactionOrderScreenState extends State<SellerTransactionOrderScr
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmDone.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmDone.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) =>
                                             Center(

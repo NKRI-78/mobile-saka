@@ -8,8 +8,6 @@ import 'package:sn_progress_dialog/progress_dialog.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:http/http.dart' as http;
-import 'dart:io' as io;
-
 import 'package:flutter/material.dart';
 
 class DownloadHelper {
@@ -17,8 +15,6 @@ class DownloadHelper {
       {required BuildContext context, required String url}) async {
     int total = 0;
     int received = 0;
-
-    bool finishDownload = false;
 
     late http.StreamedResponse response;
 

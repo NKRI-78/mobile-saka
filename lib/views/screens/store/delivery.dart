@@ -15,7 +15,6 @@ import 'package:saka/views/screens/store/select_delivery.dart';
 import 'package:saka/data/models/store/address.dart';
 import 'package:saka/data/models/store/cart_add.dart';
 
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -268,7 +267,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(12.0),
                                             child: CachedNetworkImage(
-                                              imageUrl: "${AppConstants.baseUrlFeedImg}${dataProduct.product!.pictures!.first.path!}",
+                                              imageUrl: "${dataProduct.product!.pictures!.first.path!}",
                                               fit: BoxFit.cover,
                                               placeholder: (BuildContext context, String url) => Center(
                                                 child: Shimmer.fromColors(

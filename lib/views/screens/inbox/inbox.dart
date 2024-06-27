@@ -17,7 +17,6 @@ import 'package:saka/providers/profile/profile.dart';
 
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/images.dart';
 
@@ -256,7 +255,7 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                                               radius: 30.0,
                                             )
                                           : CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrlImg}${profileProvider.userProfile.profilePic}",
+                                            imageUrl: "${profileProvider.userProfile.profilePic}",
                                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                               return CircleAvatar(
                                                 backgroundColor: Colors.transparent,

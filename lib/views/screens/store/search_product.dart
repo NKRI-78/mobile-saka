@@ -14,7 +14,6 @@ import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/utils/helper.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
@@ -280,7 +279,7 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
                             child: CachedNetworkImage(
                               imageUrl: storeProvider.allProductSearch[i].pictures!.isEmpty
                               ? ""
-                              : AppConstants.baseUrlFeedImg + storeProvider.allProductSearch[i].pictures!.first.path!,
+                              : storeProvider.allProductSearch[i].pictures!.first.path!,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Center(
                                 child: Shimmer.fromColors(

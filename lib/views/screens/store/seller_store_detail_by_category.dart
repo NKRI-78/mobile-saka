@@ -13,7 +13,6 @@ import 'package:saka/services/navigation.dart';
 
 import 'package:saka/providers/store/store.dart';
 
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -370,7 +369,7 @@ class _SellerStoreDetailByCategoryState extends State<SellerStoreDetailByCategor
                         topRight: Radius.circular(15.0)
                       ),
                       child: CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlFeedImg}${productStoreList.pictures!.first.path}",
+                        imageUrl: "${productStoreList.pictures!.first.path}",
                         imageBuilder: (context, imageProvider) {
                           return Container(
                             decoration: BoxDecoration(

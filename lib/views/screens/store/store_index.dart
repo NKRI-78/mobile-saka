@@ -12,7 +12,6 @@ import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/data/models/store/product_store.dart';
 
 import 'package:saka/utils/helper.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -412,7 +411,7 @@ class _StoreScreenState extends State<StoreScreen> with SingleTickerProviderStat
                                                 topRight: Radius.circular(10.0)
                                               ),
                                               child: CachedNetworkImage(
-                                                imageUrl: "${AppConstants.baseUrlFeedImg}${categoryHasManyProduct[z].pictures!.first.path}",
+                                                imageUrl: "${categoryHasManyProduct[z].pictures!.first.path}",
                                                 imageBuilder: (context, imageProvider) {
                                                   return Container(
                                                     height: 100.0,

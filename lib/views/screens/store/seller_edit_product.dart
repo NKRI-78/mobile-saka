@@ -21,7 +21,6 @@ import 'package:saka/services/navigation.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/extension.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
@@ -522,7 +521,7 @@ class _EditProductStorePageState extends State<EditProductStorePage> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(10.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${before[i].path}",
+                                          imageUrl: "${before[i].path}",
                                           width: double.infinity,
                                           height: double.infinity,
                                           fit: BoxFit.cover,
@@ -595,7 +594,7 @@ class _EditProductStorePageState extends State<EditProductStorePage> {
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(10),
                                           child: CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrlFeedImg}${files[i].path}",
+                                            imageUrl: "${files[i].path}",
                                             width: double.infinity,
                                             height: double.infinity,
                                             fit: BoxFit.cover,
@@ -657,7 +656,7 @@ class _EditProductStorePageState extends State<EditProductStorePage> {
                                           child: files[i].path.contains('/') 
                                           ? files[i].path.split("/")[1] == "commerce" 
                                           ? CachedNetworkImage(
-                                              imageUrl: "${AppConstants.baseUrlFeedImg}${files[i].path}",
+                                              imageUrl: "${files[i].path}",
                                               width: double.infinity,
                                               height: double.infinity,
                                               fit: BoxFit.cover,

@@ -15,7 +15,6 @@ import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/providers/profile/profile.dart';
 
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
@@ -176,6 +175,7 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
     profileData.codeProvince = codeProvince;
     profileData.city = city;
     profileData.codeCity = codeCity;
+    
     await context.read<ProfileProvider>().updateProfile(context, profileData, file);
   }
    
@@ -291,7 +291,7 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                             )
                           : file == null 
                           ? CachedNetworkImage(
-                              imageUrl: "${AppConstants.baseUrlImg}${profileProvider.userProfile.profilePic}",
+                              imageUrl: "${profileProvider.userProfile.profilePic}",
                               imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(50.0),

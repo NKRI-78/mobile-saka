@@ -6,7 +6,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/utils/color_resources.dart';
@@ -288,7 +287,7 @@ class _SellerDetailSearchProductScreenState extends State<SellerDetailSearchProd
                                   topLeft: Radius.circular(12),
                                   topRight: Radius.circular(12)),
                               child: CachedNetworkImage(
-                                imageUrl: "${AppConstants.baseUrlFeedImg}${ storeProvider.allProductSearch[i].pictures!.first.path!}",
+                                imageUrl: "${storeProvider.allProductSearch[i].pictures!.first.path!}",
                                 fit: BoxFit.cover,
                                 placeholder: (BuildContext context, String url) => Center(
                                   child: Shimmer.fromColors(

@@ -9,7 +9,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -158,7 +157,7 @@ class _ReviewProductPageState extends State<ReviewProductPage> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12.0),
                                     child: CachedNetworkImage(
-                                      imageUrl: "${AppConstants.baseUrlFeedImg}${widget.imgUrl}",
+                                      imageUrl: "${widget.imgUrl}",
                                       fit: BoxFit.cover,
                                       placeholder: (BuildContext context, String url) => Center(
                                         child: Shimmer.fromColors(

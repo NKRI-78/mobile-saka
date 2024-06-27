@@ -1368,7 +1368,7 @@ class StoreProvider with ChangeNotifier {
   Future<String?> getMediaKey(BuildContext context) async {
     try {
       Dio dio = await DioManager.shared.getClient(context);
-      Response res = await dio.get("${AppConstants.baseUrlFeedMedia}/mediaKey");
+      Response res = await dio.get("");
       final MediaKey mediaKey = MediaKey.fromJson(res.data);
       return mediaKey.body;
     } on DioError catch(e) {
@@ -1398,7 +1398,7 @@ class StoreProvider with ChangeNotifier {
   Future<Response?> uploadImageProduct(BuildContext context, String mediaKey, String base64, File file) async {
     try {
       Dio dio = Dio();
-      String url = "${AppConstants.baseUrlFeedMedia}/$mediaKey/$base64?path=/commerce/saka/${context.read<ProfileProvider>().getUserPhoneNumber}/${basename(file.path)}";
+      String url = "-/$mediaKey/$base64?path=/commerce/saka/${context.read<ProfileProvider>().getUserPhoneNumber}/${basename(file.path)}";
       Response res = await dio.post(url, data: file.readAsBytesSync());
       return res;
     } on DioError catch(e) {
@@ -1506,7 +1506,7 @@ class StoreProvider with ChangeNotifier {
             "contentType": lookupMimeType(basename(files[i].path))!
           });
         } else {
-          String imageUrl = "${AppConstants.baseUrlFeedImg}${files[i].path}";
+          String imageUrl = "";
           http.Response responseData = await http.get(Uri.parse(imageUrl));
           Uint8List uint8list = responseData.bodyBytes;
           ByteBuffer buffer = uint8list.buffer;

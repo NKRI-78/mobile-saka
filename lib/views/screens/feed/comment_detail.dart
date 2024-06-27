@@ -9,7 +9,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
@@ -98,7 +97,7 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
                 title: Text(feedProvider.singleComment.body!.user!.nickname!),
                 leading: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage("${AppConstants.baseUrlImg}${feedProvider.singleComment.body!.user!.profilePic!.path}"),
+                  backgroundImage: NetworkImage("${feedProvider.singleComment.body!.user!.profilePic!.path}"),
                   radius: 20.0,
                 ),
                 subtitle: Text(
@@ -120,7 +119,7 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           alignment: Alignment.centerLeft,
-                          image: NetworkImage('${AppConstants.baseUrlImg}${feedProvider.singleComment.body!.content!.url}') 
+                          image: NetworkImage('${feedProvider.singleComment.body!.content!.url}') 
                         )
                       ),
                     ),
@@ -292,7 +291,7 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
                         ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.red,
-                            backgroundImage: NetworkImage("${AppConstants.baseUrlImg}${feedProvider.replyList[i].user!.profilePic!.path}"),
+                            backgroundImage: NetworkImage("${feedProvider.replyList[i].user!.profilePic!.path}"),
                             radius: 20.0,
                           ),
                           title: Container( 

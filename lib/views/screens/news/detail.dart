@@ -15,7 +15,6 @@ import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dimensions.dart';
 
 import 'package:saka/views/basewidgets/loader/circular.dart';
@@ -146,7 +145,7 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
                             max: 1,
                             msg: 'Downloading...'
                           );
-                          Response response = await Dio().get('${AppConstants.baseUrlImg}/${widget.imageUrl}');
+                          Response response = await Dio().get('${widget.imageUrl}');
                           await ImageGallerySaver.saveImage(
                             Uint8List.fromList(response.data),
                             quality: 60,
@@ -187,7 +186,7 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
                     height: double.infinity,
                     child: ClipRRect(
                       child: CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlImg}$imageUrl",
+                        imageUrl: "$imageUrl",
                         fit: BoxFit.cover,
                         placeholder: (BuildContext context, String url) => Loader(
                           color: ColorResources.primaryOrange,

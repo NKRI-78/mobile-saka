@@ -13,7 +13,6 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/helper.dart';
-import 'package:saka/utils/constant.dart';
 
 import 'package:saka/views/screens/store/delivery.dart';
 import 'package:saka/views/screens/store/detail_product.dart';
@@ -325,7 +324,7 @@ class _CartProdukPageState extends State<CartProdukPage> with WidgetsBindingObse
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(12.0),
                                               child: CachedNetworkImage(
-                                                imageUrl: "${AppConstants.baseUrlFeedImg}${item.product!.pictures!.first.path}",
+                                                imageUrl: "${item.product!.pictures!.first.path}",
                                                 fit: BoxFit.cover,
                                                 placeholder: (BuildContext context, String url) =>
                                                 Center(

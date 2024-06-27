@@ -13,7 +13,6 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/constant.dart';
 
 import 'package:saka/providers/store/store.dart';
 
@@ -400,7 +399,7 @@ class _StuffSellerScreenState extends State<StuffSellerScreen> with TickerProvid
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12.0),
                                     child: CachedNetworkImage(
-                                      imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.productStoreList[i].pictures!.first.path}",
+                                      imageUrl: "${storeProvider.productStoreList[i].pictures!.first.path}",
                                       fit: BoxFit.cover,
                                       placeholder: (BuildContext context, String url) => Center(
                                         child: Shimmer.fromColors(

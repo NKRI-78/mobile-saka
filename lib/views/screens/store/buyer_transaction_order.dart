@@ -780,7 +780,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmReceive.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmReceive.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) => Center(
                                             child: Shimmer.fromColors(
@@ -993,7 +993,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(8.0),
                                           child: CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmPickup.body![i].products!.first.product!.pictures!.first.path}",
+                                            imageUrl: "${storeProvider.tspmPickup.body![i].products!.first.product!.pictures!.first.path}",
                                             fit: BoxFit.cover,
                                             placeholder: (BuildContext context, String url) => Center(
                                               child: Shimmer.fromColors(
@@ -1207,7 +1207,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmPickupShipping.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmPickupShipping.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) => Center(
                                             child: Shimmer.fromColors(
@@ -1420,7 +1420,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmDelivered.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmDelivered.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) => Center(
                                             child: Shimmer.fromColors(
@@ -1667,7 +1667,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.tspmDone.body![i].products!.first.product!.pictures!.first.path}",
+                                          imageUrl: "${storeProvider.tspmDone.body![i].products!.first.product!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) => Center(
                                             child: Shimmer.fromColors(
@@ -1818,7 +1818,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                             child: ClipRRect(
                               borderRadius:  BorderRadius.circular(12.0),
                               child: CachedNetworkImage(
-                                imageUrl: "${AppConstants.baseUrlFeedImg}${context.read<StoreProvider>().rpl[i].pictures!.first.path}",
+                                imageUrl: "${context.read<StoreProvider>().rpl[i].pictures!.first.path}",
                                 fit: BoxFit.cover,
                                 placeholder: (BuildContext context, String url) => Center(
                                   child: Shimmer.fromColors(
@@ -2177,7 +2177,7 @@ class _TransactionOrderScreenState extends State<TransactionOrderScreen> with Ti
                                                             ClipRRect(
                                                             borderRadius:BorderRadius.circular(12.0),
                                                             child: CachedNetworkImage(
-                                                              imageUrl: "${AppConstants.baseUrlFeedImg}${dataProduct.product!.pictures!.first.path}",
+                                                              imageUrl: "${dataProduct.product!.pictures!.first.path}",
                                                               fit: BoxFit.cover,
                                                               placeholder: (context, url) => Center(
                                                                 child: Shimmer.fromColors(

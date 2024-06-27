@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readmore/readmore.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:saka/providers/feedv2/feed.dart';
@@ -17,18 +16,15 @@ import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:saka/views/screens/feed/widgets/post_link.dart';
 import 'package:saka/views/screens/feed/widgets/post_video.dart';
 
-
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
-import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/providers/profile/profile.dart';
 
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/constant.dart';
 
 import 'package:saka/data/models/feed/comment.dart';
 
@@ -68,7 +64,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Widget commentSticker(BuildContext context, CommentContent comment) {
     return CachedNetworkImage(
-      imageUrl: '${AppConstants.baseUrlImg}${comment.url}',
+      imageUrl: '${comment.url}',
       imageBuilder: (BuildContext context, ImageProvider<Object> image) {
         return Container(
           height: 60.0,
@@ -123,7 +119,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ListTile(
                   dense: true,
                   leading: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlFeedImg}/${feedDetailProviderV2.feedDetailData.forum!.user?.avatar ?? "-"}",
+                  imageUrl: "${feedDetailProviderV2.feedDetailData.forum!.user?.avatar ?? "-"}",
                     imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                       backgroundColor: Colors.transparent,
                       backgroundImage: imageProvider,
@@ -421,7 +417,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       children: [
                       ListTile(
                         leading: CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlFeedImg}/${comment.user.avatar}",
+                        imageUrl: "${comment.user.avatar}",
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,

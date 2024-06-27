@@ -328,7 +328,7 @@ class _EditStorePageState extends State<EditStorePage> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(60.0),
                                   child: CachedNetworkImage(
-                                    imageUrl: "${AppConstants.baseUrlFeedImg}$path",
+                                    imageUrl: "$path",
                                     fit: BoxFit.cover,
                                     placeholder: (BuildContext context, String url) => const Loader(color: ColorResources.primaryOrange),
                                       errorWidget: (BuildContext context, String url, dynamic error) => ClipOval(

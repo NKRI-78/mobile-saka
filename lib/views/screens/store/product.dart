@@ -15,7 +15,6 @@ import 'package:saka/views/screens/store/detail_product.dart';
 import 'package:saka/views/screens/store/cart_product.dart';
 
 import 'package:saka/utils/helper.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -378,7 +377,7 @@ class _ProductPageState extends State<ProductPage> {
                           topRight: Radius.circular(15.0)
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: "${AppConstants.baseUrlFeedImg}${productStoreList.pictures!.first.path}",
+                          imageUrl: "${productStoreList.pictures!.first.path}",
                           imageBuilder: (context, imageProvider) {
                             return Container(
                               decoration: BoxDecoration(

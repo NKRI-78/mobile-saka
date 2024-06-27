@@ -12,7 +12,6 @@ import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
@@ -146,7 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                 child: Consumer<ProfileProvider>(
                   builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                     return CachedNetworkImage(
-                      imageUrl: "${AppConstants.baseUrlImg}${profileProvider.userProfile.profilePic}",
+                      imageUrl: "${profileProvider.userProfile.profilePic}",
                       imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                         return Container(
                           margin: EdgeInsets.only(top: 40.0),
@@ -558,7 +557,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                 top: 40.0,
                 left: 40.0,
                 child: CachedNetworkImage(
-                  imageUrl: "${AppConstants.baseUrlImg}${context.read<ProfileProvider>().userProfile.profilePic}",
+                  imageUrl: "${context.read<ProfileProvider>().userProfile.profilePic}",
                   imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                     return CircleAvatar(
                       radius: 50.0,

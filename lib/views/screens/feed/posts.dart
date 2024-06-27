@@ -5,7 +5,6 @@ import 'package:saka/data/models/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:saka/services/navigation.dart';
 import 'package:saka/utils/date_util.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
@@ -16,7 +15,6 @@ import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/providers/profile/profile.dart';
 
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
@@ -25,7 +23,6 @@ import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:saka/views/screens/feed/widgets/post_link.dart';
 import 'package:saka/views/screens/feed/widgets/post_text.dart';
-import 'package:saka/views/screens/feed/post_detail.dart';
 
 class Posts extends StatefulWidget {
   final int i;
@@ -59,7 +56,7 @@ class _PostsState extends State<Posts> {
           ListTile(
             dense: true,
             leading: CachedNetworkImage(
-            imageUrl: "${AppConstants.baseUrlFeedImg}/${widget.forum[widget.i].user!.avatar!}",
+            imageUrl: "${widget.forum[widget.i].user!.avatar!}",
               imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                 backgroundColor: Colors.transparent,
                 backgroundImage: imageProvider,

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:saka/services/navigation.dart';
 
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -135,7 +134,7 @@ class _PilihPengirimanPageState extends State<PilihPengirimanPage> {
                                     context.read<StoreProvider>().postSetCouriers(context, widget.idStore, rate.rateId!); 
                                   },
                                   leading: CachedNetworkImage(
-                                    imageUrl: "${AppConstants.baseUrlFeedImg}${rate.courierLogo}",
+                                    imageUrl: "${rate.courierLogo}",
                                     width: 75.0,
                                     height: 75.0,
                                   ),

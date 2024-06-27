@@ -73,9 +73,7 @@ Future<void> init() async {
     sp: getIt()
   ));
 
-  getIt.registerLazySingleton(() => MediaRepo(
-    sp: getIt()
-  ));
+  getIt.registerLazySingleton(() => MediaRepo());
   
   getIt.registerLazySingleton(() => ProfileRepo(
     ar: getIt(),

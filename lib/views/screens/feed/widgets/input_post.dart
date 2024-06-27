@@ -25,7 +25,6 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 
 import 'package:saka/providers/profile/profile.dart';
@@ -228,7 +227,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
                     Consumer<ProfileProvider>(
                       builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                         return CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlFeedImg}/${profileProvider.userProfile.profilePic}",
+                        imageUrl: "${profileProvider.userProfile.profilePic}",
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,

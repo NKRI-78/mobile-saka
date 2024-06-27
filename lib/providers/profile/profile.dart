@@ -87,7 +87,7 @@ class ProfileProvider extends ChangeNotifier {
       if(file != null) {
         Response? res = await Provider.of<MediaProvider>(context, listen: false).postMedia(context, file);
         Map map = json.decode(res!.data);
-        profileData.profilePic = map['body']['path'];
+        profileData.profilePic = map['data']['path'];
       }
       await pr.updateProfile(context, profileData);
       getUserProfile(context);

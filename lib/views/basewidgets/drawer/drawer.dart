@@ -18,7 +18,6 @@ import 'package:saka/views/basewidgets/animated/animated_custom_dialog.dart' as 
 
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
@@ -78,7 +77,7 @@ class DrawerHeaderWidget extends StatelessWidget {
                 );
               }
               return CachedNetworkImage(
-                imageUrl: "${AppConstants.baseUrlImg}/${profileProvider.userProfile.profilePic}",
+                imageUrl: "${profileProvider.userProfile.profilePic}",
                 imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                   return Container(
                     width: 100.0,

@@ -12,7 +12,6 @@ import 'package:saka/data/models/event/event.dart';
 
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 
 import 'package:saka/providers/event/event.dart';
@@ -291,7 +290,7 @@ class _EventScreenState extends State<EventScreen> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrlFeedImg}/${meeting.eventImage}",
+                                            imageUrl: "${meeting.eventImage}",
                                             imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                                               return Container(
                                                 width: double.infinity,

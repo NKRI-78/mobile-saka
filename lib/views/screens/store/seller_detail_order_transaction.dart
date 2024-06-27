@@ -17,7 +17,6 @@ import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/utils/helper.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -380,7 +379,7 @@ class _DetailSellerTransactionScreenState extends State<DetailSellerTransactionS
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(12.0),
                                           child: CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrlFeedImg}${context.read<StoreProvider>().tps.products![i].product!.pictures!.first.path}",
+                                            imageUrl: "${context.read<StoreProvider>().tps.products![i].product!.pictures!.first.path}",
                                             fit: BoxFit.cover,
                                             placeholder: (BuildContext context, String url) => Center(
                                               child: Shimmer.fromColors(

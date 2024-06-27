@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dimensions.dart';
 
 class DetailEventScreen extends StatefulWidget {
@@ -120,7 +119,7 @@ class _DetailEventPageState extends State<DetailEventScreen> {
                     height: double.infinity,
                     child: ClipRRect(
                       child: CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlImg}$imageUrl",
+                        imageUrl: "$imageUrl",
                         fit: BoxFit.cover,
                         placeholder: (BuildContext context, String url) => Center(child: CircularProgressIndicator()),
                         errorWidget: (BuildContext context, String url, error) => Center(

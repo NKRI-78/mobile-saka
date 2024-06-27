@@ -20,7 +20,6 @@ import 'package:saka/providers/store/store.dart';
 import 'package:saka/data/models/store/product_single.dart';
 
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -357,7 +356,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                                                 child: ClipRRect(
                                                                   borderRadius: BorderRadius.circular(5.0),
                                                                   child: CachedNetworkImage(
-                                                                    imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.rpdm.data![i].photos![z].path}",
+                                                                    imageUrl: "${storeProvider.rpdm.data![i].photos![z].path}",
                                                                     imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                                                                       return Container(
                                                                         width: 80.0,
@@ -755,7 +754,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(55.0),
                                 child: CachedNetworkImage(
-                                  imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.productSingleStoreModel.body?.store?.picture?.path}",
+                                  imageUrl: "${storeProvider.productSingleStoreModel.body?.store?.picture?.path}",
                                   fit: BoxFit.cover,
                                   placeholder: (BuildContext context, String url) => Container(
                                     decoration: const BoxDecoration(
@@ -1264,7 +1263,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                 ),
                 child: ClipRRect(
                   child: CachedNetworkImage(
-                  imageUrl:"${AppConstants.baseUrlFeedImg}${fileImage.path}",
+                  imageUrl:"${fileImage.path}",
                   fit: BoxFit.cover,
                   placeholder: (BuildContext context, String url) => Center(
                     child: Shimmer.fromColors(
@@ -1388,11 +1387,10 @@ class _DetailProductPageState extends State<DetailProductPage> {
                     ),
                     builder: (BuildContext context, int i) {
                       return PhotoViewGalleryPageOptions(
-                        imageProvider: NetworkImage("${AppConstants.baseUrlFeedImg}${imageUrl.body!.pictures![i].path!}"),
+                        imageProvider: NetworkImage("${imageUrl.body!.pictures![i].path!}"),
                         initialScale: PhotoViewComputedScale.contained * 1,
                         heroAttributes: PhotoViewHeroAttributes(
-                          tag: AppConstants.baseUrlFeedImg +
-                          imageUrl.body!.pictures![i].path!
+                          tag: imageUrl.body!.pictures![i].path!
                         ),
                       );
                     },
@@ -1728,7 +1726,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                 width: 60.0,
                                 child: ClipRRect(
                                   child: CachedNetworkImage(
-                                    imageUrl: "${AppConstants.baseUrlFeedImg}${kurir[index].image!}",
+                                    imageUrl: "${kurir[index].image!}",
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                     placeholder: (BuildContext context, String url) => Center(
@@ -1859,7 +1857,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: "${AppConstants.baseUrlFeedImg}${productSingleStoreModel.body!.pictures!.first.path}",
+                                          imageUrl: "${productSingleStoreModel.body!.pictures!.first.path}",
                                           fit: BoxFit.cover,
                                           placeholder: (BuildContext context, String url) =>
                                             Center(

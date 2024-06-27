@@ -16,7 +16,6 @@ import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
@@ -261,7 +260,7 @@ class _SellerStoreDetailState extends State<SellerStoreDetail> with TickerProvid
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             CachedNetworkImage(
-                              imageUrl: "${AppConstants.baseUrlFeedImg}${widget.productStoreSingle.store?.picture?.path}",
+                              imageUrl: "${widget.productStoreSingle.store?.picture?.path}",
                               imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                 return CircleAvatar(
                                   backgroundColor: ColorResources.white,
@@ -653,7 +652,7 @@ class _SellerStoreDetailState extends State<SellerStoreDetail> with TickerProvid
                                             topRight: Radius.circular(15.0)
                                           ),
                                           child: CachedNetworkImage(
-                                            imageUrl: "${AppConstants.baseUrlFeedImg}${storeProvider.allProductSellerDetail[i].pictures!.first.path}",
+                                            imageUrl: "${storeProvider.allProductSellerDetail[i].pictures!.first.path}",
                                             imageBuilder: (BuildContext context, ImageProvider<Object>  imageProvider) {
                                               return Container(
                                                 decoration: BoxDecoration(

@@ -186,7 +186,7 @@ class FeedRepo {
   Future<String?> getMediaKey(BuildContext context) async {
     try {
       Dio dio = await DioManager.shared.getClient(context);
-      Response res = await dio.get("${AppConstants.baseUrlFeedMedia}/mediaKey");
+      Response res = await dio.get("-/mediaKey");
       Map<String, dynamic> data = res.data;   
        MediaKey mediaKey = MediaKey.fromJson(data);
        return mediaKey.body;
@@ -201,7 +201,7 @@ class FeedRepo {
   Future<Response?> uploadMedia(BuildContext context, String mediaKey, String base64, File file) async {
     try {
       Dio dio = await DioManager.shared.getClient(context);
-      Response res = await dio.post("${AppConstants.baseUrlFeedMedia}/$mediaKey/$base64?path=/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}", 
+      Response res = await dio.post("-/$mediaKey/$base64?path=/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}", 
         data: file.readAsBytesSync()
       );
       return res;

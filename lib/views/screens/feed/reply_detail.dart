@@ -12,7 +12,6 @@ import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
@@ -82,7 +81,7 @@ class _ReplyDetailScreenState extends State<ReplyDetailScreen> {
                 ),
                 leading: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage("${AppConstants.baseUrlImg}${feedProvider.singleReply.body!.user!.profilePic!.path}"),
+                  backgroundImage: NetworkImage("${feedProvider.singleReply.body!.user!.profilePic!.path}"),
                   radius: 20.0,
                 ),
                 subtitle: Text(timeago.format(DateTime.parse(feedProvider.singleReply.body!.created!).toLocal(), locale: 'id'), 

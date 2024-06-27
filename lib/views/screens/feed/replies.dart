@@ -21,7 +21,6 @@ import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 
 
@@ -66,7 +65,7 @@ class _RepliesScreenState extends State<RepliesScreen> {
 
   Widget commentSticker(SingleCommentBody comment) {
     return CachedNetworkImage(
-      imageUrl:'${AppConstants.baseUrlImg}${comment.content!.url}',
+      imageUrl:'${comment.content!.url}',
       imageBuilder: (BuildContext context, ImageProvider<Object> image) {
         return Container(
           height: 60.0,
@@ -146,7 +145,7 @@ class _RepliesScreenState extends State<RepliesScreen> {
             children: [
             ListTile(
               leading: CachedNetworkImage(
-              imageUrl: "${AppConstants.baseUrlFeedImg}/${frv.feedReplyData.comment!.user?.avatar ?? "-"}",
+              imageUrl: "${frv.feedReplyData.comment!.user?.avatar ?? "-"}",
                 imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                   backgroundColor: Colors.transparent,
                   backgroundImage: imageProvider,
@@ -332,7 +331,7 @@ class _RepliesScreenState extends State<RepliesScreen> {
                         trailing: context.read<ProfileProvider>().userProfile.userId == reply.user.id 
                           ? grantedDeleteComment(context, reply.id) : Container(),
                         leading: CachedNetworkImage(
-                        imageUrl: "${AppConstants.baseUrlFeedImg}/${reply.user.avatar}",
+                        imageUrl: "${reply.user.avatar}",
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,

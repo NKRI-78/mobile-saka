@@ -17,7 +17,6 @@ import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 
 class MemberNearScreen extends StatefulWidget {
@@ -239,7 +238,7 @@ class _MemberNearScreenState extends State<MemberNearScreen> {
                         children: [
                           Container(
                             child: CachedNetworkImage(
-                              imageUrl: "${AppConstants.baseUrlFeedImg}${membernearProvider.membernearData[i].user.avatar}",
+                              imageUrl: "${membernearProvider.membernearData[i].user.avatar}",
                               imageBuilder: (BuildContext context, ImageProvider imageProvider) => CircleAvatar(
                                 radius: 30.0,
                                 backgroundImage: imageProvider, 
