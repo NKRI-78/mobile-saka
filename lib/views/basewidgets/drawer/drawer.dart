@@ -2,8 +2,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/providers/store/store.dart';
@@ -27,7 +27,6 @@ import 'package:saka/views/screens/about/about.dart';
 import 'package:saka/views/screens/comingsoon/comingsoon.dart';
 import 'package:saka/views/screens/more/widgets/signout.dart';
 import 'package:saka/views/screens/setting/setting.dart';
-import 'package:saka/views/screens/more/webview.dart';
 import 'package:saka/views/screens/auth/sign_in.dart';
 import 'package:saka/views/screens/profile/profile.dart';
 
@@ -47,33 +46,31 @@ class DrawerHeaderWidget extends StatelessWidget {
           child: Consumer<ProfileProvider>(
             builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
               if(profileProvider.profileStatus == ProfileStatus.loading) {
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[200]!,
-                  child: Container(
-                    width: 100.0,
-                    height: 100.0,
-                    decoration: BoxDecoration(
-                      color: ColorResources.white,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: CircleAvatar(),
-                  )
+                return Container(
+                  width: 100.0,
+                  height: 100.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    color: ColorResources.white,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage('assets/images/default_avatar.jpg')
+                    )
+                  ),
                 );
               }
               if(profileProvider.profileStatus == ProfileStatus.error) {
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[200]!,
-                  child: Container(
-                    width: 100.0,
-                    height: 100.0,
-                    decoration: BoxDecoration(
-                      color: ColorResources.white,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: CircleAvatar(),
-                  )
+                return Container(
+                  width: 100.0,
+                  height: 100.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    color: ColorResources.white,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage('assets/images/default_avatar.jpg')
+                    )
+                  ),
                 );
               }
               return CachedNetworkImage(
@@ -92,33 +89,31 @@ class DrawerHeaderWidget extends StatelessWidget {
                   );  
                 },
                 placeholder: (BuildContext context, String url) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[200]!,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        color: ColorResources.white,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      ),
-                      child: CircleAvatar(),
-                    )
+                  return Container(
+                    width: 100.0,
+                    height: 100.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                      color: ColorResources.white,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage('assets/images/default_avatar.jpg')
+                      )
+                    ),
                   );
                 },
                 errorWidget: (BuildContext context, String url, dynamic error) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[200]!,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        color: ColorResources.white,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      ),
-                      child: CircleAvatar(),
-                    )
+                  return Container(
+                    width: 100.0,
+                    height: 100.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                      color: ColorResources.white,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage('assets/images/default_avatar.jpg')
+                      )
+                    ),
                   );             
                 }, 
               );         
@@ -208,7 +203,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("I'ts important that you understand what",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w300,
                           color: ColorResources.white
                         ),
@@ -218,7 +213,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("information Saka Dirgantara collects.",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w300,
                           color: ColorResources.white
                         ),
@@ -228,7 +223,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("Some examples of data Saka Dirgantara\n collects and users are:",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w300,
                           color: ColorResources.white
                         ),
@@ -238,7 +233,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("● Your Forum Information & Content",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w600,
                           color: ColorResources.white
                         ),
@@ -248,7 +243,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("This may include any information you share with us,\nfor example; your create a post and another users\ncan like your post or comment also you can delete\nyour post.",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w300,
                           color: ColorResources.white
                         ),
@@ -258,7 +253,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("● Photos, Videos & Documents",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w600,
                           color: ColorResources.white
                         ),
@@ -268,7 +263,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("This may include your can post on media\nphotos, videos, or documents",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w300,
                           color: ColorResources.white
                         ),
@@ -278,7 +273,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("● Embedded Links",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w600,
                           color: ColorResources.white
                         ),
@@ -288,7 +283,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
                       Text("This may include your can post on link\nsort of news, etc",
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w300,
                           color: ColorResources.white
                         ),
@@ -310,12 +305,13 @@ class DrawerWidgetState extends State<DrawerWidget> {
                         ),
                         child: CustomButton(
                           isBorderRadius: true,
-                          btnColor: ColorResources.brown,
-                          btnTextColor: ColorResources.white,
                           onTap: () {
                             Helper.prefs!.setBool("isAccept", true);
                             NS.pop(ctx);
                           }, 
+                          fontSize: Dimensions.fontSizeSmall,
+                          btnColor: ColorResources.brown,
+                          btnTextColor: ColorResources.white,
                           btnTxt: "Agree"
                         ),
                       )
@@ -419,20 +415,20 @@ class DrawerWidgetState extends State<DrawerWidget> {
                           ),
                           SizedBox(height: 10.0),
                           drawerItems(context, ProfileScreen(), "profil", "assets/images/svg/user.svg", getTranslated("PROFILE", context)),
-                          SizedBox(height: 10.0),
-                          Divider(
-                            color: ColorResources.brown,
-                            height: 1.0,
-                            thickness: 0.2
-                          ),
-                          SizedBox(height: 10.0),
-                          Consumer<StoreProvider>(
-                            builder: (BuildContext context, StoreProvider storeProvider, Widget? child) {
-                              return storeProvider.sellerStoreStatus == SellerStoreStatus.loading 
-                              ? drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg",  "...")               
-                              : drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg", storeProvider.sellerStoreStatus == SellerStoreStatus.empty ? getTranslated("OPEN_STORE", context) : getTranslated("MY_STORE", context));                
-                            },
-                          ),
+                          // SizedBox(height: 10.0),
+                          // Divider(
+                          //   color: ColorResources.brown,
+                          //   height: 1.0,
+                          //   thickness: 0.2
+                          // ),
+                          // SizedBox(height: 10.0),
+                          // Consumer<StoreProvider>(
+                          //   builder: (BuildContext context, StoreProvider storeProvider, Widget? child) {
+                          //     return storeProvider.sellerStoreStatus == SellerStoreStatus.loading 
+                          //     ? drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg",  "...")               
+                          //     : drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg", storeProvider.sellerStoreStatus == SellerStoreStatus.empty ? getTranslated("OPEN_STORE", context) : getTranslated("MY_STORE", context));                
+                          //   },
+                          // ),
                           SizedBox(height: 10.0),
                           Divider(
                             color: ColorResources.brown,
@@ -596,7 +592,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
             minVerticalPadding: 0.0,
             minLeadingWidth: 0.0,
             contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-            onTap: () { 
+            onTap: () async { 
               if(menu == "logout") {
                 cw.showAnimatedDialog(context,
                   SignOutConfirmationDialog(),
@@ -616,10 +612,15 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   key: UniqueKey(),
                 ));
               } else if(menu == "bantuan") {
-                NS.push(context, WebViewScreen(
-                  title: 'Bantuan',
-                  url: 'https://cms-hog.inovasi78.com/mobile-support'
-                ));
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'customercare@inovatiftujuh8.com',
+                  queryParameters: {
+                    'subject': '',
+                    'body': ''
+                  },
+                );
+                await launchUrl(emailLaunchUri);
               }
               else if(menu == "tos") {
                 termsAndCondition();

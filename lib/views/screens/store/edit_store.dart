@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:hex/hex.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:crypto/crypto.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/maps/google_maps_place_picker.dart';
-
-import 'package:saka/container.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/constant.dart';
@@ -30,8 +25,6 @@ import 'package:saka/providers/store/store.dart';
 import 'package:saka/data/models/store/seller_store.dart';
 import 'package:saka/data/models/store/region.dart';
 import 'package:saka/data/models/store/region_subdistrict.dart';
-
-import 'package:saka/data/repository/feed/feed.dart';
 
 import 'package:saka/views/screens/store/store_index.dart';
 
@@ -188,17 +181,17 @@ class _EditStorePageState extends State<EditStorePage> {
         return;
       }
       if(f1 != null) {
-        String? body = await getIt<FeedRepo>().getMediaKey(context);
-        File? file = File(f1!.path);
-        Uint8List bytes = f1!.readAsBytesSync();
-        String digestFile = sha256.convert(bytes).toString();
-        String imageHash = base64Url.encode(HEX.decode(digestFile));
-        await Provider.of<StoreProvider>(context, listen: false).uploadImageProduct(
-          context,
-          body!,
-          imageHash,
-          file
-        );
+        // String? body = await getIt<FeedRepo>().getMediaKey(context);
+        // File? file = File(f1!.path);
+        // Uint8List bytes = f1!.readAsBytesSync();
+        // String digestFile = sha256.convert(bytes).toString();
+        // String imageHash = base64Url.encode(HEX.decode(digestFile));
+        // await Provider.of<StoreProvider>(context, listen: false).uploadImageProduct(
+        //   context,
+        //   body!,
+        //   imageHash,
+        //   file
+        // );
       }
       await context.read<StoreProvider>().postEditDataStore(
         context, 

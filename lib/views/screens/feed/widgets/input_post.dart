@@ -80,6 +80,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
       )
     );
     if(imageSource == ImageSource.camera) {
+      files = [];
       XFile? pickedFile = await ImagePicker().pickImage(
         source: ImageSource.camera,
       );

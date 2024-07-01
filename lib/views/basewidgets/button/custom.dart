@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
-import 'package:saka/utils/dimensions.dart';
 
 import 'package:saka/views/basewidgets/button/bounce.dart';
 
@@ -20,6 +19,7 @@ class CustomButton extends StatelessWidget {
   final Color btnColor;
   final Color btnTextColor;
   final Color btnBorderColor;
+  final double fontSize;
   final bool isBorder;
   final bool isBorderRadius;
   final bool isLoading;
@@ -33,6 +33,7 @@ class CustomButton extends StatelessWidget {
     this.text,
     this.width = double.infinity,
     this.height = 45.0,
+    this.fontSize = 14.0,
     this.sizeBorderRadius = 15.0,
     this.isLoading = false,
     this.loadingColor = ColorResources.white,
@@ -77,7 +78,7 @@ class CustomButton extends StatelessWidget {
             style: robotoRegular.copyWith(
               color: btnTextColor,
               fontWeight: FontWeight.w600,
-              fontSize: Dimensions.fontSizeDefault
+              fontSize: fontSize
             ) 
           ),
         )

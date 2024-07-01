@@ -6,10 +6,20 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:saka/data/models/feedv2/feedDetail.dart';
+
+import 'package:saka/data/models/feedv2/feedDetail.dart' as m;
+import 'package:saka/data/models/feed/comment.dart';
+
 import 'package:saka/providers/feedv2/feed.dart';
-import 'package:saka/providers/feedv2/feedDetail.dart';
+import 'package:saka/providers/feedv2/feedDetail.dart' as p;
+import 'package:saka/providers/profile/profile.dart';
+
+import 'package:saka/utils/dimensions.dart';
+import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/custom_themes.dart';
+
 import 'package:saka/utils/date_util.dart';
+
 import 'package:saka/views/screens/feed/replies.dart';
 import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
@@ -19,14 +29,6 @@ import 'package:saka/views/screens/feed/widgets/post_video.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/localization/language_constraints.dart';
-
-import 'package:saka/providers/profile/profile.dart';
-
-import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/custom_themes.dart';
-
-import 'package:saka/data/models/feed/comment.dart';
 
 import 'package:saka/views/basewidgets/loader/circular.dart';
 
@@ -46,14 +48,14 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   bool deletePostBtn = false;
-  late FeedDetailProviderV2 feedDetailProviderV2;
+  late p.FeedDetailProviderV2 feedDetailProviderV2;
   
   FocusNode commentFn = FocusNode();
 
   @override
   void initState() {  
     super.initState();
-    feedDetailProviderV2 = context.read<FeedDetailProviderV2>();
+    feedDetailProviderV2 = context.read<p.FeedDetailProviderV2>();
     feedDetailProviderV2.commentC = TextEditingController();
     Future.delayed(Duration.zero, () {
       if(mounted) {
@@ -97,9 +99,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Widget post(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Consumer<FeedDetailProviderV2>(
-        builder: (BuildContext context, FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
-          if (feedDetailProviderV2.feedDetailStatus == FeedDetailStatus.loading) {
+      child: Consumer<p.FeedDetailProviderV2>(
+        builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+          if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.loading) {
             return const SizedBox(
               height: 100.0,
               child: Center(
@@ -274,7 +276,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 if (feedDetailProviderV2.feedDetailData.forum!.type == "image")
                   feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
                 PostImage(
-                  false,
+                  true,
                   feedDetailProviderV2.feedDetailData.forum!.media!, 
                 ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
                 if (feedDetailProviderV2.feedDetailData.forum!.type == "video")
@@ -299,7 +301,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               )
                             ),
                             InkWell(
-                              onTap: () async => context.read<FeedDetailProviderV2>().toggleLike(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!)
+                              onTap: () async => context.read<p.FeedDetailProviderV2>().toggleLike(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!)
                               ,
                               child: Container(
                                 padding: const EdgeInsets.all(5.0),
@@ -361,9 +363,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             post(context)
           ];
         },
-        body: Consumer<FeedDetailProviderV2>(
-          builder: (BuildContext context, FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
-            if (feedDetailProviderV2.feedDetailStatus == FeedDetailStatus.loading) {
+        body: Consumer<p.FeedDetailProviderV2>(
+          builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+            if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
@@ -371,7 +373,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 )
               );
             } 
-            if (feedDetailProviderV2.feedDetailStatus == FeedDetailStatus.empty) {
+            if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
                   style: robotoRegular.copyWith(
@@ -404,7 +406,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   physics: const BouncingScrollPhysics(),
                   itemCount: feedDetailProviderV2.comments.length,
                   itemBuilder: (BuildContext context, int i) {
-                    CommentElement comment = feedDetailProviderV2.comments[i];
+                    m.CommentElement comment = feedDetailProviderV2.comments[i];
                     // if (comment.comment.length == i) {
                     //   return const Center(
                     //     child: SpinKitThreeBounce(
@@ -836,7 +838,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<FeedDetailProviderV2>().deleteComment(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, deleteId: idComment);               
+                              await context.read<p.FeedDetailProviderV2>().deleteComment(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, deleteId: idComment);               
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {

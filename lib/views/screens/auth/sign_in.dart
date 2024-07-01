@@ -4,16 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:new_version_plus/new_version_plus.dart';
-
 import 'package:saka/data/models/user/user.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/providers/localization/localization.dart';
-
-import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -26,7 +22,6 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:saka/views/screens/auth/sign_up.dart';
 import 'package:saka/views/screens/auth/forget_password.dart';
-import 'package:saka/views/screens/update/update.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -78,16 +73,16 @@ class _SignInScreenState extends State<SignInScreen> {
     passwordC = TextEditingController();
 
     if(mounted) { 
-      NewVersionPlus newVersion = NewVersionPlus(
-        androidId: 'com.inovasi78.saka',
-        iOSId: 'com.inovatif78.saka'
-      );
-      Future.delayed(Duration.zero, () async {
-        VersionStatus? vs = await newVersion.getVersionStatus();
-        if(vs!.canUpdate) {
-          NS.push(context, const UpdateScreen());
-        } 
-      });
+      // NewVersionPlus newVersion = NewVersionPlus(
+      //   androidId: 'com.inovasi78.saka',
+      //   iOSId: 'com.inovatif78.saka'
+      // );
+      // Future.delayed(Duration.zero, () async {
+      //   VersionStatus? vs = await newVersion.getVersionStatus();
+      //   if(vs!.canUpdate) {
+      //     NS.push(context, const UpdateScreen());
+      //   } 
+      // });
     }
   }
 

@@ -1,18 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:crypto/crypto.dart';
+
 import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:hex/hex.dart';
 
-import 'package:saka/container.dart';
-import 'package:saka/data/repository/feed/feed.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
@@ -88,16 +83,11 @@ class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScree
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         InkWell(
-                          onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                            fdv2.setStateWritePost(WritePostStatus.loading);
-                            String? body = await getIt<FeedRepo>().getMediaKey(context);
-                            Uint8List bytes = file.readAsBytesSync();
-                            String digest = sha256.convert(bytes).toString();
-                            String imageHashBackground = base64Url.encode(HEX.decode(digest)); 
-                            await getIt<FeedRepo>().uploadMedia(context, body!, imageHashBackground, file);
+                          onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
+                          ? () {} 
+                          : () async {                
                             fdv2.feedType = "image";
                             await fdv2.postImageCamera(context, "image", file);
-                            fdv2.setStateWritePost(WritePostStatus.loaded);
                           },
                           child: Container(
                             width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,

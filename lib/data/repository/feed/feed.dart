@@ -8,11 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
 import 'package:file_picker/file_picker.dart';
 
-import 'package:saka/services/navigation.dart';
-
 import 'package:saka/data/models/feed/comment.dart';
 import 'package:saka/data/models/feed/groups.dart';
-import 'package:saka/data/models/feed/mediakey.dart';
 import 'package:saka/data/models/feed/notification.dart';
 import 'package:saka/data/models/feed/reply.dart';
 import 'package:saka/data/models/feed/singlecomment.dart';
@@ -25,9 +22,7 @@ import 'package:saka/utils/dio.dart';
 
 class FeedRepo {
   final SharedPreferences sp;
-  FeedRepo({ 
-    required this.sp
-  });
+  FeedRepo({ required this.sp });
 
   Future<void> deletePost(BuildContext context, String postId) async {
     try {
@@ -89,7 +84,7 @@ class FeedRepo {
       Map<String, dynamic> data = res.data;
       return compute(parseFetchComment, data);
     } on DioError catch(_) {
-    
+     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -103,7 +98,7 @@ class FeedRepo {
       Map<String, dynamic> data = res.data;
       return compute(parseFetchAllReply, data);
     } on DioError catch(_) {
-    
+     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -131,7 +126,7 @@ class FeedRepo {
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchListCommentMostRecent, data);      
     } on DioError catch(_) {
-     
+      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -144,11 +139,10 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_RECENT&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
-    } on DioError catch(e) {
-      debugPrint("Fetch Groups Most Recent (${e.error.toString()})");
-      NS.pop(context);
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+    } on DioError catch(_) {
+   
+    } catch(e) {
+      debugPrint(e.toString());
     }
     return null;
   }
@@ -159,11 +153,10 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_POPULAR&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
-    } on DioError catch(e) {
-      debugPrint("Fetch Groups Most Popular (${e.error.toString()})");
-      NS.pop(context);
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+    } on DioError catch(_) {
+      
+    } catch(e) {
+      debugPrint(e.toString());
     }
     return null;
   }
@@ -174,39 +167,29 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=SELF&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
-    } on DioError catch(e) {
-      debugPrint("Fetch Groups Self (${e.error.toString()})");
-      NS.pop(context);
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
-    }
-    return null;
-  }
-
-  Future<String?> getMediaKey(BuildContext context) async {
-    try {
-      Dio dio = await DioManager.shared.getClient(context);
-      Response res = await dio.get("-/mediaKey");
-      Map<String, dynamic> data = res.data;   
-       MediaKey mediaKey = MediaKey.fromJson(data);
-       return mediaKey.body;
     } on DioError catch(_) {
-     
+   
     } catch(e) {
       debugPrint(e.toString());
     }
     return null;
-  } 
+  }
 
-  Future<Response?> uploadMedia(BuildContext context, String mediaKey, String base64, File file) async {
+  Future<Response?> uploadMedia(BuildContext context, File file) async {
     try {
       Dio dio = await DioManager.shared.getClient(context);
-      Response res = await dio.post("-/$mediaKey/$base64?path=/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}", 
-        data: file.readAsBytesSync()
-      );
+      // Response res = await dio.post("${AppConstants.baseUrlFeedMedia}/$mediaKey/$base64?path=/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}", 
+      //   data: file.readAsBytesSync()
+      // );
+      FormData formData = FormData.fromMap({
+        "folder": "videos",
+        "subfolder": "saka",
+        "media": await MultipartFile.fromFile(file.path, filename: basename(file.path)),
+      });
+      Response res = await dio.post("${AppConstants.baseUrl}/media-service/upload", data: formData);
       return res;
     } on DioError catch(_) {
-     
+    
     }  catch(e) {
       debugPrint(e.toString());
     }
@@ -248,7 +231,7 @@ class FeedRepo {
       );
       return res;
     } on DioError catch(_) {  
-      
+     
     }
     catch(e) {
       debugPrint(e.toString());
@@ -273,7 +256,7 @@ class FeedRepo {
       );
       return res;
     } on DioError catch(_) {  
-      
+     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -303,7 +286,7 @@ class FeedRepo {
       );
       return res;
     } on DioError catch(_) {  
-   
+     
     }  catch(e) {
       debugPrint(e.toString());
     }
@@ -358,7 +341,7 @@ class FeedRepo {
       );
       return res;
     } on DioError catch(_) {  
-      
+     
     } catch(e) {
       debugPrint(e.toString());
     }  
@@ -421,7 +404,7 @@ class FeedRepo {
       );
       return res;
     } on DioError catch(_) {
-     
+    
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -443,7 +426,7 @@ class FeedRepo {
       );
       return res;
     } on DioError catch(_) {  
-     
+      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -480,7 +463,7 @@ class FeedRepo {
         data: data
       ); 
     } on DioError catch(_) {  
-     
+      
     } catch(e) {
       debugPrint(e.toString());
     }

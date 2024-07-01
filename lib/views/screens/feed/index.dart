@@ -10,7 +10,6 @@ import 'package:saka/services/navigation.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
 
 import 'package:saka/views/screens/feed/widgets/input_post.dart';
-import 'package:saka/views/screens/feed/notification.dart';
 import 'package:saka/views/screens/feed/posts.dart';
 
 import 'package:saka/localization/language_constraints.dart';
@@ -345,15 +344,15 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 )
               ),
               actions: [
-                IconButton(
-                  onPressed: () {
-                    NS.push(context, NotificationScreen());
-                  },
-                  icon: const Icon(
-                    Icons.notifications,
-                    color: ColorResources.primaryOrange
-                  ),
-                ),
+                // IconButton(
+                //   onPressed: () {
+                //     NS.push(context, NotificationScreen());
+                //   },
+                //   icon: const Icon(
+                //     Icons.notifications,
+                //     color: ColorResources.primaryOrange
+                //   ),
+                // ),
               ],
               leading: CupertinoNavigationBarBackButton(
                 color: ColorResources.primaryOrange,

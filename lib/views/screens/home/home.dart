@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import 'package:new_version_plus/new_version_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
@@ -30,7 +29,6 @@ import 'package:saka/providers/news/news.dart';
 import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/providers/event/event.dart';
 
-import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -38,23 +36,20 @@ import 'package:saka/utils/box_shadow.dart';
 
 import 'package:saka/views/basewidgets/drawer/drawer.dart';
 
-import 'package:saka/views/screens/update/update.dart';
-import 'package:saka/views/screens/store/store_index.dart';
 import 'package:saka/views/screens/comingsoon/comingsoon.dart';
 import 'package:saka/views/screens/ppob/topup/topup.dart';
 import 'package:saka/views/screens/radio/radio.dart';
 import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/media/media.dart';
-import 'package:saka/views/screens/ppob/ppob.dart';
 import 'package:saka/views/screens/news/detail.dart';
 import 'package:saka/views/screens/eventjoin/event_join.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   late FirebaseProvider fp;
@@ -81,19 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
       pp.getUserProfile(context);
     }
     if(mounted) {
-      ap.mascot(context);
-    }
-    if(mounted) {
-      ppopP.getBalance(context);
-    }
-    if(mounted) {
       np.getNews(context);
     }
     if(mounted) {
-      sp.getDataStore(context);
+      ap.mascot(context);
     }
     if(mounted) {
-      sp.getDataCategoryProduct(context, "commerce");  
+      // ppopP.getBalance(context);
+    }
+    if(mounted) {
+      // sp.getDataStore(context);
+    }
+    if(mounted) {
+      // sp.getDataCategoryProduct(context, "commerce");  
     }
   }
 
@@ -111,18 +106,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ppopP = context.read<PPOBProvider>();
     ep = context.read<EventProvider>();
 
-
     if(mounted) { 
-      NewVersionPlus newVersion = NewVersionPlus(
-        androidId: 'com.inovasi78.saka',
-        iOSId: 'com.inovatif78.saka'
-      );
-      Future.delayed(Duration.zero, () async {
-        VersionStatus? vs = await newVersion.getVersionStatus();
-        if(vs!.canUpdate) {
-          NS.push(context, const UpdateScreen());
-        } 
-      });
+      // NewVersionPlus newVersion = NewVersionPlus(
+      //   androidId: 'com.inovasi78.saka',
+      //   iOSId: 'com.inovatif78.saka'
+      // );
+      // Future.delayed(Duration.zero, () async {
+      //   VersionStatus? vs = await newVersion.getVersionStatus();
+      //   if(vs!.canUpdate) {
+      //     NS.push(context, const UpdateScreen());
+      //   } 
+      // });
     }
     
     getData();
@@ -159,11 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     bp.getBanner(context);
                     pp.getUserProfile(context);
                     ip.getInbox(context, "payment");
-                    ap.mascot(context);
-                    ppopP.getBalance(context);
                     ep.checkEvent(context);
-                    sp.getDataStore(context);
-                    sp.getDataCategoryProduct(context, "commerce");
+                    ap.mascot(context);
+                    // ppopP.getBalance(context);
+                    // sp.getDataStore(context);
+                    // sp.getDataCategoryProduct(context, "commerce");
                   });
                 },
                 child: CustomScrollView(
@@ -201,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       delegate: SliverChildListDelegate([
                         
                         banner(context),
+
                         infoAccount(context),
 
                         Container(
@@ -391,6 +386,12 @@ return Consumer<BannerProvider>(
                           fit: BoxFit.fill,
                           width: double.infinity,
                           height: double.infinity,
+                          placeholder: (context, url) {
+                            return Image.asset('assets/images/default_image.png');
+                          },
+                          errorWidget: (context, url, error) {
+                            return Image.asset('assets/images/default_image.png');
+                          },
                         ),
                       )
                     );                  
@@ -425,7 +426,7 @@ return Consumer<BannerProvider>(
 
 Widget infoAccount(BuildContext context) {
   return Container(
-    height: 125.0,
+    height: 90.0,
     margin: EdgeInsets.only(
       top: 15.0,
       left: 40.0,
@@ -525,39 +526,39 @@ Widget infoAccount(BuildContext context) {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(getTranslated("MY_BALANCE", context),
-                  style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeSmall,
-                    color: ColorResources.white
-                  ),
-                ),
-                const SizedBox(height: 5.0),
-                Consumer<PPOBProvider>(
-                  builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
-                    if(ppobProvider.balanceStatus == BalanceStatus.loading) {
-                      return Text("...",
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeLarge,
-                          color: ColorResources.white
-                        ),
-                      );
-                    }                             
-                    if(ppobProvider.balanceStatus == BalanceStatus.error) {
-                      return Text("-",
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeLarge,
-                          color: ColorResources.white
-                        ),
-                      );
-                    }    
-                    return Text(Helper.formatCurrency(ppobProvider.balance!),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeLarge,
-                        color: ColorResources.white
-                      ),
-                    );           
-                  },
-                )
+                // Text(getTranslated("MY_BALANCE", context),
+                //   style: robotoRegular.copyWith(
+                //     fontSize: Dimensions.fontSizeSmall,
+                //     color: ColorResources.white
+                //   ),
+                // ),
+                // const SizedBox(height: 5.0),
+                // Consumer<PPOBProvider>(
+                //   builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
+                //     if(ppobProvider.balanceStatus == BalanceStatus.loading) {
+                //       return Text("...",
+                //         style: robotoRegular.copyWith(
+                //           fontSize: Dimensions.fontSizeLarge,
+                //           color: ColorResources.white
+                //         ),
+                //       );
+                //     }                             
+                //     if(ppobProvider.balanceStatus == BalanceStatus.error) {
+                //       return Text("-",
+                //         style: robotoRegular.copyWith(
+                //           fontSize: Dimensions.fontSizeLarge,
+                //           color: ColorResources.white
+                //         ),
+                //       );
+                //     }    
+                //     return Text(Helper.formatCurrency(ppobProvider.balance!),
+                //       style: robotoRegular.copyWith(
+                //         fontSize: Dimensions.fontSizeLarge,
+                //         color: ColorResources.white
+                //       ),
+                //     );           
+                //   },
+                // )
               ],
             ),
           ),
@@ -585,7 +586,7 @@ Widget ourService(BuildContext context) {
       "id": 3,
       "name": "PPOB",
       "asset": "ppob.svg",
-      "link": PPOBScreen(),
+      "link": ComingSoonScreen(title: "PPOB"),
     },
     {
       "id": 4,
@@ -597,7 +598,7 @@ Widget ourService(BuildContext context) {
       "id": 5,
       "name": getTranslated("SAKA_MART", context),
       "asset": "saka-mart.svg",
-      "link": StoreScreen()
+      "link": ComingSoonScreen(title: "Saka Mart")
     },
   ];
 
@@ -790,6 +791,12 @@ Widget newsWidget(BuildContext context) {
                               fit: BoxFit.fill,
                               width: 80.0,
                               height: 80.0,
+                              placeholder: (context, url) {
+                                return Image.asset('assets/images/default_image.png');
+                              },
+                              errorWidget: (context, url, error) {
+                                return Image.asset('assets/images/default_image.png');
+                              },
                             ),
                           ),
                         ),

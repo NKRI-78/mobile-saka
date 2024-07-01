@@ -10,7 +10,7 @@ class ColorResources {
   static const Color backgroundColor = Color(0xffF6F6F6);
   static const Color error = Color(0xffFF7474);
   static const Color primaryOrange = Color(0xffEA8C3D);
-  static const Color btnPrimarySoft = Color(0xff04F89C2);
+  // static const Color btnPrimarySoft = Color(0xff04F89C2);
   static const Color btnPrimaryGrey = Color(0xffBCBCBC);
   static const Color green = Color(0xff18D336);
   static const Color gainsBoro = Color(0xffDBDBDB);

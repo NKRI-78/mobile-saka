@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:saka/providers/feedv2/feed.dart';
+import 'package:saka/providers/feedv2/feedReply.dart';
+import 'package:saka/providers/profile/profile.dart';
+import 'package:saka/views/basewidgets/button/custom.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,24 +11,23 @@ import 'package:flutter/services.dart';
 import 'package:readmore/readmore.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:saka/data/models/feedv2/feedReply.dart';
-import 'package:saka/providers/feedv2/feedDetail.dart';
-import 'package:saka/providers/feedv2/feedReply.dart';
-import 'package:saka/providers/profile/profile.dart';
-import 'package:saka/utils/date_util.dart';
-import 'package:saka/views/basewidgets/loader/circular.dart';
-import 'package:saka/views/screens/feed/widgets/post_text.dart';
+
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
+import 'package:saka/data/models/feed/singlecomment.dart';
+import 'package:saka/data/models/feedv2/feedReply.dart';
 
-import 'package:saka/localization/language_constraints.dart';
+import 'package:saka/providers/feedv2/feedDetail.dart';
 
+import 'package:saka/utils/date_util.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
+import 'package:saka/views/basewidgets/loader/circular.dart';
+import 'package:saka/views/screens/feed/widgets/post_text.dart';
 
-import 'package:saka/data/models/feed/singlecomment.dart';
+import 'package:saka/localization/language_constraints.dart';
 
 class RepliesScreen extends StatefulWidget {
   final String id;
@@ -44,8 +47,10 @@ class RepliesScreen extends StatefulWidget {
 class _RepliesScreenState extends State<RepliesScreen> {
   TextEditingController replyTextEditingController = TextEditingController();
   FocusNode replyFocusNode = FocusNode();
+  
   bool isExpanded = false;
   bool deletePostBtn = false;
+
   late FeedReplyProvider frv;
   late FeedDetailProviderV2 fdv2;
 
@@ -76,6 +81,165 @@ class _RepliesScreenState extends State<RepliesScreen> {
             ),
           )            
         );
+      },
+    );
+  }
+
+  Widget grantedDeleteReply(context, replyId) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext buildContext) { 
+        return [
+          PopupMenuItem(
+            child: Text(getTranslated("DELETE_REPLY", context),
+              style: robotoRegular.copyWith(
+                color: ColorResources.primaryOrange,
+                fontSize: Dimensions.fontSizeSmall
+              )
+            ), 
+            value: "/delete-post"
+          )
+        ];
+      },
+      onSelected: (route) {
+        if(route == "/delete-post") {
+          showAnimatedDialog(
+            barrierDismissible: true,
+            context: context,
+            builder: (BuildContext context) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return Container(
+                    margin: const EdgeInsets.only(
+                      left: 25.0,
+                      right: 25.0
+                    ),
+                    child: CustomDialog(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0.0,
+                      minWidth: 180.0,
+                      child: Transform.rotate(
+                        angle: 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(20.0),
+                            border: Border.all(
+                              color: ColorResources.white,
+                              width: 1.0
+                            )
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Transform.rotate(
+                                    angle: 56.5,
+                                    child: Container(
+                                      margin: const EdgeInsets.all(5.0),
+                                      height: 270.0,
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.white,
+                                        borderRadius: BorderRadius.circular(20.0),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 50.0,
+                                        left: 25.0,
+                                        right: 25.0,
+                                        bottom: 25.0
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+
+                                          Image.asset("assets/imagesv2/remove.png",
+                                            width: 60.0,
+                                            height: 60.0,
+                                          ),
+                                          
+                                          const SizedBox(height: 15.0),
+
+                                          Text(getTranslated("DELETE_POST", context),
+                                            style: poppinsRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              color: ColorResources.black
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 20.0),
+
+                                          StatefulBuilder(
+                                            builder: (BuildContext context, Function setState) {
+                                              return  Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      isBorderRadius: true,
+                                                      isBoxShadow: true,
+                                                      btnColor: ColorResources.error,
+                                                      isBorder: false,
+                                                      onTap: () {
+                                                        Navigator.of(context).pop();
+                                                      }, 
+                                                      btnTxt: getTranslated("NO", context)
+                                                    ),
+                                                  ),
+                                
+                                                  const SizedBox(width: 8.0),
+                                
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      isBorderRadius: true,
+                                                      isBoxShadow: true,
+                                                      btnColor: ColorResources.success,
+                                                      onTap: () async {
+                                                        setState(() => deletePostBtn = true);
+                                                        try {         
+                                                          await context.read<FeedProviderV2>().deleteReply(context, replyId);               
+                                                          setState(() => deletePostBtn = false);        
+                                                        } catch(e, stacktrace) {
+                                                          setState(() => deletePostBtn = false);
+                                                          debugPrint(stacktrace.toString()); 
+                                                        }
+                                                      }, 
+                                                      btnTxt: deletePostBtn 
+                                                      ? "..." 
+                                                      : getTranslated("YES", context)
+                                                    ),
+                                                  )
+                                
+                                                ],
+                                              );
+                                            },
+                                          ),
+
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ) 
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ); 
+            },
+          );
+        }
       },
     );
   }
@@ -242,7 +406,6 @@ class _RepliesScreenState extends State<RepliesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Index Reply : ${widget.index}");
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -329,7 +492,8 @@ class _RepliesScreenState extends State<RepliesScreen> {
                       children: [
                       ListTile(
                         trailing: context.read<ProfileProvider>().userProfile.userId == reply.user.id 
-                          ? grantedDeleteComment(context, reply.id) : Container(),
+                        ? grantedDeleteReply(context, reply.id) 
+                        : const SizedBox(),
                         leading: CachedNetworkImage(
                         imageUrl: "${reply.user.avatar}",
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(

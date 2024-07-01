@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -273,7 +274,9 @@ class _EventScreenState extends State<EventScreen> {
                       ),
                       onTap: (CalendarTapDetails calendarTapDetails) {
                         if(calendarTapDetails.appointments!.isNotEmpty) {
+                          
                           Meeting meeting = calendarTapDetails.appointments![0];
+
                           showAnimatedDialog(
                             context: context,
                             barrierDismissible: true,
@@ -335,6 +338,7 @@ class _EventScreenState extends State<EventScreen> {
                                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
+
                                                 Row(
                                                   mainAxisSize: MainAxisSize.max,
                                                   children: [
@@ -352,6 +356,7 @@ class _EventScreenState extends State<EventScreen> {
                                                     ),
                                                   ],
                                                 ),
+
                                                 Row(
                                                   mainAxisSize: MainAxisSize.max,
                                                   children: [
@@ -369,6 +374,7 @@ class _EventScreenState extends State<EventScreen> {
                                                     ),
                                                   ],
                                                 ),
+                                                
                                               ],
                                             ),
                                           ),
@@ -379,13 +385,65 @@ class _EventScreenState extends State<EventScreen> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
+
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+
+                                                        Text(getTranslated("TITLE", context),
+                                                          style: poppinsRegular.copyWith(
+                                                            fontSize: Dimensions.fontSizeDefault,
+                                                            fontWeight: FontWeight.w600
+                                                          )
+                                                        ),
+                                                        const SizedBox(height: 5.0),
+                                                        Text(meeting.eventName,
+                                                          style: robotoRegular.copyWith(
+                                                            fontSize: Dimensions.fontSizeSmall
+                                                          ),
+                                                        ),
+
+                                                      ],
+                                                    ),
+
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+
+                                                        Text(getTranslated("DATE", context),
+                                                          style: poppinsRegular.copyWith(
+                                                            fontSize: Dimensions.fontSizeDefault,
+                                                            fontWeight: FontWeight.w600
+                                                          )
+                                                        ),
+                                                        const SizedBox(height: 5.0),
+                                                        Text(DateFormat('yyyy-mm-dd').format(meeting.to),
+                                                          style: robotoRegular.copyWith(
+                                                            fontSize: Dimensions.fontSizeSmall
+                                                          ),
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                    
+
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 5.0),
                                                 Text(getTranslated("DESCRIPTION", context),
                                                   style: poppinsRegular.copyWith(
                                                     fontSize: Dimensions.fontSizeDefault,
                                                     fontWeight: FontWeight.w600
                                                   )
                                                 ),
-                                                const SizedBox(height: 6.0),
+                                                const SizedBox(height: 5.0),
                                                 Text(meeting.eventDesc,
                                                   style: robotoRegular.copyWith(
                                                     fontSize: Dimensions.fontSizeSmall

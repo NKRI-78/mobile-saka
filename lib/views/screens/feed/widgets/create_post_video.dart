@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:provider/provider.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:video_player/video_player.dart';
-import 'package:hex/hex.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 
@@ -103,12 +100,12 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                     InkWell(
                       onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
                         fdv2.setStateWritePost(WritePostStatus.loading);
-                        String? body = await getIt<FeedRepo>().getMediaKey(context); 
+                        // String? body = await getIt<FeedRepo>().getMediaKey(context); 
                         File f = File(fileX!.path);
-                        Uint8List bytesFiles = f.readAsBytesSync();
-                        String digestFile = sha256.convert(bytesFiles).toString();
-                        String imageHash = base64Url.encode(HEX.decode(digestFile)); 
-                        await getIt<FeedRepo>().uploadMedia(context, body!, imageHash, f);
+                        // Uint8List bytesFiles = f.readAsBytesSync();
+                        // String digestFile = sha256.convert(bytesFiles).toString();
+                        // String imageHash = base64Url.encode(HEX.decode(digestFile)); 
+                        await getIt<FeedRepo>().uploadMedia(context, f);
                         fdv2.feedType = "video";
                         await fdv2.postVideo(context, "video", f);
                         fdv2.setStateWritePost(WritePostStatus.loaded);

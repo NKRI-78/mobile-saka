@@ -156,12 +156,10 @@ class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
                   children: [
                     InkWell(
                       onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
-                      ? () {} : () async {
-                        fdv2.setStateWritePost(WritePostStatus.loading);
+                      ? () {} 
+                      : () async {
                         fdv2.feedType = "image";
-                        await fdv2.post(context, "image", widget.files!);          
-                        
-                        fdv2.setStateWritePost(WritePostStatus.loaded);
+                        await fdv2.post(context, "image", widget.files!); 
                       },
                       child: Container(
                         width:context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 

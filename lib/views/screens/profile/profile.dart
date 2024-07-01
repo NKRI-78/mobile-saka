@@ -9,21 +9,16 @@ import 'package:provider/provider.dart';
 import 'package:saka/data/models/profile/profile.dart';
 
 import 'package:saka/localization/language_constraints.dart';
-import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
-import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/images.dart';
 
-import 'package:saka/providers/ppob/ppob.dart';
 import 'package:saka/providers/profile/profile.dart';
 
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
-import 'package:saka/views/screens/ppob/topup/history/history.dart';
-import 'package:saka/views/screens/ppob/topup/topup.dart';
 import 'package:saka/views/screens/profile/edit.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -263,118 +258,119 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
 
   Widget profileWidget(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
+      margin: EdgeInsets.only(bottom: 15.0),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          Container(
-            margin: EdgeInsets.only(bottom: 5.0, left: 14.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
+          // Container(
+          //   margin: EdgeInsets.only(bottom: 5.0, left: 14.0),
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.max,
+          //     children: [
               
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(getTranslated("MY_BALANCE", context),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight: FontWeight.w600,
-                        color:  ColorResources.black
-                      ),
-                    ),
-                    SizedBox(width: 10.0),
-                    Consumer<PPOBProvider>(
-                      builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
-                        return Text(ppobProvider.balanceStatus == BalanceStatus.loading 
-                          ? "..." 
-                          : ppobProvider.balanceStatus == BalanceStatus.error 
-                          ? "-"
-                          : Helper.formatCurrency(double.parse(ppobProvider.balance.toString())),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.normal
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                ),
+          //       Row(
+          //         mainAxisSize: MainAxisSize.max,
+          //         children: [
+          //           Text(getTranslated("MY_BALANCE", context),
+          //             style: robotoRegular.copyWith(
+          //               fontSize: Dimensions.fontSizeSmall,
+          //               fontWeight: FontWeight.w600,
+          //               color:  ColorResources.black
+          //             ),
+          //           ),
+          //           SizedBox(width: 10.0),
+          //           Consumer<PPOBProvider>(
+          //             builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
+          //               return Text(ppobProvider.balanceStatus == BalanceStatus.loading 
+          //                 ? "..." 
+          //                 : ppobProvider.balanceStatus == BalanceStatus.error 
+          //                 ? "-"
+          //                 : Helper.formatCurrency(double.parse(ppobProvider.balance.toString())),
+          //                 style: robotoRegular.copyWith(
+          //                   fontSize: Dimensions.fontSizeSmall,
+          //                   fontWeight: FontWeight.normal
+          //                 ),
+          //               );
+          //             },
+          //           )
+          //         ],
+          //       ),
 
-                SizedBox(width: 15.0),
+          //       SizedBox(width: 15.0),
                 
-                InkWell(
-                  onTap: () => context.read<PPOBProvider>().getBalance(context),
-                  child: Icon(
-                    Icons.refresh,
-                    color: ColorResources.black,
-                  ),
-                ),
+          //       InkWell(
+          //         onTap: () => context.read<PPOBProvider>().getBalance(context),
+          //         child: Icon(
+          //           Icons.refresh,
+          //           color: ColorResources.black,
+          //         ),
+          //       ),
 
-              ],
-            ),
-          ),
+          //     ],
+          //   ),
+          // ),
 
-          Container(
-            margin: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 13.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
+          // Container(
+          //   margin: EdgeInsets.only(top: 10.0, bottom: 5.0, left: 13.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.start,
+          //     mainAxisSize: MainAxisSize.max,
+          //     children: [
 
-                FittedBox(
-                  child: Container(
-                    height: 30.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0.0,
-                        backgroundColor: ColorResources.primaryOrange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)
-                        )
-                      ),
-                      onPressed: () {
-                        NS.push(context, TopUpScreen());
-                      }, 
-                      child: Text(getTranslated("TOPUP", context),
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
-                          color: ColorResources.white
-                        ),
-                      )
-                    ),
-                  ),
-                ),
+          //       FittedBox(
+          //         child: Container(
+          //           height: 30.0,
+          //           child: ElevatedButton(
+          //             style: ElevatedButton.styleFrom(
+          //               elevation: 0.0,
+          //               backgroundColor: ColorResources.primaryOrange,
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(10.0)
+          //               )
+          //             ),
+          //             onPressed: () {
+          //               NS.push(context, TopUpScreen());
+          //             }, 
+          //             child: Text(getTranslated("TOPUP", context),
+          //               style: robotoRegular.copyWith(
+          //                 fontSize: Dimensions.fontSizeSmall,
+          //                 color: ColorResources.white
+          //               ),
+          //             )
+          //           ),
+          //         ),
+          //       ),
 
-                SizedBox(width: 10.0),
+          //       SizedBox(width: 10.0),
                 
-                FittedBox(
-                  child: Container(
-                    height: 30.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0.0,
-                        backgroundColor: ColorResources.primaryOrange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)
-                        )
-                      ),
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TopUpHistoryScreen())), 
-                      child: Text(getTranslated("HISTORY_BALANCE", context),
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
-                          color: ColorResources.white
-                        ),
-                      )
-                    ),
-                  ),
-                ),
+          //       FittedBox(
+          //         child: Container(
+          //           height: 30.0,
+          //           child: ElevatedButton(
+          //             style: ElevatedButton.styleFrom(
+          //               elevation: 0.0,
+          //               backgroundColor: ColorResources.primaryOrange,
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(10.0)
+          //               )
+          //             ),
+          //             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TopUpHistoryScreen())), 
+          //             child: Text(getTranslated("HISTORY_BALANCE", context),
+          //               style: robotoRegular.copyWith(
+          //                 fontSize: Dimensions.fontSizeSmall,
+          //                 color: ColorResources.white
+          //               ),
+          //             )
+          //           ),
+          //         ),
+          //       ),
   
-              ],
-            ),
-          ),
+          //     ],
+          //   ),
+          // ),
+          
           Consumer<ProfileProvider>(
             builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
               return Container(

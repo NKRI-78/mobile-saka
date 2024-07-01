@@ -5,6 +5,7 @@ import 'package:saka/data/models/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:saka/utils/date_util.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
@@ -34,10 +35,10 @@ class Posts extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostsState createState() => _PostsState();
+  PostsState createState() => PostsState();
 }
 
-class _PostsState extends State<Posts> {
+class PostsState extends State<Posts> {
   bool deletePostBtn = false;
 
   @override 

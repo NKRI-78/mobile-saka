@@ -17,7 +17,6 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
-import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 class DetailNewsScreen extends StatefulWidget {
@@ -180,6 +179,7 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   Container(
                     width: double.infinity,
@@ -188,11 +188,14 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
                       child: CachedNetworkImage(
                         imageUrl: "$imageUrl",
                         fit: BoxFit.cover,
-                        placeholder: (BuildContext context, String url) => Loader(
-                          color: ColorResources.primaryOrange,
-                        ),
+                        placeholder: (BuildContext context, String url) => Center(
+                        child: Image.asset("assets/images/default_image.png",
+                          height: double.infinity,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        )),
                         errorWidget: (BuildContext context, String url, dynamic error) => Center(
-                        child: Image.asset("assets/images/profile.png",
+                        child: Image.asset("assets/images/default_image.png",
                           height: double.infinity,
                           width: double.infinity,
                           fit: BoxFit.cover,

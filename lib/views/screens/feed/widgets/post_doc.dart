@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as b;
-import 'package:saka/utils/download_util.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-
-import 'package:saka/localization/language_constraints.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -108,64 +105,66 @@ class _PostDocState extends State<PostDoc> {
                   Expanded(
                     child: IconButton(
                       onPressed: () async {
-                        showAnimatedDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                height: 140.0,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const SizedBox(height: 10.0),
-                                    const Icon(Icons.download_rounded),
-                                    const SizedBox(height: 10.0),
-                                    Text(getTranslated("SAVE_DOCUMENT", context),
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeSmall,
-                                        fontWeight: FontWeight.w600
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:  MaterialStateProperty.all<Color>(ColorResources.error)
-                                          ),
-                                          onPressed: () => Navigator.of(context).pop(), 
-                                          child: Text(getTranslated("NO", context),
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeSmall
-                                            ),
-                                          )
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            await DownloadHelper.downloadDoc(context: context, url: "${widget.medias[0].path}");
-                                            Navigator.of(context, rootNavigator: true).pop();
-                                          },
-                                          child: Text(getTranslated("YES", context),
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeSmall
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                          animationType: DialogTransitionType.scale,
-                          curve: Curves.fastOutSlowIn,
-                          duration: const Duration(seconds: 1),
-                        );       
+                        
+                        await launchUrl(Uri.parse(widget.medias[0].path));
+                        // showAnimatedDialog(
+                        //   context: context,
+                        //   barrierDismissible: true,
+                        //   builder: (BuildContext context) {
+                        //     return Dialog(
+                        //       child: Container(
+                        //         padding: const EdgeInsets.all(8.0),
+                        //         height: 140.0,
+                        //         child: Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.center,
+                        //           mainAxisSize: MainAxisSize.min,
+                        //           children: [
+                        //             const SizedBox(height: 10.0),
+                        //             const Icon(Icons.download_rounded),
+                        //             const SizedBox(height: 10.0),
+                        //             Text(getTranslated("SAVE_DOCUMENT", context),
+                        //               style: robotoRegular.copyWith(
+                        //                 fontSize: Dimensions.fontSizeSmall,
+                        //                 fontWeight: FontWeight.w600
+                        //               ),
+                        //             ),
+                        //             const SizedBox(height: 10.0),
+                        //             Row(
+                        //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //               children: [
+                        //                 ElevatedButton(
+                        //                   style: ButtonStyle(
+                        //                     backgroundColor:  MaterialStateProperty.all<Color>(ColorResources.error)
+                        //                   ),
+                        //                   onPressed: () => Navigator.of(context).pop(), 
+                        //                   child: Text(getTranslated("NO", context),
+                        //                     style: robotoRegular.copyWith(
+                        //                       fontSize: Dimensions.fontSizeSmall
+                        //                     ),
+                        //                   )
+                        //                 ),
+                        //                 ElevatedButton(
+                        //                   onPressed: () async {
+                        //                     await DownloadHelper.downloadDoc(context: context, url: "${}");
+                        //                     Navigator.of(context, rootNavigator: true).pop();
+                        //                   },
+                        //                   child: Text(getTranslated("YES", context),
+                        //                     style: robotoRegular.copyWith(
+                        //                       fontSize: Dimensions.fontSizeSmall
+                        //                     ),
+                        //                   ),
+                        //                 )
+                        //               ],
+                        //             )
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     );
+                        //   },
+                        //   animationType: DialogTransitionType.scale,
+                        //   curve: Curves.fastOutSlowIn,
+                        //   duration: const Duration(seconds: 1),
+                        // );       
                       },
                       color: ColorResources.white,
                       icon: const Icon(Icons.arrow_circle_down),

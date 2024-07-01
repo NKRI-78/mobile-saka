@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:saka/data/models/feedv2/feed.dart';
@@ -8,9 +7,11 @@ import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:saka/data/models/feedv2/feedReply.dart';
 
 import 'package:path/path.dart' as p;
+
 import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dio.dart';
 import 'package:saka/utils/exceptions.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
@@ -124,7 +125,6 @@ class FeedRepoV2 {
       required String path,
       required String size}) async {
     try {
-      debugPrint("Forum id : $feedId");
       Dio dio = await DioManager.shared.getClient(context);
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload-media",
       data: {"forum_id": feedId, "path": path, "size": size});

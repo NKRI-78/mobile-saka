@@ -133,14 +133,14 @@ class _PostVideoState extends State<PostVideo> {
                     // )
                   ],
                 ),
-            ) 
+              ) 
             : const SizedBox(
-              height: 200,
-              child: SpinKitThreeBounce(
-                size: 20.0,
-                color: ColorResources.primaryOrange,
+                height: 200,
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primaryOrange,
+                ),
               ),
-            ),
           ],
         ); 
       },
@@ -186,7 +186,7 @@ class _PostVideoState extends State<PostVideo> {
 //   }
 
 //   Future<void> initializePlayer() async {
-//     videoC = VideoPlayerController.networkUrl(Uri.parse("${AppConstants.baseUrlFeedImg}${widget.dataSource}"));
+//     videoC = VideoPlayerController.networkUrl(Uri.parse("${widget.dataSource}"));
     
 //     await Future.wait([
 //       videoC.initialize(),

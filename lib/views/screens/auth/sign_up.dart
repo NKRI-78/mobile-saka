@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:new_version_plus/new_version_plus.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart' as s;
 
 import 'package:saka/data/models/region/region.dart';
@@ -18,6 +17,7 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
+import 'package:saka/utils/input_formatters.dart';
 import 'package:saka/views/basewidgets/button/custom.dart';
 
 import 'package:saka/views/basewidgets/dialog/animated/animated.dart';
@@ -26,7 +26,6 @@ import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:saka/views/screens/auth/sign_in.dart';
-import 'package:saka/views/screens/update/update.dart';
 
 class SignUpScreen extends StatefulWidget{
 
@@ -176,16 +175,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     passwordConfirmC = TextEditingController();
 
     if(mounted) { 
-      NewVersionPlus newVersion = NewVersionPlus(
-        androidId: 'com.inovasi78.saka',
-        iOSId: 'com.inovatif78.saka'
-      );
-      Future.delayed(Duration.zero, () async {
-        VersionStatus? vs = await newVersion.getVersionStatus();
-        if(vs!.canUpdate) {
-          NS.push(context, const UpdateScreen());
-        } 
-      });
+      // NewVersionPlus newVersion = NewVersionPlus(
+      //   androidId: 'com.inovasi78.saka',
+      //   iOSId: 'com.inovatif78.saka'
+      // );
+      // Future.delayed(Duration.zero, () async {
+      //   VersionStatus? vs = await newVersion.getVersionStatus();
+      //   if(vs!.canUpdate) {
+      //     NS.push(context, const UpdateScreen());
+      //   } 
+      // });
     }
 
     Future.delayed(Duration.zero, () {
@@ -662,6 +661,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             ),
                                             textInputAction: TextInputAction.next,
                                             cursorColor: ColorResources.brown,
+                                            inputFormatters: [
+                                              CapitalizeWordsInputFormatter()
+                                            ],
                                             decoration: InputDecoration(
                                               hintText: getTranslated("ENTER_YOUR_FULLNAME", context),
                                               hintStyle: robotoRegular.copyWith(

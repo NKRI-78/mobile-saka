@@ -196,16 +196,18 @@ class FeedProviderV2 with ChangeNotifier {
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
+
     if(postC.text.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
     setStateWritePost(WritePostStatus.loading);
+
     if (feedType == "text") {
       await fr.post(
         context: context, 
@@ -213,87 +215,84 @@ class FeedProviderV2 with ChangeNotifier {
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: 'hello.jpg', 
+        media: 'media.jpg', 
         caption: postC.text, 
         link: '', 
       );
     }
 
     if (feedType == "image") {
-      await fr.post(
-        context: context, 
-        feedId: feedId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: 'hello.jpg',
-        link: '', 
-        caption: postC.text, 
-      );
+   
       for (File p in files) {
         Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(p.path));
-        print("Image : ${d["data"]["path"]}");
+
+        await fr.post(
+          context: context, 
+          feedId: feedId,
+          appName: 'saka', 
+          userId: ar.getUserId().toString(), 
+          feedType: type, 
+          media: d["data"]["path"],
+          link: '', 
+          caption: postC.text, 
+        );
+      
         await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
       }
     }
 
+    setStateWritePost(WritePostStatus.loaded);
+
     Future.delayed(Duration.zero, () {
       NS.pop(context);
     });
-    setStateWritePost(WritePostStatus.loaded);
+
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
     });
   }
+
   Future<void> postImageCamera(BuildContext context,String type, File files) async {
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
+
     if(postC.text.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
     setStateWritePost(WritePostStatus.loading);
-    if (feedType == "text") {
-      await fr.post(
-        context: context, 
-        feedId: feedId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: 'hello.jpg',
-        link: '', 
-        caption: postC.text, 
-      );
-    }
 
     if (feedType == "image") {
+      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(files.path));
+      
       await fr.post(
         context: context, 
         feedId: feedId,
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: 'hello.jpg', 
+        media: d["data"]["path"], 
         link: '',
         caption: postC.text, 
       );
-      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(files.path));
-      print("Image : ${d["data"]["path"]}");
+
       await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
     }
+
+    setStateWritePost(WritePostStatus.loaded);
 
     Future.delayed(Duration.zero, () {
       NS.pop(context);
     });
-    setStateWritePost(WritePostStatus.loaded);
+
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
@@ -309,6 +308,7 @@ class FeedProviderV2 with ChangeNotifier {
       setStateWritePost(WritePostStatus.loaded);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
+
     if(postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.loaded);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
@@ -316,65 +316,67 @@ class FeedProviderV2 with ChangeNotifier {
     }
 
     if (feedType == "video") {
+      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "videos", media: files);
+      
       await fr.post(
         context: context, 
         feedId: feedId,
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: 'hello.jpg', 
+        media: d["data"]["path"], 
         link: '',
         caption: postC.text, 
       );
-      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: files);
-      print("Image : ${d["data"]["path"]}");
+
       await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
     }
 
+    setStateWritePost(WritePostStatus.loaded);
+    
     Future.delayed(Duration.zero, () {
       NS.pop(context);
     });
-    setStateWritePost(WritePostStatus.loaded);
+
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
     });
   }
+
   Future<void> postLink(BuildContext context,String type, String link) async {
     setStateWritePost(WritePostStatus.loading);
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
+
     if(postC.text.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
     if(postC.text.trim().isNotEmpty) {
       if(postC.text.trim().length < 10) {
-        setStateWritePost(WritePostStatus.loaded);
+        setStateWritePost(WritePostStatus.error);
         ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
         return;
       }
     } 
-    if(postC.text.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
-      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
-      return;
-    }
+
     if(link.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("URL_IS_REQUIRED", context), "", ColorResources.error);
       return;
     } 
+
     bool validURL = Uri.parse(link.trim()).isAbsolute;
     if(!validURL) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("URL_FORMAT", context), "", ColorResources.error);
       return;
     }
@@ -386,54 +388,66 @@ class FeedProviderV2 with ChangeNotifier {
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: 'hello.jpg',
+        media: 'media.jpg',
         link: link, 
         caption: postC.text, 
       );
     }
 
+    setStateWritePost(WritePostStatus.loaded);
+
     Future.delayed(Duration.zero, () {
       NS.pop(context);
     });
-    setStateWritePost(WritePostStatus.loaded);
+
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
     });
   }
+
   Future<void> postVDoc(BuildContext context, String caption ,String type, File files) async {
     setStateWritePost(WritePostStatus.loading);
     String feedId = const Uuid().v4();
     
     if (caption.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
+
     if(caption.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
+    Map<String, dynamic> data = await fr.uploadMedia(context: context, folder: "documents", media: files);
+
     await fr.post(
-      context: context, 
+      context: context,
       feedId: feedId,
-      appName: 'saka', 
+      appName: 'saka',
       userId: ar.getUserId().toString(), 
-      feedType: type, 
-      media: 'hello.jpg', 
-      link: '',
-      caption: caption, 
+      feedType: type,
+      media: "media.jpg",
+      link: data["data"]["path"],
+      caption: caption,
     );
-    Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: files);
-    print("Image : ${d["data"]["path"]}");
-    await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+    
+    await fr.postMedia(
+      context: context, 
+      feedId: feedId, 
+      path: data["data"]["path"], 
+      size: data["data"]["size"]
+    );
+
+    setStateWritePost(WritePostStatus.loaded);
 
     Future.delayed(Duration.zero, () {
       NS.pop(context);
     });
-    setStateWritePost(WritePostStatus.loaded);
+    
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
@@ -443,19 +457,37 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> deletePost(BuildContext context, String postId) async {
     await fr.deletePost(context, postId);
+
     Future.delayed(Duration.zero, () {
-      Navigator.of(context).pop();
+      NS.pop(context);
+    });
+
+    Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
     });
   }
 
-  Future<void> toggleLike(
-      {
-      required BuildContext context,
-      required String feedId, 
-      required FeedLikes feedLikes}) async {
+  Future<void> deleteReply(BuildContext context, String replyId) async {
+    await fr.deleteReply(context, replyId);
+
+    Future.delayed(Duration.zero, () {
+      NS.pop(context);
+    });
+
+    Future.delayed(Duration.zero, () {
+      fetchFeedSelf(context);
+      fetchFeedMostRecent(context);
+      fetchFeedPopuler(context);
+    });
+  }
+
+  Future<void> toggleLike({
+    required BuildContext context,
+    required String feedId, 
+    required FeedLikes feedLikes
+  }) async {
     try {
       int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
       if (idxLikes != -1) {

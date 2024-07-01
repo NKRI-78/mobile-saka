@@ -19,10 +19,10 @@ import 'package:saka/localization/language_constraints.dart';
 class SettingScreen extends StatefulWidget {
 
   @override
-  _SettingscreenState createState() => _SettingscreenState();
+  SettingscreenState createState() => SettingscreenState();
 }
 
-class _SettingscreenState extends State<SettingScreen> {
+class SettingscreenState extends State<SettingScreen> {
   
   @override
   Widget build(BuildContext context) {

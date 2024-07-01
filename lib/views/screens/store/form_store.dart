@@ -1,17 +1,12 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:hex/hex.dart';
 
 import 'package:saka/maps/src/place_picker.dart';
-
-import 'package:saka/container.dart';
 
 import 'package:saka/services/navigation.dart';
 
@@ -22,8 +17,6 @@ import 'package:saka/utils/custom_themes.dart';
 
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
-
-import 'package:saka/data/repository/feed/feed.dart';
 
 import 'package:saka/data/models/store/region.dart';
 import 'package:saka/data/models/store/region_subdistrict.dart';
@@ -153,32 +146,32 @@ class _FormStoreScreenState extends State<FormStoreScreen> {
         ShowSnackbar.snackbar(context, "Deskripsi toko tidak boleh kosong", "", ColorResources.error);
         return;
       }
-      String? body = await getIt<FeedRepo>().getMediaKey(context); 
-      Uint8List bytes = _file!.readAsBytesSync();
-      File file = File(_file!.path);
-      String digestFile = sha256.convert(bytes).toString();
-      String imageHash = base64Url.encode(HEX.decode(digestFile)); 
-      Provider.of<StoreProvider>(context, listen: false).setStateCreateStoreStatus(CreateStoreStatus.loading);
-      await Provider.of<StoreProvider>(context, listen: false).uploadImageProduct(
-        context, 
-        body!, 
-        imageHash, 
-        file
-      );
-      await context.read<StoreProvider>().postCreateDataStore(
-        context, 
-        file,
-        nameStoreC.text, 
-        province!, 
-        cityName!, 
-        villageC.text, 
-        postCodeC.text, 
-        addressC.text, 
-        subDistrictName!,
-        emailC.text,
-        phoneC.text,
-        descStoreC.text
-      );
+      // String? body = await getIt<FeedRepo>().getMediaKey(context); 
+      // Uint8List bytes = _file!.readAsBytesSync();
+      // File file = File(_file!.path);
+      // String digestFile = sha256.convert(bytes).toString();
+      // String imageHash = base64Url.encode(HEX.decode(digestFile)); 
+      // Provider.of<StoreProvider>(context, listen: false).setStateCreateStoreStatus(CreateStoreStatus.loading);
+      // await Provider.of<StoreProvider>(context, listen: false).uploadImageProduct(
+      //   context, 
+      //   body!, 
+      //   imageHash, 
+      //   file
+      // );
+      // await context.read<StoreProvider>().postCreateDataStore(
+      //   context, 
+      //   file,
+      //   nameStoreC.text, 
+      //   province!, 
+      //   cityName!, 
+      //   villageC.text, 
+      //   postCodeC.text, 
+      //   addressC.text, 
+      //   subDistrictName!,
+      //   emailC.text,
+      //   phoneC.text,
+      //   descStoreC.text
+      // );
     } catch(e) {
       debugPrint(e.toString());
     }

@@ -30,7 +30,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
         children: [
           CustomAppBar(title: widget.title),
           Center(
-            child: Image.asset("assets/imagesv2/comingsoon.png")
+            child: Image.asset("assets/images/maintenance.png")
           )
         ],
       ) 
