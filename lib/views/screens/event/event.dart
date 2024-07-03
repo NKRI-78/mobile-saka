@@ -291,7 +291,8 @@ class _EventScreenState extends State<EventScreen> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
-                                        children: [
+                                        children: [   
+
                                           CachedNetworkImage(
                                             imageUrl: "${meeting.eventImage}",
                                             imageBuilder: (BuildContext context, ImageProvider imageProvider) {
@@ -332,10 +333,53 @@ class _EventScreenState extends State<EventScreen> {
                                             },
                                           ),
 
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+
+                                              Text(getTranslated("TITLE", context),
+                                                style: poppinsRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeDefault,
+                                                  fontWeight: FontWeight.w600
+                                                )
+                                              ),
+                                              const SizedBox(height: 5.0),
+                                              Text(meeting.eventName,
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 10.0),
+
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+
+                                                  Text(getTranslated("DATE", context),
+                                                    style: poppinsRegular.copyWith(
+                                                      fontSize: Dimensions.fontSizeDefault,
+                                                      fontWeight: FontWeight.w600
+                                                    )
+                                                  ),
+                                                  const SizedBox(height: 5.0),
+                                                  Text(DateFormat('dd-MM-yyyy').format(meeting.to),
+                                                    style: robotoRegular.copyWith(
+                                                      fontSize: Dimensions.fontSizeSmall
+                                                    ),
+                                                  ),
+
+                                                ],
+                                              ),
+
+                                            ],
+                                          ),
+
                                           Container(
                                             margin: const EdgeInsets.only(top: 15.0, bottom: 5.0),
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
 
@@ -356,6 +400,8 @@ class _EventScreenState extends State<EventScreen> {
                                                     ),
                                                   ],
                                                 ),
+
+                                                const SizedBox(width: 10.0),
 
                                                 Row(
                                                   mainAxisSize: MainAxisSize.max,
@@ -385,58 +431,6 @@ class _EventScreenState extends State<EventScreen> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-
-                                                Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-
-                                                        Text(getTranslated("TITLE", context),
-                                                          style: poppinsRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault,
-                                                            fontWeight: FontWeight.w600
-                                                          )
-                                                        ),
-                                                        const SizedBox(height: 5.0),
-                                                        Text(meeting.eventName,
-                                                          style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeSmall
-                                                          ),
-                                                        ),
-
-                                                      ],
-                                                    ),
-
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-
-                                                        Text(getTranslated("DATE", context),
-                                                          style: poppinsRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault,
-                                                            fontWeight: FontWeight.w600
-                                                          )
-                                                        ),
-                                                        const SizedBox(height: 5.0),
-                                                        Text(DateFormat('yyyy-mm-dd').format(meeting.to),
-                                                          style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeSmall
-                                                          ),
-                                                        ),
-
-                                                      ],
-                                                    ),
-                                                    
-
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 5.0),
                                                 Text(getTranslated("DESCRIPTION", context),
                                                   style: poppinsRegular.copyWith(
                                                     fontSize: Dimensions.fontSizeDefault,

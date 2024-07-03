@@ -92,13 +92,13 @@ class _SosScreenState extends State<SosScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        getSosList(context, getTranslated("AMBULANCE", context), Images.ambulance, "${getTranslated("I_NEED_HELP_AMBULANCE", context)} ${getTranslated("AMBULANCE", context)}" ),
+                        getSosList(context, getTranslated("AMBULANCE", context), Images.ambulance, "I_NEED_HELP", "AMBULANCE"),
                         SizedBox(height: 10.0),
-                        getSosList(context, getTranslated("ACCIDENT", context), Images.strike, "${getTranslated("I_NEED_HELP", context)} ${getTranslated("ACCIDENT", context)}"),
+                        getSosList(context, getTranslated("ACCIDENT", context), Images.strike, "I_NEED_HELP", "ACCIDENT"),
                         SizedBox(height: 10.0),
-                        getSosList(context, getTranslated("WILDFIRE", context), Images.fire, "${getTranslated("I_NEED_HELP", context)} ${getTranslated("WILDFIRE", context)}" ),
+                        getSosList(context, getTranslated("WILDFIRE", context), Images.fire, "I_NEED_HELP", "WILDFIRE"),
                         SizedBox(height: 10.0),
-                        getSosList(context, getTranslated("DISASTER", context), Images.disaster, "${getTranslated("I_NEED_HELP", context)} ${getTranslated("DISASTER", context)} "),
+                        getSosList(context, getTranslated("DISASTER", context), Images.disaster, "I_NEED_HELP", "DISASTER"),
                       ],
                     ),
                   ),
@@ -114,7 +114,7 @@ class _SosScreenState extends State<SosScreen> {
   }
 }
 
-Widget getSosList(BuildContext context, String label, String images, String content) {
+Widget getSosList(BuildContext context, String label, String images, String content, String obj) {
   return Container(
     width: double.infinity,
     height: 80.0,
@@ -135,7 +135,8 @@ Widget getSosList(BuildContext context, String label, String images, String cont
         onTap: () {
           NS.push(context, SosDetailScreen(
             label: label, 
-            content: content
+            content: content,
+            obj: obj
           ));
         },
         child: Padding(
@@ -164,9 +165,9 @@ Widget getSosList(BuildContext context, String label, String images, String cont
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  Text(content,
+                  Text("${getTranslated(content, context)} ${getTranslated(obj, context)}",
                     style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall
+                      fontSize: Dimensions.fontSizeExtraSmall
                     ),
                   )  
                 ],

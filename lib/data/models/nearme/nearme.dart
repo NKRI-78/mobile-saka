@@ -1,62 +1,51 @@
 class MembernearModel {
-  int status;
-  bool error;
+  List<MembernearData> body;
+  int code;
   String message;
-  List<MembernearData> data;
 
   MembernearModel({
-    required this.status,
-    required this.error,
+    required this.body,
+    required this.code,
     required this.message,
-    required this.data,
   });
 
   factory MembernearModel.fromJson(Map<String, dynamic> json) => MembernearModel(
-    status: json["status"],
-    error: json["error"],
+    body: List<MembernearData>.from(json["body"].map((x) => MembernearData.fromJson(x))),
+    code: json["code"],
     message: json["message"],
-    data: List<MembernearData>.from(json["data"].map((x) => MembernearData.fromJson(x))),
   );
 }
 
 class MembernearData {
-  User user;
-  String lat;
-  String lng;
+  String avatarUrl;
   String distance;
+  String fullname;
+  String lastseenDay;
+  String lastseenHour;
+  String lastseenMinute;
+  String phoneNumber;
+  String userId;
 
   MembernearData({
-    required this.user,
-    required this.lat,
-    required this.lng,
+    required this.avatarUrl,
     required this.distance,
+    required this.fullname,
+    required this.lastseenDay,
+    required this.lastseenHour,
+    required this.lastseenMinute,
+    required this.phoneNumber,
+    required this.userId,
   });
 
   factory MembernearData.fromJson(Map<String, dynamic> json) => MembernearData(
-    user: User.fromJson(json["user"]),
-    lat: json["lat"],
-    lng: json["lng"],
+    avatarUrl: json["avatar_url"],
     distance: json["distance"],
+    fullname: json["fullname"],
+    lastseenDay: json["lastseen_day"],
+    lastseenHour: json["lastseen_hour"],
+    lastseenMinute: json["lastseen_minute"],
+    phoneNumber: json["phone_number"],
+    userId: json["user_id"],
   );
-}
-
-class User {
-  String avatar;
-  String name;
-  String email;
-  String phone;
-
-  User({
-    required this.avatar,
-    required this.name,
-    required this.email,
-    required this.phone,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    avatar: json["avatar"],
-    name: json["name"],
-    email: json["email"],
-    phone: json["phone"],
-  );
+  
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,20 +17,16 @@ class MembernearRepo {
   Future<List<MembernearData>> membernear(BuildContext context) async {
     try {
       Dio dio = await DioManager.shared.getClient(context);
-      Response res = await dio.post("https://api-custom.inovatif78.com/api/v1/saka/membernear",
-        data: {
-          "origin_lat": sp.getString("lat"),
-          "origin_lng": sp.getString("lng"),
-          "user_id": sp.getString("userId")
-        }
-      );
-      Map<String, dynamic> data = res.data;
+      debugPrint(sp.getString('lat'));
+      debugPrint(sp.getString('lng'));
+      Response res = await dio.get("https://api-saka.inovatiftujuh8.com/data/nearme?lat=${sp.getString("lat")}&lng=${sp.getString("lng")}");
+      Map<String, dynamic> data = json.decode(res.data);
+      debugPrint(data.toString());
       MembernearModel membernearModel = MembernearModel.fromJson(data);
-      return membernearModel.data;
+      return membernearModel.body;
     } on DioError catch(e) {
       if(e.response!.statusCode == 400) {
         debugPrint(e.response!.data.toString());
-        debugPrint("Membernear (400)");
       } else {
         debugPrint("Membernear (${e.response!.statusCode})");
       }

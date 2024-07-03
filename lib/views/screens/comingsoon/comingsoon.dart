@@ -11,10 +11,10 @@ class ComingSoonScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ComingSoonScreen> createState() => _ComingSoonScreenState();
+  State<ComingSoonScreen> createState() => ComingSoonScreenState();
 }
 
-class _ComingSoonScreenState extends State<ComingSoonScreen> {
+class ComingSoonScreenState extends State<ComingSoonScreen> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   @override

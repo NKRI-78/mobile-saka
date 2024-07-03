@@ -177,7 +177,7 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
             color: ColorResources.white,
             onRefresh: () {
               return Future.sync(() {
-                Provider.of<InboxProvider>(context, listen: false).getInbox(context, type);  
+                context.read<InboxProvider>().getInbox(context, type);
               });       
             },
             child: ListView(
@@ -278,7 +278,6 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                                               ),
                                           ),
                                         ),
-                                        
 
                                         SizedBox(height: 16.0),
 
@@ -351,7 +350,7 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
 
-                                                  Text(inboxProvider.inboxes[i].body!,
+                                                  Text(getTranslated("${inboxProvider.inboxes[i].body!.split('-')[0].toString()}", context) + " " + getTranslated("${inboxProvider.inboxes[i].body!.split('-')[1].toString()}", context),
                                                     textAlign: TextAlign.justify,
                                                     style: robotoRegular.copyWith(
                                                       height: 1.4,
@@ -368,58 +367,58 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         mainAxisSize: MainAxisSize.max,
                                                         children: [
-                                                          ElevatedButton(
-                                                            style: ElevatedButton.styleFrom(
-                                                              elevation: 3.0,
-                                                              backgroundColor: ColorResources.success
-                                                            ),
-                                                            onPressed: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                            ? () {} 
-                                                            : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                            ? () {}
-                                                            : () async {
-                                                              try {
-                                                                await launchUrl(Uri.parse("whatsapp://send?phone=${profileProvider.getUserPhoneNumber}"));
-                                                              } catch(e) {
-                                                                print(e);
-                                                              }
-                                                            },
-                                                            child: Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                              ? "..."
-                                                              : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                              ? "..."
-                                                              : "Whatsapp",
-                                                              style: robotoRegular.copyWith(
-                                                                color: ColorResources.white
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          ElevatedButton(
-                                                            style: ElevatedButton.styleFrom(
-                                                              elevation: 3.0,
-                                                              backgroundColor: ColorResources.blue,
-                                                            ),
-                                                            onPressed: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                            ? () {} 
-                                                            : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                            ? () {}
-                                                            : () async {
-                                                              try {
-                                                                await launchUrl(Uri.parse("tel:${profileProvider.getSingleUserPhoneNumber}"));
-                                                              } catch(e) {
-                                                                print(e);
-                                                              }
-                                                            },
-                                                            child: Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                              ? "..."
-                                                              : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                              ? "..."
-                                                              : "Phone",
-                                                              style: robotoRegular.copyWith(
-                                                                color: ColorResources.white
-                                                              ),
-                                                            )
-                                                          )
+                                                          // ElevatedButton(
+                                                          //   style: ElevatedButton.styleFrom(
+                                                          //     elevation: 3.0,
+                                                          //     backgroundColor: ColorResources.success
+                                                          //   ),
+                                                          //   onPressed: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
+                                                          //   ? () {} 
+                                                          //   : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
+                                                          //   ? () {}
+                                                          //   : () async {
+                                                          //     try {
+                                                          //       await launchUrl(Uri.parse("whatsapp://send?phone=${profileProvider.getUserPhoneNumber}"));
+                                                          //     } catch(e) {
+                                                          //       print(e);
+                                                          //     }
+                                                          //   },
+                                                          //   child: Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
+                                                          //     ? "..."
+                                                          //     : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
+                                                          //     ? "..."
+                                                          //     : "Whatsapp",
+                                                          //     style: robotoRegular.copyWith(
+                                                          //       color: ColorResources.white
+                                                          //     ),
+                                                          //   ),
+                                                          // ),
+                                                          // ElevatedButton(
+                                                          //   style: ElevatedButton.styleFrom(
+                                                          //     elevation: 3.0,
+                                                          //     backgroundColor: ColorResources.blue,
+                                                          //   ),
+                                                          //   onPressed: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
+                                                          //   ? () {} 
+                                                          //   : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
+                                                          //   ? () {}
+                                                          //   : () async {
+                                                          //     try {
+                                                          //       await launchUrl(Uri.parse("tel:${profileProvider.getSingleUserPhoneNumber}"));
+                                                          //     } catch(e) {
+                                                          //       print(e);
+                                                          //     }
+                                                          //   },
+                                                          //   child: Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
+                                                          //     ? "..."
+                                                          //     : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
+                                                          //     ? "..."
+                                                          //     : "Phone",
+                                                          //     style: robotoRegular.copyWith(
+                                                          //       color: ColorResources.white
+                                                          //     ),
+                                                          //   )
+                                                          // )
                                                         ],
                                                       ),
                                                     ),
@@ -484,7 +483,7 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                         color: ColorResources.success,
                       ) 
                     :
-                      Icon(
+                    Icon(
                       inboxProvider.inboxStatus == InboxStatus.loading  
                       ? Icons.label
                       : inboxProvider.inboxStatus == InboxStatus.error 
@@ -522,6 +521,8 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                           ? "..."
                           : inboxProvider.inboxStatus == InboxStatus.error 
                           ? "..."
+                          : inboxProvider.inboxes[i].subject == "Emergency" 
+                          ? getTranslated("${inboxProvider.inboxes[i].body!.split('-')[0].toString()}", context) + " " + getTranslated("${inboxProvider.inboxes[i].body!.split('-')[1].toString()}", context) 
                           : inboxProvider.inboxes[i].body!,
                             overflow: inboxProvider.inboxes[i].subject == "Emergency" 
                           ? TextOverflow.fade
@@ -539,7 +540,7 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                           ? "..."
                           : inboxProvider.inboxStatus == InboxStatus.error 
                           ? "..."
-                          : DateFormat('dd MMM yyyy kk:mm').format(inboxProvider.inboxes[i].created!.toLocal()),
+                          : DateFormat('dd MMM yyyy kk:mm').format(inboxProvider.inboxes[i].created!),
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeSmall
                             ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:saka/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saka/maps/google_maps_place_picker.dart';
@@ -10,7 +11,7 @@ class LocationProvider extends ChangeNotifier {
   final SharedPreferences sp;
   LocationProvider({required this.sp});
   
-  Future<void> getCurrentPosition(BuildContext context, {required double latitude, required double longitude}) async {
+  Future<void> getCurrentPosition({required double latitude, required double longitude}) async {
     try {
       sp.setDouble("lat", latitude);
       sp.setDouble("lng", longitude);
@@ -43,7 +44,7 @@ class LocationProvider extends ChangeNotifier {
 
   String get getCurrentNameAddress => sp.getString("currentNameAddress") ?? "Location no Selected"; 
 
-  double get getCurrentLat => sp.getDouble("lat") ?? 0.0;
+  double get getCurrentLat => double.parse(Helper.prefs!.getString("lat") ?? '0.0');
   
-  double get getCurrentLng => sp.getDouble("lng") ?? 0.0;
+  double get getCurrentLng => double.parse(Helper.prefs!.getString("lng") ?? '0.0') ;
 }

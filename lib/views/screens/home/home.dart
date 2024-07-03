@@ -3,6 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:saka/providers/location/location.dart';
+import 'package:saka/utils/helper.dart';
+
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +58,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   late FirebaseProvider fp;
   late NewsProvider np;
+  late LocationProvider lp;
   late InboxProvider ip;
   late BannerProvider bp;
   late ProfileProvider pp;
@@ -82,6 +87,17 @@ class HomeScreenState extends State<HomeScreen> {
       ap.mascot(context);
     }
     if(mounted) {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+    
+      lp.getCurrentPosition(
+        latitude: position.latitude, 
+        longitude: position.longitude
+      );
+
+      Helper.prefs?.setString("lat", position.latitude.toString());
+      Helper.prefs?.setString("lng", position.longitude.toString());
+    }
+    if(mounted) {
       // ppopP.getBalance(context);
     }
     if(mounted) {
@@ -101,6 +117,7 @@ class HomeScreenState extends State<HomeScreen> {
     ip = context.read<InboxProvider>();
     bp = context.read<BannerProvider>();
     pp = context.read<ProfileProvider>();
+    lp = context.read<LocationProvider>();
     ap = context.read<AuthProvider>();
     sp = context.read<StoreProvider>();
     ppopP = context.read<PPOBProvider>();
@@ -788,7 +805,7 @@ Widget newsWidget(BuildContext context) {
                             borderRadius: BorderRadius.circular(15.0),
                             child: CachedNetworkImage(
                               imageUrl: "${newsProvider.newsData[i].media![0].path}",
-                              fit: BoxFit.fill,
+                              fit: BoxFit.fitHeight,
                               width: 80.0,
                               height: 80.0,
                               placeholder: (context, url) {

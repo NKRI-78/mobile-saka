@@ -19,10 +19,12 @@ import 'package:saka/localization/language_constraints.dart';
 class SosDetailScreen extends StatefulWidget {
   final String label;
   final String content;
+  final String obj;
 
   SosDetailScreen({
     required this.label,
-    required this.content
+    required this.content,
+    required this.obj
   });
 
   @override
@@ -30,8 +32,8 @@ class SosDetailScreen extends StatefulWidget {
 }
 
 class _SosDetailScreenState extends State<SosDetailScreen> {
+  
   late Location location;
-  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -39,10 +41,14 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
     super.initState();
   }
 
+  @override 
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: globalKey,
       appBar: AppBar(
         elevation: 0.0,
         leading: InkWell(
@@ -94,7 +100,7 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
 
                 Container(
                   margin: EdgeInsets.only(top: 20.0, left: 16.0, right: 16.0),
-                  child: Text(widget.content,
+                  child: Text( getTranslated(widget.content, context),
                     softWrap: false,
                     textAlign: TextAlign.center,
                     style: robotoRegular.copyWith(
@@ -175,8 +181,8 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                                       children: [
 
                                                         Image.asset("assets/imagesv2/ambulance.png",
-                                                          width: 60.0,
-                                                          height: 60.0,
+                                                          width: 50.0,
+                                                          height: 50.0,
                                                         ),
                                           
                                                         const SizedBox(height: 15.0),
@@ -184,7 +190,7 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                                         Text(getTranslated("AGREEMENT_SOS", context),
                                                           textAlign: TextAlign.center,
                                                           style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeLarge,
+                                                            fontSize: Dimensions.fontSizeDefault,
                                                             color: ColorResources.black
                                                           )
                                                         ),
@@ -194,7 +200,7 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                                         Text(getTranslated("INFO_SOS", context),
                                                           textAlign: TextAlign.center,
                                                           style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault,
+                                                            fontSize: Dimensions.fontSizeSmall,
                                                             color: ColorResources.black
                                                           )
                                                         ),
@@ -210,6 +216,7 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                                               child: CustomButton(
                                                                 isBorderRadius: true,
                                                                 isBoxShadow: true,
+                                                                fontSize: Dimensions.fontSizeSmall,
                                                                 btnColor: ColorResources.error,
                                                                 isBorder: false,
                                                                 onTap: () {
@@ -225,12 +232,14 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                                               child: CustomButton(
                                                                 isBorderRadius: true,
                                                                 isBoxShadow: true,
+                                                                fontSize: Dimensions.fontSizeSmall,
                                                                 btnColor: ColorResources.success,
                                                                 onTap: () async {
-                                                                  await Provider.of<SosProvider>(context, listen: false).sendSos(
+                                                                  await context.read<SosProvider>().sendSos(
                                                                     context, 
                                                                     label: widget.label,
-                                                                    content: widget.content
+                                                                    content: widget.content,
+                                                                    obj: widget.obj
                                                                   );
                                                                 }, 
                                                                 btnTxt: context.watch<SosProvider>().sosStatus == SosStatus.loading  

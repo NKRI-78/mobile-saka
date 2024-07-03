@@ -228,6 +228,10 @@ class _MemberNearScreenState extends State<MemberNearScreen> {
                     childAspectRatio: 1.2 / 1.5,
                     mainAxisSpacing: 10.0,
                   ), 
+                  padding: EdgeInsets.only(
+                    top: 20.0,
+                    bottom: 60.0
+                  ),
                   physics: AlwaysScrollableScrollPhysics(),
                   itemCount: membernearProvider.membernearData.length,
                   itemBuilder: (BuildContext context, int i) {
@@ -238,7 +242,7 @@ class _MemberNearScreenState extends State<MemberNearScreen> {
                         children: [
                           Container(
                             child: CachedNetworkImage(
-                              imageUrl: "${membernearProvider.membernearData[i].user.avatar}",
+                              imageUrl: "${membernearProvider.membernearData[i].avatarUrl}",
                               imageBuilder: (BuildContext context, ImageProvider imageProvider) => CircleAvatar(
                                 radius: 30.0,
                                 backgroundImage: imageProvider, 
@@ -259,8 +263,7 @@ class _MemberNearScreenState extends State<MemberNearScreen> {
                                   ),
                                   borderRadius: BorderRadius.circular(50.0)
                                 ),
-                                child: SvgPicture.asset(
-                                  'assets/images/svg/user.svg',
+                                child: SvgPicture.asset('assets/images/svg/user.svg',
                                   width: 48.0,
                                   height: 48.0,
                                 ),
@@ -270,7 +273,7 @@ class _MemberNearScreenState extends State<MemberNearScreen> {
                           Container(
                             width: 100.0,
                             margin: EdgeInsets.only(top: 4.0),
-                            child: Text(membernearProvider.membernearData[i].user.name,
+                            child: Text(membernearProvider.membernearData[i].fullname,
                               textAlign: TextAlign.center,
                               softWrap: true,
                               overflow: TextOverflow.ellipsis,
@@ -281,7 +284,12 @@ class _MemberNearScreenState extends State<MemberNearScreen> {
                           ),
                           Container(
                             width: 90.0,
-                            child: Text(membernearProvider.membernearData[i].distance,
+                            child: Text('+- ${double.parse(membernearProvider.membernearData[i].distance) != 0.0 
+                              ? double.parse(membernearProvider.membernearData[i].distance) > 1000 
+                              ? (double.parse(membernearProvider.membernearData[i].distance) / 1000).toStringAsFixed(1) 
+                              : double.parse(membernearProvider.membernearData[i].distance).toStringAsFixed(1) : 0} ${double.parse(membernearProvider.membernearData[i].distance) != 0.0 ? double.parse(membernearProvider.membernearData[i].distance) > 1000 
+                              ? 'KM' 
+                              : 'Meters' : 0}',
                               maxLines: 1,
                               textAlign: TextAlign.center,
                               style: robotoRegular.copyWith(
