@@ -4,24 +4,38 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:saka/data/models/news/news.dart';
+import 'package:saka/data/models/news/single.dart';
 
 import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dio.dart';
 
 enum GetNewsStatus { loading, loaded, error, empty }
+enum GetNewsSingleStatus { loading, loaded, error, empty }
 
 class NewsProvider with ChangeNotifier {
 
   GetNewsStatus _getNewsStatus = GetNewsStatus.loading;
   GetNewsStatus get getNewsStatus => _getNewsStatus;
 
+  GetNewsSingleStatus _getNewsSingleStatus = GetNewsSingleStatus.loading;
+  GetNewsSingleStatus get getNewsSingleStatus => _getNewsSingleStatus;
+
   List<NewsData> _newsData = [];
   List<NewsData> get newsData => [..._newsData];
+
+  List<SingleNewsData> _singleNewsData = [];
+  List<SingleNewsData> get singleNewsData => [..._singleNewsData];
 
   void setStateGetNewsStatus(GetNewsStatus getNewsStatus) {
     _getNewsStatus = getNewsStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
+
+  void setStateGetSingleNewsStatus(GetNewsSingleStatus getNewsSingleStatus) {
+    _getNewsSingleStatus = getNewsSingleStatus;
+    notifyListeners();
+  }
+
   Future<void> getNews(BuildContext context) async {
     try {
       Dio dio = await DioManager.shared.getClient(context);
@@ -53,6 +67,21 @@ class NewsProvider with ChangeNotifier {
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       setStateGetNewsStatus(GetNewsStatus.error);
+    }
+  }
+
+  Future<void> getNewsSingle(BuildContext context, String contentId) async {
+    try { 
+      Dio dio = await DioManager.shared.getClient(context);
+      Response res = await dio.get("${AppConstants.baseUrl}/content-service/article/$contentId");
+      Map<String, dynamic> data = json.decode(res.data);
+      SingleNewsModel singleNewsModel = SingleNewsModel.fromJson(data);
+      _singleNewsData = [];
+      _singleNewsData.addAll(singleNewsModel.body);
+      setStateGetSingleNewsStatus(GetNewsSingleStatus.loaded);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      setStateGetSingleNewsStatus(GetNewsSingleStatus.error);
     }
   }
 

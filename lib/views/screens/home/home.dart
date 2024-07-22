@@ -788,10 +788,7 @@ Widget newsWidget(BuildContext context) {
                   borderRadius: BorderRadius.circular(15.0),
                   onTap: () {
                     NS.push(context, DetailNewsScreen(
-                      title: newsProvider.newsData[i].title!,
-                      content: newsProvider.newsData[i].content!,
-                      date: newsProvider.newsData[i].created!,
-                      imageUrl: newsProvider.newsData[i].media![0].path!,
+                      contentId: newsProvider.newsData[i].articleId.toString(),
                     ));
                   },
                   child: Padding(

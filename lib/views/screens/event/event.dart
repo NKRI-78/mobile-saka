@@ -344,7 +344,9 @@ class _EventScreenState extends State<EventScreen> {
                                                   fontWeight: FontWeight.w600
                                                 )
                                               ),
+                                              
                                               const SizedBox(height: 5.0),
+
                                               Text(meeting.eventName,
                                                 style: robotoRegular.copyWith(
                                                   fontSize: Dimensions.fontSizeSmall
@@ -443,6 +445,32 @@ class _EventScreenState extends State<EventScreen> {
                                                     fontSize: Dimensions.fontSizeSmall
                                                   ),
                                                 ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          Container(
+                                            margin: const EdgeInsets.only(top: 10.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                
+                                                Text(getTranslated("LOCATION", context),
+                                                  style: poppinsRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeDefault,
+                                                    fontWeight: FontWeight.w600
+                                                  )
+                                                ),
+
+                                                const SizedBox(height: 5.0),
+
+                                                Text(meeting.eventLocation,
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeSmall
+                                                  ),
+                                                ),
+
                                               ],
                                             ),
                                           ),

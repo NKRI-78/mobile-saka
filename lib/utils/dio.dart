@@ -26,9 +26,6 @@ class DioManager {
     };
     dio.options.connectTimeout = 10000;
     dio.options.baseUrl = AppConstants.baseUrl;
-    dio.options.headers = {
-      "X-Context-ID": AppConstants.xContextId
-    };
     dio.interceptors.clear();
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options, RequestInterceptorHandler handler) {

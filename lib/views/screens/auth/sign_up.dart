@@ -120,7 +120,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if(phone.trim().isEmpty) {
         ShowSnackbar.snackbar(context, getTranslated("PHONE_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
-      } 
+      }
+      if(phone.length <= 10) {
+        ShowSnackbar.snackbar(context, getTranslated("PHONE_NUMBER_10_REQUIRED", context), "", ColorResources.error);
+        return;
+      }
       if(email.trim().isEmpty) {
         ShowSnackbar.snackbar(context, getTranslated("EMAIL_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;

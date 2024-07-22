@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:soundpool/soundpool.dart';
+import 'package:saka/services/navigation.dart';
+import 'package:saka/services/services.dart';
+
+import 'package:saka/views/screens/news/detail.dart';
 
 import 'package:saka/providers/auth/auth.dart';
 
@@ -32,7 +35,13 @@ class FirebaseProvider with ChangeNotifier {
   );
 
   static Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
-    await Firebase.initializeApp();
+
+    if(message.data["news_id"] != "-") {
+      NS.push(navigatorKey.currentContext!, DetailNewsScreen(
+        contentId: message.data["news_id"],
+      ));
+    }
+
     final soundpool = Soundpool.fromOptions(
       options: SoundpoolOptions.kDefault,
     );
@@ -45,8 +54,14 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> setupInteractedMessage(BuildContext context) async {
     await FirebaseMessaging.instance.getInitialMessage();
     FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      // When Tap Notification
+     
+      if(message.data["news_id"] != "-") {
+        NS.push(navigatorKey.currentContext!, DetailNewsScreen(
+          contentId: message.data["news_id"],
+        ));
+      }
     });
   }
 
@@ -93,7 +108,9 @@ class FirebaseProvider with ChangeNotifier {
         id: Helper.createUniqueId(),
         title: notification.title,
         body: notification.body,
-        payload: {},
+        payload: {
+          "news_id": message.data["news_id"]
+        },
       );
     });
   }

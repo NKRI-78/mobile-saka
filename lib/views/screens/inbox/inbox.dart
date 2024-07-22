@@ -359,6 +359,16 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
 
                                                   SizedBox(height: 10.0),
 
+                                                    Text(inboxProvider.inboxes[i].body!.split('-')[2].toString(),
+                                                    textAlign: TextAlign.justify,
+                                                    style: robotoRegular.copyWith(
+                                                      height: 1.4,
+                                                      fontSize: Dimensions.fontSizeDefault
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(height: 10.0),
+
                                                   FractionallySizedBox(
                                                     widthFactor: 1.0,
                                                     child: Container(

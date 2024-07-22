@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:saka/services/navigation.dart';
+import 'package:saka/services/services.dart';
+import 'package:saka/views/screens/news/detail.dart';
 import 'localization/app_localization.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -136,6 +140,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void listenOnClickNotifications() => NotificationService.onNotifications.stream.listen(onClickedNotification);
 
   void onClickedNotification(String? payload) {
+    var data = json.decode(payload!);
+
+    if(data["news_id"] != "-") {
+      NS.push(navigatorKey.currentContext!, DetailNewsScreen(
+        contentId: data["news_id"],
+      ));
+    }
+
     // if(payload != "approval") {
     //   GlobalVariable.navState.currentState!.push(
     //     PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
@@ -166,6 +178,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: 'Saka',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         primaryColor: ColorResources.white,
         pageTransitionsTheme: PageTransitionsTheme(
