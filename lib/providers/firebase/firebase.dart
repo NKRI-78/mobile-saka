@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:saka/views/screens/feed/index.dart';
+import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:soundpool/soundpool.dart';
+
 import 'package:saka/services/navigation.dart';
 import 'package:saka/services/services.dart';
 
@@ -34,7 +37,20 @@ class FirebaseProvider with ChangeNotifier {
     options: SoundpoolOptions.kDefault,
   );
 
-  static Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
+  Future<void> setupInteractedMessage(BuildContext context) async {
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if(message != null) {
+        handleMessage(message);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      handleMessage(message);
+    });
+  }
+
+  Future<void> handleMessage(message) async {
 
     if(message.data["news_id"] != "-") {
       NS.push(navigatorKey.currentContext!, DetailNewsScreen(
@@ -42,28 +58,54 @@ class FirebaseProvider with ChangeNotifier {
       ));
     }
 
-    final soundpool = Soundpool.fromOptions(
-      options: SoundpoolOptions.kDefault,
-    );
-    int soundId = await rootBundle.load("assets/sounds/notification.mpeg").then((ByteData soundData) {
-      return soundpool.load(soundData);
-    });
-    await soundpool.play(soundId);
+    // FORUM
+    if(message.data["click_action"] == "create") {
+      NS.push(navigatorKey.currentContext!,
+        const FeedIndex()
+      );
+    }
+
+    if(message.data["click_action"] == "like") {
+      NS.push(navigatorKey.currentContext!,
+        const FeedIndex()
+      );
+    }
+
+    if(message.data["click_action"] == "comment-like") {
+      NS.push(navigatorKey.currentContext!,
+        const FeedIndex()
+      );
+    }
+
+    if(message.data["click_action"] == "create-comment") {       
+      NS.pushUntil(navigatorKey.currentContext!, 
+        PostDetailScreen(
+          data: {
+            "forum_id": message.data["forum_id"],
+            "comment_id": message.data["comment_id"],
+            "reply_id": "-",
+            "from": "notification-comment",
+          },
+        )
+      );
+    }
+
+    if(message.data["click_action"] == "create-reply") {
+      NS.pushUntil(navigatorKey.currentContext!, 
+        PostDetailScreen(
+          data: {
+            "forum_id": message.data["forum_id"],
+            "comment_id": message.data["comment_id"],
+            "reply_id": message.data["reply_id"],
+            "from": "notification-reply",
+          },
+        )
+      );
+    }
+
   }
 
-  Future<void> setupInteractedMessage(BuildContext context) async {
-    await FirebaseMessaging.instance.getInitialMessage();
-    FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-     
-      if(message.data["news_id"] != "-") {
-        NS.push(navigatorKey.currentContext!, DetailNewsScreen(
-          contentId: message.data["news_id"],
-        ));
-      }
-    });
-  }
 
   Future<void> initFcm(BuildContext context) async {
     try {

@@ -96,7 +96,6 @@ Future<void> init() async {
     ar: getIt(), 
     fr: getIt()
   ));
-
   getIt.registerFactory(() => FeedProviderV2(
     ar: getIt(), 
     fr: getIt()

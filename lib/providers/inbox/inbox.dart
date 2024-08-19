@@ -32,7 +32,7 @@ class InboxProvider with ChangeNotifier {
   Future<void> getInbox(BuildContext context, String type) async {
     setStateInboxStatus(InboxStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/data/inbox?type=$type");
       Map<String, dynamic> data = json.decode(res.data);
       _inboxes = [];
@@ -63,7 +63,7 @@ class InboxProvider with ChangeNotifier {
 
   Future<void> updateInbox(BuildContext context, String inboxId, String type) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.put("${AppConstants.baseUrl}/data/inbox/$inboxId", data: {
         "read": true
       });

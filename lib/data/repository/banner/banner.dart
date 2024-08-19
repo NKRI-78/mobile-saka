@@ -20,7 +20,7 @@ class BannerRepo {
  
   Future<List<BannerData>> getBanner(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/banner");
       Map<String, dynamic> data = json.decode(res.data);
       return compute(parseBanner, data);

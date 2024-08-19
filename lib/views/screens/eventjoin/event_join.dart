@@ -212,7 +212,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
 
   Future<void> checkEvent(BuildContext context) async {
     try { 
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/content-service/scanner-joins/joining");
       ShowSnackbar.snackbar(context, "Terima kasih sudah berpartisipasi!", "", ColorResources.success);
       NS.pushReplacement(context, DashboardScreen());

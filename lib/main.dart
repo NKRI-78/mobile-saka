@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:saka/services/navigation.dart';
 import 'package:saka/services/services.dart';
+import 'package:saka/views/screens/feed/index.dart';
+import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:saka/views/screens/news/detail.dart';
 import 'localization/app_localization.dart';
 import 'package:geolocator/geolocator.dart';
@@ -148,25 +150,53 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ));
     }
 
-    // if(payload != "approval") {
-    //   GlobalVariable.navState.currentState!.push(
-    //     PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-    //       return NotificationScreen(
-    //         key: UniqueKey(),
-    //       );
-    //     },
-    //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-    //       const begin = Offset(1.0, 0.0);
-    //       const end = Offset.zero;
-    //       const curve = Curves.ease;
-    //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-    //       return SlideTransition(
-    //         position: animation.drive(tween),
-    //         child: child,
-    //       );
-    //     }),
-    //   );
-    // }
+    // FORUM
+    if(data["click_action"] == "create") {
+      NS.push(navigatorKey.currentContext!,
+        const FeedIndex()
+      );
+    }
+
+    if(data["click_action"] == "like") {
+      NS.push(navigatorKey.currentContext!,
+        const FeedIndex()
+      );
+    }
+
+    if(data["click_action"] == "comment-like") {
+      NS.push(navigatorKey.currentContext!,
+        const FeedIndex()
+      );
+    }
+
+    if(data["click_action"] == "create-comment") {
+      NS.pushUntil(
+        navigatorKey.currentContext!, 
+        PostDetailScreen(
+          data: {
+            "forum_id": data["forum_id"],
+            "comment_id": data["comment_id"],
+            "reply_id": "-",
+            "from": "notification-comment",
+          },
+        )
+      );
+    }
+
+    if(data["click_action"] == "create-reply") {
+      NS.pushUntil(
+        navigatorKey.currentContext!, 
+        PostDetailScreen(
+          data: {
+            "forum_id": data["forum_id"],
+            "comment_id": data["comment_id"],
+            "reply_id": data["reply_id"],
+            "from": "notification-reply",
+          },
+        )
+      );
+    }
+
   }
 
   @override

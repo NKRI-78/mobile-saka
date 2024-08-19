@@ -20,10 +20,10 @@ class CreatePostImageCameraScreen extends StatefulWidget {
   ) : super(key: key);
 
   @override
-  _CreatePostImageCameraScreenState createState() => _CreatePostImageCameraScreenState();
+  CreatePostImageCameraScreenState createState() => CreatePostImageCameraScreenState();
 }
 
-class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScreen> {
+class CreatePostImageCameraScreenState extends State<CreatePostImageCameraScreen> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
   late FeedProviderV2 fdv2;

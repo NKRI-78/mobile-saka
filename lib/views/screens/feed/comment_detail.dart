@@ -28,10 +28,10 @@ class CommentDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CommentDetailScreenState createState() => _CommentDetailScreenState();
+  CommentDetailScreenState createState() => CommentDetailScreenState();
 }
 
-class _CommentDetailScreenState extends State<CommentDetailScreen> {
+class CommentDetailScreenState extends State<CommentDetailScreen> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   late TextEditingController replyC;

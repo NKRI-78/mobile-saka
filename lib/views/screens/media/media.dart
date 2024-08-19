@@ -32,34 +32,35 @@ class _MediaScreenState extends State<MediaScreen> {
               child: Container(
                 margin: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 16.0, right: 16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
     
-                    Card(
-                      child: ListTile(
-                        onTap: () {},
-                        leading: Image.asset(Images.facebook,
-                          width: 28.0,
-                          height: 28.0,
-                        ),
-                        title: Text("-",
-                          style: robotoRegular,
-                        ),
-                      ),
-                    ),
+                    // Card(
+                    //   child: ListTile(
+                    //     onTap: () {},
+                    //     leading: Image.asset(Images.facebook,
+                    //       width: 28.0,
+                    //       height: 28.0,
+                    //     ),
+                    //     title: Text("-",
+                    //       style: robotoRegular,
+                    //     ),
+                    //   ),
+                    // ),
                     
-                    Card(
-                      child: ListTile(
-                        onTap: () {},
-                        leading: Image.asset(Images.twitter,
-                          width: 32.0,
-                          height: 32.0,
-                        ),
-                        title: Text("-",
-                          style: robotoRegular,
-                        ),
-                      ),
-                    ),
+                    // Card(
+                    //   child: ListTile(
+                    //     onTap: () {},
+                    //     leading: Image.asset(Images.twitter,
+                    //       width: 32.0,
+                    //       height: 32.0,
+                    //     ),
+                    //     title: Text("-",
+                    //       style: robotoRegular,
+                    //     ),
+                    //   ),
+                    // ),
     
                     Card(
                       child: ListTile(

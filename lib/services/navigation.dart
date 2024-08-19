@@ -3,46 +3,46 @@ import 'package:flutter/material.dart';
 class NS {
   NS._();
   
-  static Route _fadeIn(Widget pushNav) {
-    return PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) => pushNav,
-      transitionsBuilder: (context, animation, secondaryAnimation, page) {
-        var begin = 0.0;
-        var end = 1.0;
-        var curve = Curves.ease;
-
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        return FadeTransition(
-          opacity: animation.drive(tween),
-          child: page,
-        );
+  static Future<void> push(BuildContext context, Widget pushNav) {
+    return Navigator.push(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
       },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      })
     );
   }
-
-  static fadeIn(Widget pushNav) {
-    return PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) => pushNav,
-      transitionsBuilder: (context, animation, secondaryAnimation, page) {
-        var begin = 0.0;
-        var end = 1.0;
-        var curve = Curves.ease;
-
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        return FadeTransition(
-          opacity: animation.drive(tween),
-          child: page,
-        );
+  static Future<void> pushDown(BuildContext context, Widget pushNav) {
+    return Navigator.push(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
       },
+      transitionDuration: const Duration(seconds: 1),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, -1.0);
+        const end = Offset.zero;
+        const curve = Curves.linearToEaseOut;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      })
     );
   }
-
-  static Route _fromLeft(Widget pushNav) {
-    return PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-      return pushNav;
-    },
+  static Future<void> pushUntil(BuildContext context, Widget pushNav) {
+    return Navigator.pushAndRemoveUntil(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
+      },
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(1.0, 0.0);
       const end = Offset.zero;
@@ -52,9 +52,8 @@ class NS {
         position: animation.drive(tween),
         child: child,
       );
-    });
+    }), (route) => false);
   }
-
   static fromLeft(Widget pushNav) {
     return PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
       return pushNav;
@@ -70,31 +69,56 @@ class NS {
       );
     });
   }
-
-  static pushDefault(BuildContext context, Widget pushNav) {
-    Navigator.push(context,
-      _fadeIn(pushNav),
+  static Future<void> pushReplacementUp(BuildContext context, Widget pushNav) {
+    return Navigator.pushReplacement(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
+      },
+      transitionDuration: const Duration(seconds: 2),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1);
+        const end = Offset.zero;
+        const curve = Curves.linearToEaseOut;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      })
     );
   }
-  static pushReplacementDefault(BuildContext context, Widget pushNav) {
-    Navigator.pushReplacement(context,
-      _fadeIn(pushNav)
+  static Future<void> pushReplacement(BuildContext context, Widget pushNav) {
+    return Navigator.pushReplacement(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      })
     );
   }
-  static push(BuildContext context, Widget pushNav) {
-    Navigator.push(context, _fromLeft(pushNav));
-  }
-  static pushReplacement(BuildContext context, Widget pushNav) {
-    Navigator.pushReplacement(context, _fromLeft(pushNav));
-  }
-  static pushReplacementUntil(BuildContext context, Widget pushNav) {
-    Navigator.pushAndRemoveUntil(context,
-      _fromLeft(pushNav,),
-      (route) => false,
-    );
-  }
-  static pushBackReplacement(BuildContext context, Widget pushNav) {
-    Navigator.pushReplacement(context, _fromLeft(pushNav),
+  static Future<void> pushBackReplacement(BuildContext context, Widget pushNav) {
+    return Navigator.pushReplacement(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(-1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      })
     );
   }
   static pop(BuildContext context, {bool rootNavigator = false}) {

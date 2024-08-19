@@ -34,7 +34,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -70,7 +70,7 @@ android {
     defaultConfig {
         applicationId "com.inovasi78.saka"
         minSdkVersion 24
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         ndk {
@@ -78,18 +78,18 @@ android {
         }
     }
     
-    // signingConfigs {
-    //    release {
-    //        keyAlias keystoreProperties['keyAlias']
-    //        keyPassword keystoreProperties['keyPassword']
-    //        storeFile file(keystoreProperties['storeFile'])
-    //        storePassword keystoreProperties['storePassword']
-    //    }
-    // }
+    signingConfigs {
+       release {
+           keyAlias keystoreProperties['keyAlias']
+           keyPassword keystoreProperties['keyPassword']
+           storeFile file(keystoreProperties['storeFile'])
+           storePassword keystoreProperties['storePassword']
+       }
+    }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
     

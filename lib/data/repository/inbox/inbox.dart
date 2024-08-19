@@ -18,7 +18,7 @@ class InboxRepo {
 
   Future<List<InboxData>> getInbox(BuildContext context, {required String type}) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/data/inbox?type=$type");
       Map<String, dynamic> data = res.data;
       return compute(parseInbox, data);
@@ -30,7 +30,7 @@ class InboxRepo {
 
   Future<int> countInbox(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/data/inbox-count");
       Map<String, dynamic> data = res.data;
       return compute(parseInboxCount, data);
@@ -42,7 +42,7 @@ class InboxRepo {
 
   Future<void> updateInbox(BuildContext context, {required String inboxId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.put("${AppConstants.baseUrl}/data/inbox/$inboxId",
         data: {
           "read": true

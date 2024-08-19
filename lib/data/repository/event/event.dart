@@ -36,7 +36,7 @@ class EventRepo {
 
   Future<List<EventData>> getEvent(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response response = await dio.get("${AppConstants.baseUrl}/content-service/event");
       Map<String, dynamic> data = json.decode(response.data);
       return compute(parseEvent, data);
@@ -48,7 +48,7 @@ class EventRepo {
 
   Future<List<EventSearchData>?> getEventSearchData(BuildContext context, String query) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/event/search?event=$query");
       Map<String, dynamic> data = json.decode(res.data);
       EventSearchModel eventSearchModel = EventSearchModel.fromJson(data); 
@@ -63,7 +63,7 @@ class EventRepo {
 
   Future<void> joinEvent(BuildContext context, {required String eventId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/content-service/event-join", 
         data: {
           "event_id": eventId,
@@ -81,7 +81,7 @@ class EventRepo {
 
   Future<bool?> checkEvent(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/scanner-joins/check");
       if(json.decode(res.data)["code"] == 0) {
         isCheckEvent = false;
@@ -104,7 +104,7 @@ class EventRepo {
 
   Future<void> presentEvent(BuildContext context, {required String eventId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/content-service/event/present", 
         data: {
           "event_id": eventId,

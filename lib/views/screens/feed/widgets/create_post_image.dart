@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
-
-
 import 'package:saka/providers/feedv2/feed.dart';
 
 import 'package:saka/views/basewidgets/loader/circular.dart';
@@ -23,10 +21,10 @@ class CreatePostImageScreen extends StatefulWidget {
     this.files,
   }) : super(key: key);
   @override
-  _CreatePostImageScreenState createState() => _CreatePostImageScreenState();
+  CreatePostImageScreenState createState() => CreatePostImageScreenState();
 }
 
-class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
+class CreatePostImageScreenState extends State<CreatePostImageScreen> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
   late FeedProviderV2 fdv2;

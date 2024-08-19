@@ -20,7 +20,7 @@ class FirebaseRepo {
     required String lng
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrl}/data/user", data: 
         {
           "fcmSecret": await FirebaseMessaging.instance.getToken(),

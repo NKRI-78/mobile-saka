@@ -2,21 +2,18 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:provider/provider.dart';
-import 'package:saka/providers/feedv2/feed.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 
+import 'package:saka/providers/feedv2/feed.dart';
 
 import 'package:saka/localization/language_constraints.dart';
-import 'package:saka/container.dart';
-import 'package:saka/data/repository/feed/feed.dart';
 
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
 import 'package:saka/views/basewidgets/loader/circular.dart';
-
 
 class CreatePostVideoScreen extends StatefulWidget {
   final Uint8List? thumbnail;
@@ -31,10 +28,10 @@ class CreatePostVideoScreen extends StatefulWidget {
     this.videoSize
   }) : super(key: key);
   @override
-  _CreatePostVideoScreenState createState() => _CreatePostVideoScreenState();
+  CreatePostVideoScreenState createState() => CreatePostVideoScreenState();
 }
 
-class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
+class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   late VideoPlayerController videoPlayerController;
   late FeedProviderV2 fdv2;
 
@@ -100,15 +97,10 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                     InkWell(
                       onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
                         fdv2.setStateWritePost(WritePostStatus.loading);
-                        // String? body = await getIt<FeedRepo>().getMediaKey(context); 
+                        
                         File f = File(fileX!.path);
-                        // Uint8List bytesFiles = f.readAsBytesSync();
-                        // String digestFile = sha256.convert(bytesFiles).toString();
-                        // String imageHash = base64Url.encode(HEX.decode(digestFile)); 
-                        await getIt<FeedRepo>().uploadMedia(context, f);
                         fdv2.feedType = "video";
                         await fdv2.postVideo(context, "video", f);
-                        fdv2.setStateWritePost(WritePostStatus.loaded);
                       },
                       child: Container(
                         width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,

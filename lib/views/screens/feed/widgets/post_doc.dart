@@ -15,10 +15,10 @@ class PostDoc extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostDocState createState() => _PostDocState();
+  PostDocState createState() => PostDocState();
 }
 
-class _PostDocState extends State<PostDoc> {
+class PostDocState extends State<PostDoc> {
 
   String? type = "";
   Color? color;

@@ -7,13 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:saka/providers/feed/feed.dart';
-
-import 'package:saka/views/screens/feed/comment_detail.dart';
-import 'package:saka/views/screens/feed/reply_detail.dart';
-import 'package:saka/views/screens/feed/post_detail.dart';
-
-import 'package:saka/data/models/feed/notification.dart';
-
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/color_resources.dart';
@@ -24,10 +17,10 @@ class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
   @override
-  _NotificationScreenState createState() => _NotificationScreenState();
+  NotificationScreenState createState() => NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class NotificationScreenState extends State<NotificationScreen> {
 
   @override
   void initState() {
@@ -104,34 +97,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   }
                   return InkWell(
                     onTap: () {
-                      if (feedProvider.notificationList[i].targetType == TargetType.reply) {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => ReplyDetailScreen(
-                              replyId: feedProvider.notificationList[i].targetId!,
-                            ),
-                          ),
-                        );
-                      }
-                      if (feedProvider.notificationList[i].targetType == TargetType.comment) {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => CommentDetailScreen(
-                              postId: "",
-                              commentId: feedProvider.notificationList[i].targetId!,
-                            ),
-                          ),
-                        );
-                      }
-                      if (feedProvider.notificationList[i].targetType == TargetType.post) {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => PostDetailScreen(
-                              postId: feedProvider.notificationList[i].targetId!,
-                            ),
-                          ),
-                        );
-                      }
+                     
                     },
                     child: ListTile(
                       leading: CircleAvatar(

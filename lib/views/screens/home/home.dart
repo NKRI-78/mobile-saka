@@ -4,12 +4,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:saka/providers/location/location.dart';
-import 'package:saka/utils/helper.dart';
 
-
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:saka/views/screens/feed/index.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:draggable_float_widget/draggable_float_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -30,9 +28,11 @@ import 'package:saka/providers/banner/banner.dart';
 import 'package:saka/providers/firebase/firebase.dart';
 import 'package:saka/providers/profile/profile.dart';
 import 'package:saka/providers/news/news.dart';
+import 'package:saka/providers/location/location.dart';
 import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/providers/event/event.dart';
 
+import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -43,7 +43,6 @@ import 'package:saka/views/basewidgets/drawer/drawer.dart';
 import 'package:saka/views/screens/comingsoon/comingsoon.dart';
 import 'package:saka/views/screens/ppob/topup/topup.dart';
 import 'package:saka/views/screens/radio/radio.dart';
-import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/media/media.dart';
 import 'package:saka/views/screens/news/detail.dart';
 import 'package:saka/views/screens/eventjoin/event_join.dart';
@@ -394,7 +393,7 @@ return Consumer<BannerProvider>(
                   itemBuilder: (BuildContext context, int i, int z) {
                     return GestureDetector(
                       onTap: () async {
-                        await launch(bannerProvider.bannerListMap[i]["link"]);
+                        await launchUrl(bannerProvider.bannerListMap[i]["link"]);
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
@@ -586,7 +585,8 @@ Widget infoAccount(BuildContext context) {
 }
 
 Widget ourService(BuildContext context) {
-  List menus = [
+
+  List<Map<String, dynamic>> menus = [
     {
       "id": 1,
       "name": "Forum",
@@ -597,7 +597,7 @@ Widget ourService(BuildContext context) {
       "id": 2,
       "name": "Radio",
       "asset": "radio.png",
-      "link": Container()
+      "link": const SizedBox()
     },
     {
       "id": 3,
@@ -639,49 +639,53 @@ Widget ourService(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if(menus[i]["name"] == "Radio")
-              InkWell(
-                borderRadius: BorderRadius.circular(50.0),
-                onTap: () {
-                  if(Platform.isAndroid) {
-                    NS.push(context, RadioScreen());
-                  } else {
-                    NS.push(context, ComingSoonScreen(title: "Airmen FM"));
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    width: 50.0,
-                    height: 50.0,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset('assets/imagesv2/${menus[i]["asset"]}',
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
+
+          if(menus[i]["name"] == "Radio")
+            InkWell(
+              borderRadius: BorderRadius.circular(50.0),
+              onTap: () {
+                if(Platform.isAndroid) {
+                  NS.push(context, RadioScreen());
+                } else {
+                  NS.push(context, ComingSoonScreen(title: "Airmen FM"));
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(
+                  width: 50.0,
+                  height: 50.0,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset('assets/imagesv2/${menus[i]["asset"]}',
+                    width: double.infinity,
+                    height: double.infinity,
                   ),
                 ),
               ),
-            if(menus[i]["name"] != "Radio")
-              InkWell(
-                borderRadius: BorderRadius.circular(50.0),
-                onTap: () {
-                  NS.push(context, menus[i]["link"]);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    width: 50.0,
-                    height: 50.0,
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset('assets/imagesv2/svg/${menus[i]["asset"]}',
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
+            ),
+
+          if(menus[i]["name"] != "Radio")
+            InkWell(
+              borderRadius: BorderRadius.circular(50.0),
+              onTap: () {
+                NS.push(context, menus[i]["link"]);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(
+                  width: 50.0,
+                  height: 50.0,
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset('assets/imagesv2/svg/${menus[i]["asset"]}',
+                    width: double.infinity,
+                    height: double.infinity,
                   ),
                 ),
               ),
+            ),
+
             SizedBox(height: 10.0),
+
             Container(
               child: Text(menus[i]["name"],
                 textAlign: TextAlign.center,
@@ -690,7 +694,8 @@ Widget ourService(BuildContext context) {
                   fontSize: Dimensions.fontSizeSmall
                 ),
               ),
-            )
+            ),
+
           ],
         );
       },

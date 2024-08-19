@@ -20,10 +20,10 @@ class CreatePostDocScreen extends StatefulWidget {
     this.files,
   }) : super(key: key);
   @override
-  _CreatePostDocScreenState createState() => _CreatePostDocScreenState();
+  CreatePostDocScreenState createState() => CreatePostDocScreenState();
 }
 
-class _CreatePostDocScreenState extends State<CreatePostDocScreen> {
+class CreatePostDocScreenState extends State<CreatePostDocScreen> {
 
   late TextEditingController captionC;
 

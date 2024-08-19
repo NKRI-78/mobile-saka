@@ -12,7 +12,7 @@ class MediaRepo {
   
   Future<Response> postMedia(BuildContext context, File file) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       FormData formData = FormData.fromMap({
         "folder": "images",
         "subfolder": "saka",

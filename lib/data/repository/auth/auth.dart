@@ -8,6 +8,14 @@ class AuthRepo {
     return sp.getString("fullname");
   }
 
+  Future<void> saveUserAvatar(String avatar) async {
+    await sp.setString("avatar", avatar);
+  }
+
+  String? getUserAvatar() {
+    return sp.getString("avatar");
+  }
+
   String? getUserToken() {
     return sp.getString("token")!;
   }

@@ -1,14 +1,11 @@
 import 'dart:io' as io;
 
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
 import 'package:saka/utils/color_resources.dart';
-
 
 class PostVideo extends StatefulWidget {
   final String media;
@@ -19,17 +16,17 @@ class PostVideo extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostVideoState createState() => _PostVideoState();
+  PostVideoState createState() => PostVideoState();
 }
 
-class _PostVideoState extends State<PostVideo> {
+class PostVideoState extends State<PostVideo> {
 
   VideoPlayerController? videoPlayerC;
   ChewieController? chewieC;
   
   Future<void> getData() async {
-    if(mounted) {
-      if(io.Platform.isAndroid) {
+    if(!mounted) return;
+     if(io.Platform.isAndroid) {
         videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
         ..setLooping(false)
         ..initialize().then((_) {
@@ -54,14 +51,14 @@ class _PostVideoState extends State<PostVideo> {
           looping: false,
         );
       }
-    }
+    
   }
 
   @override
   void initState() {
     super.initState();
      
-    getData();
+    Future.microtask(() => getData());
   }
 
   @override
@@ -94,7 +91,7 @@ class _PostVideoState extends State<PostVideo> {
                   clipBehavior: Clip.none,
                   children: [
                     AspectRatio(
-                      aspectRatio: videoPlayerC!.value.aspectRatio,
+                      aspectRatio: chewieC!.aspectRatio!,
                       child: Chewie(
                         controller: chewieC!,
                       )
@@ -133,14 +130,14 @@ class _PostVideoState extends State<PostVideo> {
                     // )
                   ],
                 ),
-              ) 
+            ) 
             : const SizedBox(
-                height: 200,
-                child: SpinKitThreeBounce(
-                  size: 20.0,
-                  color: ColorResources.primaryOrange,
-                ),
+              height: 200,
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primaryOrange,
               ),
+            ),
           ],
         ); 
       },

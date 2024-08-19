@@ -300,7 +300,7 @@ class PPOBProvider with ChangeNotifier {
   }) async {
     setStatePayStatus(PayStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlPpob}/pln/prabayar/pay", data: {
         "idpel": accountNumber,
         "ref2": productId,
@@ -445,7 +445,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> payPLNPascabayar(BuildContext context, String accountNumber, String transactionId) async {
     setStatePayStatus(PayStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlPpob}/pln/pascabayar/pay", data: {
         "productId": "49c55554-8c62-4f80-8758-d8f0cea1b63b",
         "accountNumber": accountNumber,
@@ -593,7 +593,7 @@ class PPOBProvider with ChangeNotifier {
   // }) async {
   //   setStatePayStatus(PayStatus.loading);
   //   try {
-  //     Dio dio = await DioManager.shared.getClient(context);
+  //     Dio dio = await DioManager.shared.getClient();
   //     await dio.post("${AppConstants.baseUrlPpobV2}/inquiry/topup/balance", data: {
   //       "product_id": productId,
   //       "channel": channel,
@@ -619,7 +619,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> inquiryTopUp(BuildContext context, String productId, String accountNumber) async {
     setStatePayStatus(PayStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlPpob}/wallet/inquiry", data: {
         "productId": productId,
         "accountNumber" : accountNumber
@@ -651,7 +651,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> payTopUp(BuildContext context, String productId, String paymentChannel, String transactionId) async {
     setStatePayStatus(PayStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       var tempData = {
         "productId": productId,
         "paymentMethod" : "BANK_TRANSFER",
@@ -815,7 +815,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> purchasePulsa(BuildContext context, String productId, String accountNumber) async {
     setStatePayStatus(PayStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       var tempData = {
         "productId": productId,
         "accountNumber": accountNumber,
@@ -964,7 +964,7 @@ class PPOBProvider with ChangeNotifier {
     setStatePayStatus(PayStatus.loading);
     try {
       Future.delayed(Duration.zero, () => notifyListeners());
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlPpob}/community/pay", data: {
         "productId": productId,
         "accountNumber": accountNumber,
@@ -1111,7 +1111,7 @@ class PPOBProvider with ChangeNotifier {
     setStatePayStatus(PayStatus.loading);
     try {
       Future.delayed(Duration.zero, () => notifyListeners());
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       var tempData = {
         "productId": productId,
         "accountNumber": accountNumber,
@@ -1256,7 +1256,7 @@ class PPOBProvider with ChangeNotifier {
     try {
       Future.delayed(Duration.zero, () => notifyListeners());
 
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlPpob}/pln/prabayar/inquiry", data: {
         "productId" : productId,
         "accountNumber" : accountNumber,
@@ -1474,7 +1474,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> postInquiryPLNPascaBayar(BuildContext context, String accountNumber, TextEditingController controller, dynamic listener) async {
     setStateInquiryPLNPascabayarStatus(InquiryPLNPascabayarStatus.loading);
     try {  
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlPpob}/pln/pascabayar/inquiry", data: {
         "productId": "49c55554-8c62-4f80-8758-d8f0cea1b63b",
         "accountNumber": accountNumber
@@ -1690,7 +1690,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getListPricePLNPrabayar(context) async {
     setStateListPricePLNPrabayarStatus(ListPricePLNPrabayarStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlPpob}/product/list?group=public_utility&category=PLN&type=prabayar");
       ListPricePraBayarModel listPricePraBayarModel = ListPricePraBayarModel.fromJson(res.data);
       _listPricePLNPrabayarData = [];
@@ -1711,7 +1711,7 @@ class PPOBProvider with ChangeNotifier {
   // Future<void> getListWalletDenom(BuildContext context) async {
   //   setStateListTopUpEmoneyStatus(ListTopUpEmoneyStatus.loading);
   //   try {
-  //     Dio dio = await DioManager.shared.getClient(context);
+  //     Dio dio = await DioManager.shared.getClient();
   //     Response res = await dio.get("${AppConstants.baseUrlPpobV2}/get/denom");
   //     Map<String, dynamic> data = res.data;
   //     WalletDenomModel? wdm = WalletDenomModel.fromJson(data);
@@ -1733,7 +1733,7 @@ class PPOBProvider with ChangeNotifier {
   // Future<void> getListEmoney(BuildContext context, String category) async {
   //   try {
   //     setStateListTopUpEmoneyStatus(ListTopUpEmoneyStatus.loading);
-  //     Dio dio = await DioManager.shared.getClient(context);
+  //     Dio dio = await DioManager.shared.getClient();
   //     Response res = await dio.get("${AppConstants.baseUrlPpob}/product/list?group=emoney&category=$category&type=credit");
   //     _listTopUpEmoney = [];
   //     ListProductDenomModel lpdm = ListProductDenomModel.fromJson(res.data);
@@ -1753,7 +1753,7 @@ class PPOBProvider with ChangeNotifier {
    Future<void> getListEmoney(BuildContext context, String category) async {
     try {
       setStateListTopUpEmoneyStatus(ListTopUpEmoneyStatus.loading);
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlPpob}/product/list?group=emoney&category=$category&type=credit");
       _listTopUpEmoney = [];
       ListProductDenomModel lpdm = ListProductDenomModel.fromJson(res.data);
@@ -1784,7 +1784,7 @@ class PPOBProvider with ChangeNotifier {
   // Future<void> getVoucherPulsaByPrefix(BuildContext context, int prefix) async {
   //   setStateListVoucherPulsaByPrefixStatus(ListVoucherPulsaByPrefixStatus.loading);
   //   try {
-  //     Dio dio = await DioManager.shared.getClient(context);
+  //     Dio dio = await DioManager.shared.getClient();
   //     Response res = await dio.get("${AppConstants.baseUrlPpobV2}/inquiry/pulsa?prefix=$prefix&type=PULSA");
   //     ListProductDenomModel listVoucherPulsaByPrefixModel = ListProductDenomModel.fromJson(res.data);
   //     _listVoucherPulsaByPrefixData = [];
@@ -1805,7 +1805,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getVoucherPulsaByPrefix(BuildContext context, int prefix) async {
     setStateListVoucherPulsaByPrefixStatus(ListVoucherPulsaByPrefixStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlPpob}/product/list?group=voucher&category=$prefix&type=pulsa");
       ListProductDenomModel listVoucherPulsaByPrefixModel = ListProductDenomModel.fromJson(res.data);
       _listVoucherPulsaByPrefixData = [];
@@ -1835,7 +1835,7 @@ class PPOBProvider with ChangeNotifier {
 
   Future<void> getVA(context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlVa);
       VAModel pilihPembayaranModel = VAModel.fromJson(res.data);
       _listVa = [];
@@ -1856,7 +1856,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getBalance(BuildContext context) async {
     setStateBalanceStatus(BalanceStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlPpob}/wallet/balance");
       Map<String, dynamic> data = res.data;
       BalanceModel balanceModel = BalanceModel.fromJson(data);
@@ -1873,7 +1873,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getHistoryBalance(BuildContext context, String startDate, String endDate) async {
     setStateHistoryBalanceStatus(HistoryBalanceStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       FormData formData = FormData.fromMap({
         "start": startDate,
         "end": endDate,
@@ -1899,7 +1899,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getDenomDisbursement(BuildContext context)  async {
     setStateDenomDisbursementStatus(DenomDisbursementStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlDisbursementDenom);
       DenomDisbursementModel denomDisbursementModel = DenomDisbursementModel.fromJson(res.data);
       _denomDisbursement = [];
@@ -1920,7 +1920,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getBankDisbursement(BuildContext context) async {
     setStateBankDisbursementStatus(BankDisbursementStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlDisbursementBank);
       BankDisbursementModel bankDisbursementModel = BankDisbursementModel.fromJson(res.data);
       _bankDisbursement = [];
@@ -1938,7 +1938,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> getEmoneyDisbursement(BuildContext context) async {
     setStateEmoneyDisbursementStatus(EmoneyDisbursementStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlDisbursementEmoney);
       EmoneyDisbursementModel emoneyDisbursementModel = EmoneyDisbursementModel.fromJson(res.data);
       _emoneyDisbursement = [];
@@ -1956,7 +1956,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> inquiryDisbursement(BuildContext context, int amount, int price) async {
     setStateDisbursementStatus(InquiryDisbursementStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlDisbursement}/disbursement/inquiry", data: {
         "amount": amount
       });
@@ -1990,7 +1990,7 @@ class PPOBProvider with ChangeNotifier {
   Future<void> submitDisbursement(BuildContext context, String token) async {
     setStateSubmitDisbursementStatus(SubmitDisbursementStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlDisbursement}/disbursement/submit", data: {
         "destAccount": getGlobalPaymentAccount,
         "destBank": getGlobalPaymentMethodCode

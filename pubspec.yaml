@@ -3,7 +3,7 @@ description: Community App.
 
 publish_to: "none"
 
-version: 1.9.8+43
+version: 2.0.0+47
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
@@ -20,6 +20,8 @@ dependency_overrides:
   win32: any
 
 dev_dependencies:
+
+  # A
   audio_video_progress_bar: ^0.11.0
 
   # B
@@ -43,6 +45,7 @@ dev_dependencies:
 
   # D
   dio: ^4.0.0
+  detectable_text_field: ^3.0.2
   dots_indicator: ^2.0.0
   draggable_float_widget: ^0.0.2
   draggable_widget: ^2.0.0
@@ -67,7 +70,6 @@ dev_dependencies:
   flutter_link_previewer: ^2.6.1
   flutter_local_notifications: ^15.1.1
   flutter_native_contact_picker: ^0.0.4
-
 
   # F
   flutter_pdfview: ^1.2.1
@@ -114,7 +116,7 @@ dev_dependencies:
     git:
       url: https://github.com/danReynolds/modal_bottom_sheet.git
       path: modal_bottom_sheet
-  multi_image_picker_plus: ^0.0.3
+  multi_image_picker_plus: ^0.0.4
 
   # N
   new_version_plus: ^0.0.10

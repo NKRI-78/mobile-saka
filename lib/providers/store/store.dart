@@ -625,7 +625,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDataStore(BuildContext context) async {
     setStateSellerStoreStatus(SellerStoreStatus.loading); 
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/seller/store/fetch");
       Map<String, dynamic> data = res.data;
 
@@ -730,7 +730,7 @@ class StoreProvider with ChangeNotifier {
       dataObj.addAll({"description": deskripsi});
     }
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/seller/store/create", data: dataObj);
       setStateCreateStoreStatus(CreateStoreStatus.loaded);
       ShowSnackbar.snackbar(context, "Selamat! Toko Anda berhasil dibuka", "", ColorResources.success);
@@ -806,7 +806,7 @@ class StoreProvider with ChangeNotifier {
       });
     }
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/seller/store/update", data: data);
       NS.pop(context);
       setStateEditStoreStatus(EditStoreStatus.loaded);
@@ -839,7 +839,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<void> getDataCategoryProduct(BuildContext context, String typeProduct) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/$typeProduct/product/categories");
       Map<String, dynamic> data = res.data;
       CategoryProductModel cpm = CategoryProductModel.fromJson(data);
@@ -905,7 +905,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDataCategoryProductByParent(BuildContext context, String typeProduct) async {
     setStateCategoryProductParentStatus(CategoryProductByParentStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/$typeProduct/product/categories?parentId=$idCategory");
       CategoryProductModel categoryProductModel = CategoryProductModel.fromJson(res.data);
       _categoryProductByParentList = [];
@@ -946,7 +946,7 @@ class StoreProvider with ChangeNotifier {
   ) async {
     setStateAllProductSellerByCategoryStatus(AllProductSellerByCategoryStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/filter?categoryId=$categoryId&page=0&sort=created,desc");
       Map<String, dynamic> data = res.data;
       ProductStoreModel psm = ProductStoreModel.fromJson(data);
@@ -991,7 +991,7 @@ class StoreProvider with ChangeNotifier {
       backgroundColor: ColorResources.white,
     );
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/filter?categoryId=all&page=0&size=10&sort=created,desc&search=$nameProduct");
       Map<String, dynamic> data = res.data;
       ProductStoreModel psm = ProductStoreModel.fromJson(data);
@@ -1037,7 +1037,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getAllCategorySellerDetail(BuildContext context) async {
     setStateAllCategorySellerDetailStatus(AllCategorySellerDetailStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/categories");
       Map<String, dynamic> data = res.data;
       CategoryProductModel cpm = CategoryProductModel.fromJson(data);
@@ -1076,7 +1076,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getAllProductSellerDetail(BuildContext context, String storeId) async {
     setStateAllProductSellerDetailStatus(AllProductSellerDetailStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/filter?categoryId=all&page=0&sort=stock,desc");
       Map<String, dynamic> data = res.data;
       ProductStoreModel psm = ProductStoreModel.fromJson(data);
@@ -1115,7 +1115,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDataProductByCategoryConsumen(BuildContext context, String name, String idCategory) async {
     setStateCategoryProductByConsumenStatus(CategoryProductByCategoryConsumenStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/filter?categoryId=$idCategory&search=$name&page=0&size=10&sort=stock,desc");
       Map<String, dynamic> data = res.data;
       ProductStoreModel psm = ProductStoreModel.fromJson(data);
@@ -1152,7 +1152,7 @@ class StoreProvider with ChangeNotifier {
     _pageProductConsumen++;
     Future.delayed(Duration.zero, () => notifyListeners());
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/filter?categoryId=$idCategory&search=$name&page=$pageProductConsumen&size=10&sort=stock,desc");
       ProductStoreModel productStoreModel = ProductStoreModel.fromJson(res.data);
       _productStoreConsumenList.addAll(productStoreModel.body!);
@@ -1189,7 +1189,7 @@ class StoreProvider with ChangeNotifier {
       backgroundColor: ColorResources.white,
     );
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/product/filter?categoryId=all&page=0&size=10&sort=created,desc&search=$nameProduct");
       Map<String, dynamic> data = res.data;
       ProductStoreModel psm = ProductStoreModel.fromJson(data);
@@ -1233,7 +1233,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDataProductByCategorySeller(BuildContext context) async {
     setStateCategoryProductBySellerStatus(CategoryProductByCategorySellerStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/seller/product/filter?categoryId=$idCategory&page=$pageListProduct&size=10&sort=stock,desc");
       Map<String, dynamic> data = res.data;
       ProductStoreModel psm = ProductStoreModel.fromJson(data);
@@ -1273,7 +1273,7 @@ class StoreProvider with ChangeNotifier {
     _pageListProduct++;
     Future.delayed(Duration.zero, () => notifyListeners());
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/seller/product/filter?categoryId=$idCategory&page=$pageListProduct&size=10&sort=stock,desc");
       ProductStoreModel psm = ProductStoreModel.fromJson(res.data);
       List<ProductStoreList> psl = psm.body!;
@@ -1308,7 +1308,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDataSingleProduct(BuildContext context, String idProduct, String path, String typeProduct) async {
     setStateSingleProductStatus(SingleProductStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/$typeProduct/product$path/$idProduct");
       
       if(res.data['code'] == 404) {
@@ -1367,7 +1367,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<String?> getMediaKey(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("");
       final MediaKey mediaKey = MediaKey.fromJson(res.data);
       return mediaKey.body;
@@ -1436,7 +1436,7 @@ class StoreProvider with ChangeNotifier {
       });
     }
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/seller/product/create", data: {
         "name": nameProduct,
         "categoryId": categoryAddProductId,
@@ -1522,7 +1522,7 @@ class StoreProvider with ChangeNotifier {
         }
       }
       try {
-        Dio dio = await DioManager.shared.getClient(context);
+        Dio dio = await DioManager.shared.getClient();
         await dio.post("${AppConstants.baseUrlEcommerce}/seller/product/update", data: {
           "id": idProduct,
           "name": nameProduct,
@@ -1572,7 +1572,7 @@ class StoreProvider with ChangeNotifier {
       }
     } else {
       try {
-        Dio dio = await DioManager.shared.getClient(context);
+        Dio dio = await DioManager.shared.getClient();
         await dio.post("${AppConstants.baseUrlEcommerce}/seller/product/update", data: {
           "id": idProduct,
           "name": nameProduct,
@@ -1625,7 +1625,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> postDeleteProductStore(BuildContext context, String idProduct, int status, String idStore) async {
     setStateDeleteProductStatus(DeleteProductStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/seller/product/update", data: {
         "id": idProduct,
         "status": status,
@@ -1749,7 +1749,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<void> getCartInfo(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/cart/info");
       Map<String, dynamic> data = res.data;
 
@@ -1803,7 +1803,7 @@ class StoreProvider with ChangeNotifier {
     }
     try {
       if(fromCart) {
-        Dio dio = await DioManager.shared.getClient(context);
+        Dio dio = await DioManager.shared.getClient();
         await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/add",
           data: {
             "productId": productId, 
@@ -1920,7 +1920,7 @@ class StoreProvider with ChangeNotifier {
     }
     Future.delayed(Duration.zero, () => notifyListeners());
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/updateQty",
         data: {
           "productId": productId,
@@ -1952,7 +1952,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<void> postEditNoteCart(BuildContext context, String idProduct, String note) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/updateNote",
       data: {
         "productId": idProduct,
@@ -1992,7 +1992,7 @@ class StoreProvider with ChangeNotifier {
       msg: "Mohon Tunggu..."
     );
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/delete",
       data: {
         "productId": idProduct,
@@ -2027,7 +2027,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<void> postEmptyProductCart(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/empty");
     } on DioError catch(e) {
       if(e.type == DioErrorType.connectTimeout) {
@@ -2061,7 +2061,7 @@ class StoreProvider with ChangeNotifier {
       }
     }
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/checkout",
         data: {
           "paymentChannel": paymentChannel,
@@ -2126,7 +2126,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<ShippingCouriersModel?> getCourierShipping(BuildContext context, String storeId) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/shipping/couriers?storeId=$storeId");
       Map<String, dynamic> data = res.data;
       if(data["code"] == 404) {
@@ -2179,7 +2179,7 @@ class StoreProvider with ChangeNotifier {
       backgroundColor: ColorResources.white,
     );
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlEcommerce}/commerce/cart/courier",
       data: {
         "storeId": idStore,
@@ -2255,7 +2255,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionUnpaid(BuildContext context) async {
     setStateTransactionUnpaidStatus(TransactionUnpaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/unpaids");
       Map<String, dynamic> data = res.data;
       TransactionStoreUnpaidModel tsumAssign = TransactionStoreUnpaidModel.fromJson(data);
@@ -2289,7 +2289,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionBuyerPaidPacking(BuildContext context) async {
     setStateTransactionBuyerPaidStoreStatus(TransactionBuyerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/orders?orderStatus=PACKING");
       Map<String, dynamic> data = res.data;
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2324,7 +2324,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionBuyerPaidPickup(BuildContext context) async {
     setStateTransactionBuyerPaidStoreStatus(TransactionBuyerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/orders?orderStatus=PICKUP");
       Map<String, dynamic> data = res.data;
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2359,7 +2359,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionBuyerPaidShipping(BuildContext context) async {
     setStateTransactionBuyerPaidStoreStatus(TransactionBuyerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/orders?orderStatus=SHIPPING");
       Map<String, dynamic> data = res.data;
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2394,7 +2394,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionBuyerPaidDelivered(BuildContext context) async {
     setStateTransactionBuyerPaidStoreStatus(TransactionBuyerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/orders?orderStatus=DELIVERED");
       Map<String, dynamic> data = res.data;
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2429,7 +2429,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionBuyerPaidDone(BuildContext context) async {
     setStateTransactionBuyerPaidStoreStatus(TransactionBuyerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/orders?orderStatus=DONE");
       Map<String, dynamic> data = res.data;
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2464,7 +2464,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionSellerPaidReceive(BuildContext context) async {
     setStateTransactionSellerPaidStoreStatus(TransactionSellerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/seller/orders?orderStatus=RECEIVED");
       Map<String, dynamic> data = res.data; 
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2502,7 +2502,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionSellerPaidPacking(BuildContext context) async {
     setStateTransactionSellerPaidStoreStatus(TransactionSellerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/seller/orders?orderStatus=PACKING");
       Map<String, dynamic> data = res.data; 
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2540,7 +2540,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionSellerPaidPickupShipping(BuildContext context) async {
     setStateTransactionSellerPaidStoreStatus(TransactionSellerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/seller/orders?orderStatus=PICKUP,SHIPPING");
       Map<String, dynamic> data = res.data; 
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2578,7 +2578,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionSellerPaidDelivered(BuildContext context) async {
     setStateTransactionSellerPaidStoreStatus(TransactionSellerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/seller/orders?orderStatus=DELIVERED");
       Map<String, dynamic> data = res.data; 
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2616,7 +2616,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionSellerPaidDone(BuildContext context) async {
     setStateTransactionSellerPaidStoreStatus(TransactionSellerPaidStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/seller/orders?orderStatus=DONE");
       Map<String, dynamic> data = res.data; 
       TransactionStorePaidModel tspmAssign = TransactionStorePaidModel.fromJson(data);
@@ -2654,7 +2654,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getTransactionPaidSingle(BuildContext context, String idTrx, String typeUser) async {
     setStateTransactionPaidSingleStatus(TransactionPaidSingleStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/$typeUser/order/fetch/$idTrx");
       Map<String, dynamic> data = res.data;
       TransactionPaidSingleModel tpsm = TransactionPaidSingleModel.fromJson(data);
@@ -2717,7 +2717,7 @@ class StoreProvider with ChangeNotifier {
       });
     }
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlEcommerce}/transaction/seller/order/booking",
         data: data
       );
@@ -2835,7 +2835,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> postOrderPacking(BuildContext context, String orderId) async {
     setStatePostOrderPickingStatus(PostOrderPickingStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/transaction/seller/order/packing",
         data: {
           "orderId": orderId
@@ -2872,7 +2872,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<TransactionPaidSingleModel?> postInputResi(BuildContext context, String orderId, String wayBill) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlEcommerce}/transaction/seller/order/shipping",
       data: {
         "orderId": orderId, 
@@ -2912,7 +2912,7 @@ class StoreProvider with ChangeNotifier {
   ) async {
     setStatePostOrderDoneStatus(PostOrderDoneStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/transaction/buyer/order/done",
         data: {
           "orderId": orderId
@@ -3002,7 +3002,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getReviewProductList(BuildContext context) async {
     setStateReviewProductListStatus(ReviewProductListStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/transaction/buyer/review/list");
       Map<String, dynamic> data = res.data;
       ReviewProductModel rpm = ReviewProductModel.fromJson(data);
@@ -3041,7 +3041,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getReviewProductDetail(BuildContext context, {required String productId}) async {
     setStateReviewDataStatus(ReviewProductStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/review/$productId");
       Map<String, dynamic> data = res.data;
       ReviewProductDetailModel rpdmAssign = ReviewProductDetailModel.fromJson(data);
@@ -3084,7 +3084,7 @@ class StoreProvider with ChangeNotifier {
       });
     }
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlEcommerce}/transaction/buyer/review/add", data: {
         "productId": idProduct,
         "star": star,
@@ -3121,7 +3121,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<ShippingTrackingModel?> getShippingTracking(BuildContext context, String idOrder) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/order/status?orderId=$idOrder");
       ShippingTrackingModel shippingTrackingModel = ShippingTrackingModel.fromJson(res.data);
       return shippingTrackingModel;
@@ -3152,7 +3152,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDataCouriers(BuildContext context) async {
     setStateCourierStatus(CourierStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/seller/store/couriers");
       CouriersModel couriersModel = CouriersModel.fromJson(res.data);
       _couriersModelList = [];
@@ -3184,7 +3184,7 @@ class StoreProvider with ChangeNotifier {
 
   Future<BankPaymentStore?> getDataBank(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/payments");
       BankPaymentStore bankPaymentStore = BankPaymentStore.fromJson(res.data);
       return bankPaymentStore;
@@ -3215,7 +3215,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getPickupTimeslots(BuildContext context) async {
     setStatePickupTimeslotsStatus(PickupTimeslotsStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlEcommercePickupTimeslots);
       Map<String, dynamic> data = res.data;
       NinjaModel ninjaModel = NinjaModel.fromJson(data);
@@ -3255,7 +3255,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDeliveryTimeslots(BuildContext context) async {
     setStateDeliveryTimeslotsStatus(DeliveryTimeslotsStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlEcommerceDeliveryTimeslots);
       Map<String, dynamic> data = res.data;
       NinjaModel nm = NinjaModel.fromJson(data);
@@ -3297,7 +3297,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getDimenstionSize(BuildContext context) async {
     setStateDimenstionStatus(DimenstionStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlEcommerceDimensionSize);
       Map<String, dynamic> data = res.data;
       NinjaModel ninjaModel = NinjaModel.fromJson(data);
@@ -3337,7 +3337,7 @@ class StoreProvider with ChangeNotifier {
   Future<void> getApproximatelyVolumes(BuildContext context) async { 
     setStateApproximatelyVolumesStatus(ApproximatelyStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get(AppConstants.baseUrlEcommerceApproximatelyVolumes);
       Map<String, dynamic> data = res.data;
       NinjaModel ninjaModel = NinjaModel.fromJson(data);

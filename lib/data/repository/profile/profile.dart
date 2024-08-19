@@ -25,7 +25,7 @@ class ProfileRepo {
   
   Future<SingleUserData> getUserSingleData(BuildContext context, String userId) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/user-service/users/$userId");
       SingleUserModel singleUserModel = SingleUserModel.fromJson(json.decode(res.data));
       singleUserData = singleUserModel.body!;
@@ -37,7 +37,7 @@ class ProfileRepo {
 
   Future<ProfileData> getUserProfile(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/user-service/profile/${ar.getUserId()}");
       Map<String, dynamic> data = json.decode(res.data);
       return compute(parseProfile, data);
@@ -49,7 +49,7 @@ class ProfileRepo {
 
   Future<void> updateProfile(BuildContext context, ProfileData profileData) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.put("${AppConstants.baseUrl}/user-service/profile/${ar.getUserId()}",
         data: {
           "address" : profileData.address,

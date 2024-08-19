@@ -74,6 +74,7 @@ class ProfileProvider extends ChangeNotifier {
     try {
       ProfileData profileData = await pr.getUserProfile(context);
       _userProfile = profileData;
+      ar.saveUserAvatar(userProfile.profilePic!);
       setStateProfileStatus(ProfileStatus.loaded);
     } catch(e) {
       debugPrint(e.toString());
@@ -88,6 +89,7 @@ class ProfileProvider extends ChangeNotifier {
         Response? res = await Provider.of<MediaProvider>(context, listen: false).postMedia(context, file);
         Map map = json.decode(res!.data);
         profileData.profilePic = map['data']['path'];
+        ar.saveUserAvatar(profileData.profilePic!);
       }
       await pr.updateProfile(context, profileData);
       getUserProfile(context);

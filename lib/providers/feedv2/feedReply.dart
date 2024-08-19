@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
+
 import 'package:saka/data/models/feedv2/feedReply.dart';
 import 'package:saka/data/repository/auth/auth.dart';
 import 'package:saka/data/repository/feedv2/feed.dart';
+
 import 'package:saka/utils/exceptions.dart';
 
 enum FeedReplyStatus { idle, loading, loaded, empty, error }
@@ -10,15 +12,16 @@ enum FeedReplyDetailStatus { idle, loading, loaded, empty, error }
 class FeedReplyProvider with ChangeNotifier {
   final AuthRepo ar;
   final FeedRepoV2 fr;
+
   FeedReplyProvider({
     required this.ar,
     required this.fr
   });
 
-  late TextEditingController commentC;
-
   bool hasMore = true;
   int pageKey = 1;
+
+  String valReply = "";
 
   FeedReplyStatus _feedReplyStatus = FeedReplyStatus.loading;
   FeedReplyStatus get feedReplyStatus => _feedReplyStatus;
@@ -39,20 +42,30 @@ class FeedReplyProvider with ChangeNotifier {
   FeedReplyData _feedReplyData = FeedReplyData();
   FeedReplyData get feedReplyData => _feedReplyData;
 
-  List<ReplyElement> _reply = [];
+  final List<ReplyElement> _reply = [];
   List<ReplyElement> get reply => [..._reply];
+
+  void changeReply(String val) {
+    valReply = val;
+    
+    notifyListeners();
+  }
 
   Future<void> getFeedReply({required BuildContext context,required String commentId}) async {
     pageKey = 1;
     hasMore = true;
 
     try {
-      FeedReplyModel frm = await fr.getReply(commentId: commentId, pageKey: pageKey, context: context);
-      _feedReplyData = frm.data;
+      FeedReplyModel? frm = await fr.getReply(
+        commentId: commentId, 
+        pageKey: pageKey, 
+        context: context
+      );
+
+      _feedReplyData = frm!.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);
-      setStateFeedReplyDetailStatus(FeedReplyDetailStatus.loaded);
       setStateFeedReplyStatus(FeedReplyStatus.loaded);
 
       if (reply.isEmpty) {
@@ -68,40 +81,47 @@ class FeedReplyProvider with ChangeNotifier {
   Future<void> loadMoreReply({required BuildContext context, required String commentId}) async {
     pageKey++;
 
-    FeedReplyModel frm = await fr.getReply(commentId: commentId, pageKey: pageKey, context: context);
+    FeedReplyModel? frm = await fr.getReply(commentId: commentId, pageKey: pageKey, context: context);
 
-    hasMore = frm.data.pageDetail!.hasMore;
+    hasMore = frm!.data.pageDetail!.hasMore;
     _reply.addAll(frm.data.comment!.reply!.replies);
-    debugPrint("Reply Length : ${frm.data.comment!.reply!.replies.length}");
+
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> postReply(
     BuildContext context,
-    String feedId,
+    String commentVal,
     String commentId,
     ) async {
     try {
-      if (commentC.text.trim() == "") {
-        commentC.text = "";
-        return;
-      }
+
+      // if (mentionKey.currentState!.controller!.text.trim() == "") {
+      //   mentionKey.currentState!.controller!.text = "";
+      //   return;
+      // }
 
       await fr.postReply(
-        context: context, 
-        feedId: feedId, 
-        reply: commentC.text, 
+        context: context,
+        replyIdStore: "",
+        replyId: "", 
+        reply: commentVal, 
+        commentId: commentId,
         userId: ar.getUserId().toString(), 
-        commentId: commentId
       );
 
-      FeedReplyModel frm = await fr.getReply(commentId: commentId, pageKey: 1, context: context);
-      _feedReplyData = frm.data;
+      // mentionKey.currentState!.controller!.text = "";
+
+      FeedReplyModel? frm = await fr.getReply(
+        context: context, 
+        commentId: commentId, 
+        pageKey: 1
+      );
+      
+      _feedReplyData = frm!.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);
-
-      commentC.text = "";
 
       setStateFeedReplyStatus(FeedReplyStatus.loaded);
     } on CustomException catch (e) {
@@ -112,17 +132,16 @@ class FeedReplyProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteReply( 
-      {
-        required BuildContext context, 
-        required String feedId, 
-        required String deleteId
-      }) async {
+  Future<void> deleteReply( {
+    required BuildContext context, 
+    required String feedId, 
+    required String deleteId
+  }) async {
     try {
       await fr.deleteReply(context, deleteId);
 
-      FeedReplyModel frm = await fr.getReply(commentId: feedId, pageKey: pageKey, context: context);
-      _feedReplyData = frm.data;
+      FeedReplyModel? frm = await fr.getReply(commentId: feedId, pageKey: pageKey, context: context);
+      _feedReplyData = frm!.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);
@@ -130,7 +149,9 @@ class FeedReplyProvider with ChangeNotifier {
       setStateFeedReplyStatus(FeedReplyStatus.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-    } catch (_) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
   
 }

@@ -28,10 +28,10 @@ class DashboardScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  DashboardScreenState createState() => DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin  {
+class DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin  {
   int selectedIndex = 0;
   
   List widgetOptions = [

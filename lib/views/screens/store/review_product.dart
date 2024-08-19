@@ -52,12 +52,12 @@ class _ReviewProductPageState extends State<ReviewProductPage> {
     List<File> before = [];
 
     resultList = await MultiImagePicker.pickImages(
-      cupertinoOptions: const CupertinoOptions(
+      iosOptions: const IOSOptions(
         settings: CupertinoSettings(
           selection: SelectionSetting(max: 8)
         )
       ),
-      materialOptions: MaterialOptions(
+      androidOptions: AndroidOptions(
         maxImages: 8
       ),
       selectedAssets: images,

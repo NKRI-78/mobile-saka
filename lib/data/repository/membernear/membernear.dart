@@ -16,7 +16,7 @@ class MembernearRepo {
 
   Future<List<MembernearData>> membernear(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       debugPrint(sp.getString('lat'));
       debugPrint(sp.getString('lng'));
       Response res = await dio.get("https://api-saka.inovatiftujuh8.com/data/nearme?lat=${sp.getString("lat")}&lng=${sp.getString("lng")}");

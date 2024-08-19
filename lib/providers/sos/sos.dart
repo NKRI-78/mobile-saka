@@ -51,7 +51,7 @@ class SosProvider extends ChangeNotifier {
   }) async {
     setStateSosStatus(SosStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/data/sos", data: {
         "userId": ar.getUserId(),
         "geoPosition": "${lp.getCurrentLat}, ${lp.getCurrentLng}",

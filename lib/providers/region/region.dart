@@ -35,7 +35,7 @@ class RegionProvider with ChangeNotifier {
 
   Future<RegionModel?> getRegion(BuildContext context, String nameType) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/region/$nameType");
       RegionModel regionModel = RegionModel.fromJson(res.data);
       return regionModel;
@@ -63,7 +63,7 @@ class RegionProvider with ChangeNotifier {
 
   Future<RegionModel?> getCity(BuildContext context, String idProvince) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/region/city?provinceId=$idProvince");
       RegionModel regionModel = RegionModel.fromJson(res.data);
       return regionModel;
@@ -91,7 +91,7 @@ class RegionProvider with ChangeNotifier {
 
   Future<RegionSubdistrictModel?> getSubdistrict(BuildContext context, String idCity) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/region/subdistrict?cityId=$idCity");
       RegionSubdistrictModel regionSubdistrictModel = RegionSubdistrictModel.fromJson(res.data);
       return regionSubdistrictModel;
@@ -119,7 +119,7 @@ class RegionProvider with ChangeNotifier {
 
   Future<AddressModel?> getDataAddress(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlEcommerce}/commerce/shipping/addresses");
       AddressModel addressModel = AddressModel.fromJson(res.data);
       _addressList = [];
@@ -174,7 +174,7 @@ class RegionProvider with ChangeNotifier {
       progressBgColor: ColorResources.primaryOrange
     );
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlEcommerce}/commerce/shipping/add",
       data: {
         "name": typeAddress,
@@ -249,7 +249,7 @@ class RegionProvider with ChangeNotifier {
       progressBgColor: ColorResources.primaryOrange
     );
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response _res = await dio.post("${AppConstants.baseUrlEcommerce}/commerce/shipping/update",
       data: {
         "id": idAddress,
@@ -299,7 +299,7 @@ class RegionProvider with ChangeNotifier {
 
   Future<AddressSingleModel?> selectedAddress(BuildContext context, List<AddressList> addressList, int i) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlEcommerce}/commerce/shipping/update",
       data: {
         "id": addressList[i].id, 

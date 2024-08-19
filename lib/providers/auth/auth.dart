@@ -174,7 +174,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> mascot(BuildContext context) async {
     setStateMascotStatus(MascotStatus.loading);
     try {
-      Dio d = await DioManager.shared.getClient(context);
+      Dio d = await DioManager.shared.getClient();
       Response res = await d.get("${AppConstants.baseUrl}/content-service/maskot");
       MascotModel mm = MascotModel.fromJson(json.decode(res.data));
       MascotData md = mm.data!;

@@ -108,60 +108,60 @@ class _TambahJualanPageState extends State<TambahJualanPage> {
     List<Asset> resultList = [];
     if(files.isEmpty) {
       resultList = await MultiImagePicker.pickImages(
-        cupertinoOptions: const CupertinoOptions(
+        iosOptions: const IOSOptions(
           settings: CupertinoSettings(
             selection: SelectionSetting(max: 5)
           )
         ),
-        materialOptions: MaterialOptions(
+        androidOptions: AndroidOptions(
           maxImages: 5
         ),
         selectedAssets: [],
       );
     } else if(files.length == 4) { 
       resultList = await MultiImagePicker.pickImages(
-        cupertinoOptions: const CupertinoOptions(
+        iosOptions: const IOSOptions(
           settings: CupertinoSettings(
             selection: SelectionSetting(max: 1)
           )
         ),
-        materialOptions: MaterialOptions(
+        androidOptions: AndroidOptions(
           maxImages: 1
         ),
         selectedAssets: [],
       );
     } else if(files.length == 3) { 
       resultList = await MultiImagePicker.pickImages(
-        cupertinoOptions: const CupertinoOptions(
+        iosOptions: const IOSOptions(
           settings: CupertinoSettings(
             selection: SelectionSetting(max: 2)
           )
         ),
-        materialOptions: MaterialOptions(
+        androidOptions: AndroidOptions(
           maxImages: 2
         ),
         selectedAssets: [],
       );
     } else if(files.length == 2) { 
       resultList = await MultiImagePicker.pickImages(
-        cupertinoOptions: const CupertinoOptions(
+        iosOptions: const IOSOptions(
           settings: CupertinoSettings(
             selection: SelectionSetting(max: 3)
           )
         ),
-        materialOptions: MaterialOptions(
+        androidOptions: AndroidOptions(
           maxImages: 3
         ),
         selectedAssets: [],
       );
     } else { 
       resultList = await MultiImagePicker.pickImages(
-        cupertinoOptions: const CupertinoOptions(
+        iosOptions: const IOSOptions(
           settings: CupertinoSettings(
             selection: SelectionSetting(max: 4)
           )
         ),
-        materialOptions: MaterialOptions(
+        androidOptions: AndroidOptions(
           maxImages: 4
         ),
         selectedAssets: [],

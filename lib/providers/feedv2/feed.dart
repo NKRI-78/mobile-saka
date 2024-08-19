@@ -2,16 +2,25 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:provider/provider.dart';
+
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
+
+import 'package:uuid/uuid.dart';
+
+import 'package:saka/providers/profile/profile.dart';
+
 import 'package:saka/data/models/feedv2/feed.dart';
 import 'package:saka/data/repository/auth/auth.dart';
 import 'package:saka/data/repository/feedv2/feed.dart';
+
 import 'package:saka/localization/language_constraints.dart';
-import 'package:saka/services/navigation.dart';
+
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/exceptions.dart';
-import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
+
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
-import 'package:uuid/uuid.dart';
 
 enum FeedStatus { idle, loading, loaded, empty, error }
 enum WritePostStatus { idle, loading, loaded, empty, error }
@@ -86,11 +95,11 @@ class FeedProviderV2 with ChangeNotifier {
   FeedData _fd = FeedData();
   FeedData get fd => _fd;
 
-  List<Forum> _forum1 = [];
+  final List<Forum> _forum1 = [];
   List<Forum> get forum1 => [..._forum1];
-  List<Forum> _forum2 = [];
+  final List<Forum> _forum2 = [];
   List<Forum> get forum2 => [..._forum2];
-  List<Forum> _forum3 = [];
+  final List<Forum> _forum3 = [];
   List<Forum> get forum3 => [..._forum3];
 
   Future<void> fetchFeedMostRecent(BuildContext context) async {
@@ -193,7 +202,7 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> post(BuildContext context,String type, List<File> files) async {
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -210,8 +219,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     if (feedType == "text") {
       await fr.post(
-        context: context, 
-        feedId: feedId,
+        forumId: forumId,
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
@@ -219,33 +227,36 @@ class FeedProviderV2 with ChangeNotifier {
         caption: postC.text, 
         link: '', 
       );
+
+      Navigator.of(context).pop();
+
     }
 
     if (feedType == "image") {
    
       for (File p in files) {
-        Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(p.path));
-
-        await fr.post(
-          context: context, 
-          feedId: feedId,
-          appName: 'saka', 
-          userId: ar.getUserId().toString(), 
-          feedType: type, 
-          media: d["data"]["path"],
-          link: '', 
-          caption: postC.text, 
-        );
+        Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(p.path));
       
-        await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+        await fr.postMedia(forumId: forumId, path: d!["data"]["path"], size: d["data"]["size"]);
       }
+
+      await fr.post(
+        forumId: forumId,
+        appName: 'saka', 
+        userId: ar.getUserId().toString(), 
+        feedType: type, 
+        media: 'media.jpg',
+        link: '', 
+        caption: postC.text, 
+      );
+
+      for (int i = 0; i < 2; i++) {
+        Navigator.of(context).pop();
+      }
+
     }
 
     setStateWritePost(WritePostStatus.loaded);
-
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -255,7 +266,7 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> postImageCamera(BuildContext context,String type, File files) async {
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -271,27 +282,27 @@ class FeedProviderV2 with ChangeNotifier {
     setStateWritePost(WritePostStatus.loading);
 
     if (feedType == "image") {
-      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(files.path));
+      Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(files.path));
       
       await fr.post(
-        context: context, 
-        feedId: feedId,
+        forumId: forumId,
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: d["data"]["path"], 
+        media: d!["data"]["path"], 
         link: '',
         caption: postC.text, 
       );
 
-      await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+      await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
+
+    }
+
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
     }
 
     setStateWritePost(WritePostStatus.loaded);
-
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -302,42 +313,51 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> postVideo(BuildContext context,String type, File files) async {
     setStateWritePost(WritePostStatus.loading);
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(postC.text.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
     if (feedType == "video") {
-      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "videos", media: files);
-      
-      await fr.post(
-        context: context, 
-        feedId: feedId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: d["data"]["path"], 
-        link: '',
-        caption: postC.text, 
-      );
 
-      await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+      try {
+
+        Map<String, dynamic>? d = await fr.uploadMedia(folder: "videos", media: files);
+        
+        await fr.post(
+          forumId: forumId,
+          appName: 'saka', 
+          userId: ar.getUserId().toString(), 
+          feedType: type, 
+          media: d!["data"]["path"], 
+          link: '',
+          caption: postC.text, 
+        );
+
+        await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
+
+      } catch(e) {
+
+        setStateWritePost(WritePostStatus.error);
+      
+      }
+      
+    }
+
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
     }
 
     setStateWritePost(WritePostStatus.loaded);
     
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
-
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
@@ -346,8 +366,9 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> postLink(BuildContext context,String type, String link) async {
+
     setStateWritePost(WritePostStatus.loading);
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -375,6 +396,7 @@ class FeedProviderV2 with ChangeNotifier {
     } 
 
     bool validURL = Uri.parse(link.trim()).isAbsolute;
+
     if(!validURL) {
       setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("URL_FORMAT", context), "", ColorResources.error);
@@ -383,8 +405,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     if (feedType == "link") {
       await fr.post(
-        context: context, 
-        feedId: feedId,
+        forumId: forumId,
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
@@ -396,9 +417,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     setStateWritePost(WritePostStatus.loaded);
 
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
+    Navigator.pop(context);
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -409,7 +428,7 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> postVDoc(BuildContext context, String caption ,String type, File files) async {
     setStateWritePost(WritePostStatus.loading);
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (caption.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -422,31 +441,27 @@ class FeedProviderV2 with ChangeNotifier {
       return;
     }
 
-    Map<String, dynamic> data = await fr.uploadMedia(context: context, folder: "documents", media: files);
+    Map<String, dynamic>? d = await fr.uploadMedia(folder: "documents", media: files);
 
     await fr.post(
-      context: context,
-      feedId: feedId,
-      appName: 'saka',
+      forumId: forumId,
+      appName: 'saka', 
       userId: ar.getUserId().toString(), 
-      feedType: type,
-      media: "media.jpg",
-      link: data["data"]["path"],
-      caption: caption,
+      feedType: type, 
+      media: "media.jpg", 
+      link: d!["data"]["path"],
+      caption: caption, 
     );
     
-    await fr.postMedia(
-      context: context, 
-      feedId: feedId, 
-      path: data["data"]["path"], 
-      size: data["data"]["size"]
+    await fr.postMedia( 
+      forumId: forumId, 
+      path: d["data"]["path"], 
+      size: d["data"]["size"]
     );
 
     setStateWritePost(WritePostStatus.loaded);
 
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
+    Navigator.pop(context);
     
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -459,10 +474,6 @@ class FeedProviderV2 with ChangeNotifier {
     await fr.deletePost(context, postId);
 
     Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
-
-    Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
@@ -473,10 +484,6 @@ class FeedProviderV2 with ChangeNotifier {
     await fr.deleteReply(context, replyId);
 
     Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
-
-    Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
@@ -485,27 +492,37 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> toggleLike({
     required BuildContext context,
-    required String feedId, 
-    required FeedLikes feedLikes
+    required String forumId, 
+    required ForumLikes feedLikes
   }) async {
     try {
+      
       int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+
       if (idxLikes != -1) {
         feedLikes.likes.removeAt(idxLikes);
+
         feedLikes.total = feedLikes.total - 1;
       } else {
         feedLikes.likes.add(UserLikes(
-            user: User(
-            id: ar.getUserId().toString(),
-            avatar: "-",
-            username: "${ar.getUserfullname()}")));
+          user: User(
+          id: context.read<ProfileProvider>().userProfile.userId.toString(),
+          avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(),
+          username: context.read<ProfileProvider>().userProfile.fullname.toString()
+        )));
+        
         feedLikes.total = feedLikes.total + 1;
       }
-      await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());
-      Future.delayed(Duration.zero, () => notifyListeners());
+
+      await fr.toggleLike(context: context, forumId: forumId, userId: ar.getUserId().toString());
+
+      notifyListeners();
+
     } on CustomException catch (e) {
       debugPrint(e.toString());
-    } catch (_) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   // Future<void> uploadPic(BuildContext context) async {

@@ -38,7 +38,7 @@ class NewsProvider with ChangeNotifier {
 
   Future<void> getNews(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/article");
       Map<String, dynamic> data = json.decode(res.data);
       NewsModel newsModel = NewsModel.fromJson(data);
@@ -72,7 +72,7 @@ class NewsProvider with ChangeNotifier {
 
   Future<void> getNewsSingle(BuildContext context, String contentId) async {
     try { 
-      Dio dio = await DioManager.shared.getClient(context);
+      Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/article/$contentId");
       Map<String, dynamic> data = json.decode(res.data);
       SingleNewsModel singleNewsModel = SingleNewsModel.fromJson(data);
