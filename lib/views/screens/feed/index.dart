@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saka/providers/profile/profile.dart';
@@ -410,8 +411,13 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   )
 
                 ],
-              )
-              ,
+              ),
+              leading: CupertinoNavigationBarBackButton(
+                color: ColorResources.black,
+                onPressed: () {
+                  NS.pop(context);
+                },
+              ),
               elevation: 0.0,
               forceElevated: true,
               pinned: true,
