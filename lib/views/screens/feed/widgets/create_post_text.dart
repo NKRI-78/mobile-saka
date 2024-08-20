@@ -363,7 +363,7 @@ class CreatePostTextState extends State<CreatePostText> {
               child: TextField(
                 maxLines: null,
                 minLines: 5,
-                cursorColor: ColorResources.grey,
+                cursorColor: ColorResources.black,
                 controller: fd.postC,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
@@ -372,19 +372,19 @@ class CreatePostTextState extends State<CreatePostText> {
                   labelText: getTranslated("WRITE_POST", context),
                   labelStyle: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.grey
+                    color: ColorResources.black
                   ),
                   floatingLabelBehavior: FloatingLabelBehavior.auto,
                   focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)),
                     borderSide: BorderSide(
-                      color: ColorResources.grey, 
+                      color: ColorResources.black, 
                     ),
                   ),
                   enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)),
                     borderSide: BorderSide(
-                      color: ColorResources.grey, 
+                      color: ColorResources.black, 
                     ),
                   ),
                 ),

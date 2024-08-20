@@ -75,18 +75,19 @@ class InputPostWidgetState extends State<InputPostWidget> {
                       focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         borderSide: BorderSide(
-                          color: ColorResources.grey
+                          color: ColorResources.black
                         ),
                       ),
                       enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         borderSide: BorderSide(
-                          color: ColorResources.grey,
+                          color: ColorResources.black,
                         ),
                       ),
                       hintText: getTranslated("WRITE_POST", context),
                       hintStyle: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall
+                        fontSize: Dimensions.fontSizeSmall,
+                        color: ColorResources.black
                       )
                     ),
                     onTap: () {

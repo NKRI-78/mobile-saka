@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:saka/views/screens/feed/index.dart';
-import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:rxdart/rxdart.dart';
@@ -12,6 +10,9 @@ import 'package:saka/services/navigation.dart';
 import 'package:saka/services/services.dart';
 
 import 'package:saka/views/screens/news/detail.dart';
+
+import 'package:saka/views/screens/feed/index.dart';
+import 'package:saka/views/screens/feed/post_detail.dart';
 
 import 'package:saka/providers/auth/auth.dart';
 
@@ -142,6 +143,7 @@ class FirebaseProvider with ChangeNotifier {
   void listenNotification(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification notification = message.notification!;
+      Map<String, dynamic> data = message.data;
       int soundId = await rootBundle.load("assets/sounds/notification.mpeg").then((ByteData soundData) {
         return soundpool.load(soundData);
       });
@@ -150,9 +152,7 @@ class FirebaseProvider with ChangeNotifier {
         id: Helper.createUniqueId(),
         title: notification.title,
         body: notification.body,
-        payload: {
-          "news_id": message.data["news_id"]
-        },
+        payload: data
       );
     });
   }

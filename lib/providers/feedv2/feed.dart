@@ -478,6 +478,10 @@ class FeedProviderV2 with ChangeNotifier {
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
     });
+
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> deleteReply(BuildContext context, String replyId) async {
