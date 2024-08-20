@@ -1,15 +1,16 @@
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:external_path/external_path.dart';
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:saka/localization/language_constraints.dart';
 import 'package:shimmer/shimmer.dart';
+
+import 'package:gallery_saver/gallery_saver.dart';
 
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -34,6 +35,8 @@ class PreviewForumImageScreen extends StatefulWidget {
 }
 
 class PreviewForumImageScreenState extends State<PreviewForumImageScreen> {
+
+  bool loadingBtn = false;
 
   int current = 0;
   
@@ -83,7 +86,7 @@ class PreviewForumImageScreenState extends State<PreviewForumImageScreen> {
 
             Container(
               margin: const EdgeInsets.only(
-                top: 15.0,
+                top: 5.0,
                 left: 15.0,
               ),
               child: Text(widget.caption!,
@@ -147,28 +150,34 @@ class PreviewForumImageScreenState extends State<PreviewForumImageScreen> {
                   showAnimatedDialog(
                     context: context,
                     barrierDismissible: true,
-                    builder: (ctx) {
+                    builder: (_) {
                       return Dialog(
                         child: Container(
                         height: 50.0,
                         padding: const EdgeInsets.all(10.0),
                         margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
                         child: StatefulBuilder(
-                          builder: (BuildContext c, Function s) {
+                          builder: (BuildContext context, Function setStateBuilder) {
                           return ElevatedButton(
                             onPressed: () async { 
-                              Directory documentsIos = await getApplicationDocumentsDirectory();
-                              String? saveDir = Platform.isIOS 
-                              ? documentsIos.path 
-                              : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+                              setStateBuilder(() => loadingBtn = true);
+                              await GallerySaver.saveImage("${widget.medias![current].path}");
+                              setStateBuilder(() => loadingBtn = false);
                               Navigator.pop(context);
-                              ShowSnackbar.snackbar(context, "Gambar telah disimpan pada $saveDir", "", ColorResources.success);
+                              ShowSnackbar.snackbar(context, "Gambar telah disimpan pada galeri", "", ColorResources.success);
                             },
-                            child: Text("Unduh Gambar", 
+                            child: loadingBtn 
+                            ? Text(getTranslated("PLEASE_WAIT", context), 
                               style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
+                                fontSize: Dimensions.fontSizeDefault,
+                                color: ColorResources.black
+                              ))
+                            : Text("Unduh Gambar", 
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeDefault,
+                                color: ColorResources.black
                               ),
-                            ),                           
+                            )
                           );
                         })
                         )

@@ -1,17 +1,16 @@
-import 'dart:io';
 
-import 'package:external_path/external_path.dart';
+
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:saka/views/basewidgets/preview/preview.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
+import 'package:saka/views/basewidgets/preview/preview.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -301,16 +300,14 @@ class PostImageState extends State<PostImage> {
                         builder: (BuildContext c, Function s) {
                         return ElevatedButton(
                           onPressed: () async { 
-                            Directory documentsIos = await getApplicationDocumentsDirectory();
-                            String? saveDir = Platform.isIOS 
-                            ? documentsIos.path 
-                            : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+                            await GallerySaver.saveImage("${widget.medias.first.path}");
                             NS.pop(context);
-                            ShowSnackbar.snackbar(context, "Gambar telah disimpan pada $saveDir", "", ColorResources.success);
+                            ShowSnackbar.snackbar(context, "Gambar telah disimpan pada galeri", "", ColorResources.success);
                           },
                           child: Text("Unduh Gambar", 
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: ColorResources.black
                             ),
                           ),                           
                         );

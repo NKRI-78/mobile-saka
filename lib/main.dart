@@ -38,7 +38,9 @@ Future<void> main() async {
   // );
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+  
   timeago.setLocaleMessages('id', CustomLocalDate());
+
   await Helper.initSharedPreferences();
   await core.init();
   runApp(MultiProvider(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:detectable_text_field/detectable_text_field.dart';
+import 'package:saka/utils/date_util.dart';
 import 'package:saka/utils/dimensions.dart';
 
 import 'package:provider/provider.dart';
@@ -219,7 +219,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
         _comments[i].reply.replies.add(ReplyElement(
           id: replyIdStore, 
           reply: controller.text, 
-          createdAt: "beberapa detik yang lalu", 
+          createdAt: DateHelper.formatDateTime("seconds ago", context), 
           user: UserReply(
             id: context.read<ProfileProvider>().userProfile.userId.toString(), 
             avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(), 
@@ -268,7 +268,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
           CommentElement(
             id: commentIdStore, 
             comment: controller.text, 
-            createdAt: "beberapa detik yang lalu", 
+            createdAt: DateHelper.formatDateTime("seconds ago", context), 
             user: User(
               id: context.read<ProfileProvider>().userProfile.userId.toString(), 
               avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(), 

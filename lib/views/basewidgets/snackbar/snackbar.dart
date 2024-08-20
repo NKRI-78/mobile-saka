@@ -5,6 +5,7 @@ import 'package:saka/utils/custom_themes.dart';
 
 class ShowSnackbar {
   ShowSnackbar._();
+
   static snackbar(BuildContext context, String content, String label, Color backgroundColor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -23,4 +24,5 @@ class ShowSnackbar {
       )
     );
   }
+  
 }
