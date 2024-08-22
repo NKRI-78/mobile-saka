@@ -36,6 +36,7 @@ Future<void> main() async {
   //   androidNotificationChannelName: 'Audio playback',
   //   androidNotificationOngoing: true,
   // );
+
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
   
@@ -53,12 +54,10 @@ class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
-  late FirebaseProvider fp;
+class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> checkPermissions() async {
     if(Platform.isAndroid) {
@@ -108,29 +107,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> getData() async {
+    if (!mounted) return;
+      await NotificationService.init();
+
+    if (!mounted) return;
+      await context.read<FirebaseProvider>().setupInteractedMessage(context);
+  }
+
   @override 
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
 
-    fp = context.read<FirebaseProvider>();
-
     checkPermissions();  
 
-    Future.delayed(Duration.zero, () {
-      if(mounted) {
-        fp.init();
-      }
-      if(mounted) {
-        fp.setupInteractedMessage(context);
-      }
-      if(mounted) {
-        NotificationService.init();
-      }
-    });
+    Future.microtask(() => getData()); 
 
-    fp.listenNotification(context);
+    context.read<FirebaseProvider>().listenNotification(context);
+
     listenOnClickNotifications();
   }
 

@@ -25,7 +25,6 @@ class CreatePostImageScreen extends StatefulWidget {
 }
 
 class CreatePostImageScreenState extends State<CreatePostImageScreen> {
-  GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
   late FeedProviderV2 fdv2;
   int current = 0;
@@ -120,7 +119,6 @@ class CreatePostImageScreenState extends State<CreatePostImageScreen> {
   
   Widget buildUI() {
     return Scaffold(
-      key: globalKey,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [

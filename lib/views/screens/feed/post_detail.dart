@@ -853,9 +853,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                                                         const SizedBox(width: 8.0),
       
                                                         InkWell(
-                                                          onTap: reply.user.id == feedDetailProvider.ar.getUserId() 
-                                                          ? () {} 
-                                                          : () {
+                                                          onTap: () {
                                                             feedDetailProvider.controller.text = "@${reply.user.mention} ";
       
                                                             feedDetailProvider.focusNode.requestFocus();
@@ -1010,6 +1008,8 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                       color: ColorResources.black,
                     ),
                     onPressed: () async {
+                      
+
                       await feedDetailProvider.postComment(
                         context, 
                         widget.data["forum_id"]

@@ -229,11 +229,10 @@ class FeedProviderV2 with ChangeNotifier {
       );
 
       Navigator.of(context).pop();
-
     }
 
     if (feedType == "image") {
-   
+
       for (File p in files) {
         Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(p.path));
       

@@ -70,6 +70,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
   UserMentionStatus get userMentionStatus => _userMentionStatus;
 
   void clearInput() {
+    type = "COMMENT";
     controller.clear();
     showListUserMention = false;
 
@@ -203,6 +204,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
     BuildContext context,
     String forumId,
   ) async {
+    
     try {
 
       if (controller.text.trim() == "") {
@@ -211,6 +213,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
       }
 
       if(type == "REPLY") {
+
+        debugPrint("=== REPLY ===");
 
         String replyIdStore = Uuid().generateV4();
 
@@ -221,10 +225,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
           reply: controller.text, 
           createdAt: DateHelper.formatDateTime("seconds ago", context), 
           user: UserReply(
-            id: context.read<ProfileProvider>().userProfile.userId.toString(), 
+            id: ar.getUserId().toString(), 
             avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(), 
             username: context.read<ProfileProvider>().userProfile.fullname.toString(),
-            mention: ar.getUserEmail()!.split('@')[0]
+            mention: ar.getUserfullname().toString().split('@')[0]
           ), 
           like: ReplyLike(
             total: 0, 
@@ -261,6 +265,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
         onUpdateType("COMMENT");
 
       } else {
+        
+        debugPrint("=== COMMENT ===");
 
         String commentIdStore = Uuid().generateV4();
 
@@ -270,10 +276,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
             comment: controller.text, 
             createdAt: DateHelper.formatDateTime("seconds ago", context), 
             user: User(
-              id: context.read<ProfileProvider>().userProfile.userId.toString(), 
+              id: ar.getUserId().toString(), 
               avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(), 
               username: context.read<ProfileProvider>().userProfile.fullname.toString(),
-              mention: ar.getUserEmail()!.split('@')[0]
+              mention: ar.getUserfullname().toString().split('@')[0]
             ),
             reply: CommentReply(total: 0, replies: []), 
             like: CommentLike(total: 0, likes: []),
@@ -283,7 +289,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         fr.postComment(
           context: context, commentId: commentIdStore, forumId: forumId, 
-          comment: controller.text, userId: ar.getUserId()!,
+          comment: controller.text, userId: ar.getUserId().toString(),
         ).then((_) {
           clearInput();
         });

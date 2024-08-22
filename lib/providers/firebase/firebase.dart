@@ -106,8 +106,6 @@ class FirebaseProvider with ChangeNotifier {
 
   }
 
-
-
   Future<void> initFcm(BuildContext context) async {
     try {
       await fp.initFcm(
