@@ -464,6 +464,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
       _comments.clear();
       _comments.addAll(fdm.data.forum!.comment!.comments);
+
+      Navigator.of(context).pop();       
       
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
     } on CustomException catch (e) {

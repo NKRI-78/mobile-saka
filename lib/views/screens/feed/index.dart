@@ -420,7 +420,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               ),
               elevation: 0.0,
               forceElevated: true,
-              pinned: true,
+              pinned: false,
               centerTitle: true,
               floating: true,
             ),

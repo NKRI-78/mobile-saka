@@ -234,6 +234,7 @@ class CreatePostTextState extends State<CreatePostText> {
         title: Text(getTranslated("CREATE_POST", context), 
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
+            fontWeight: FontWeight.bold,
             color: ColorResources.black
           )
         ),
@@ -362,13 +363,14 @@ class CreatePostTextState extends State<CreatePostText> {
             Flexible(
               child: TextField(
                 maxLines: null,
-                minLines: 5,
+                minLines: 3,
                 cursorColor: ColorResources.black,
                 controller: fd.postC,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
                 decoration: InputDecoration(
+                  alignLabelWithHint: true,
                   labelText: getTranslated("WRITE_POST", context),
                   labelStyle: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
