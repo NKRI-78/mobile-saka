@@ -22,6 +22,7 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/date_util.dart';
+import 'package:saka/views/screens/feed/index.dart';
 
 import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
@@ -39,10 +40,12 @@ import 'package:saka/views/screens/feed/widgets/terms_popup.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final dynamic data;
+  final String from;
 
   const PostDetailScreen({
     Key? key,    
     required this.data,
+    required this.from,
   }) : super(key: key);
 
   @override
@@ -193,8 +196,6 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                 : TermsPopup()
               ),
         
-              const SizedBox(height: 5.0),
-              
               Container(
                 margin: const EdgeInsets.only(left: 15.0),
                 child: PostText(feedDetailProvider.feedDetailData.forum!.caption ?? "-")
@@ -208,21 +209,20 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                 ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
               if (feedDetailProvider.feedDetailData.forum!.type == "image")
                 feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
-              PostImage(
-                feedDetailProvider.feedDetailData.forum!.user!.username,
-                feedDetailProvider.feedDetailData.forum!.caption!,
-                true,
-                feedDetailProvider.feedDetailData.forum!.media!, 
-              ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                PostImage(
+                  feedDetailProvider.feedDetailData.forum!.user!.username,
+                  feedDetailProvider.feedDetailData.forum!.caption!,
+                  true,
+                  feedDetailProvider.feedDetailData.forum!.media!, 
+                ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
               if (feedDetailProvider.feedDetailData.forum!.type == "video")
                 feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
                 PostVideo(
                   media: feedDetailProvider.feedDetailData.forum!.media![0].path,
-                ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
           
               Container(
                 margin: const EdgeInsets.only(
-                  top: 5.0, 
                   left: 15.0, 
                   right: 15.0
                 ),
@@ -501,7 +501,11 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
         if (didPop) {
           return;
         }
-        NS.pop(context);
+        if(widget.from == "direct") {
+          NS.push(context, FeedIndex());
+        } else {
+          NS.pop(context);
+        }
       },
       child: Scaffold(
         body: RefreshIndicator.adaptive(
@@ -527,7 +531,11 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                 leading: CupertinoNavigationBarBackButton(
                   color: ColorResources.black,
                   onPressed: () {
-                    NS.pop(context);
+                    if(widget.from == "direct") {
+                      NS.push(context, FeedIndex());
+                    } else {
+                      NS.pop(context);
+                    }
                   },
                 ),
                 elevation: 0.0,
@@ -664,7 +672,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                                   Container(
                                     width: 140.0,
                                     margin: const EdgeInsets.only(
-                                      left: 65.0,
+                                      left: 75.0,
                                       right: 65.0
                                     ),
                                     child: Row(
@@ -1008,8 +1016,6 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                       color: ColorResources.black,
                     ),
                     onPressed: () async {
-                      
-
                       await feedDetailProvider.postComment(
                         context, 
                         widget.data["forum_id"]
@@ -1426,22 +1432,22 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                           )
                         ), 
                         StatefulBuilder(
-                          builder: (BuildContext context, Function s) {
+                          builder: (BuildContext context, Function setStateBuilder) {
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ColorResources.error
                             ),
                             onPressed: () async { 
-                              s(() => deletePostBtn = true);
+                              setStateBuilder(() => deletePostBtn = true);
                               try {         
                                 await context.read<p.FeedDetailProviderV2>().deleteComment(
                                   context: context, 
                                   forumId: forumId, 
                                   commentId: commentId
                                 );               
-                                s(() => deletePostBtn = false);
+                                setStateBuilder(() => deletePostBtn = false);
                               } catch(e) {
-                                s(() => deletePostBtn = false);
+                                setStateBuilder(() => deletePostBtn = false);
                                 debugPrint(e.toString()); 
                               }
                             },

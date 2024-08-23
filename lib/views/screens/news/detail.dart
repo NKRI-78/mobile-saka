@@ -1,16 +1,14 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 // import 'package:flutter_html/flutter_html.dart';
 
-import 'package:dio/dio.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -153,19 +151,14 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                               } 
                               pr.show(
                                 max: 1,
-                                msg: 'Downloading...'
+                                msg: '${getTranslated("DOWNLOADING", context)}...'
                               );
-                              Response response = await Dio().get('${notifier.singleNewsData.first.media!.first.path}');
-                              await ImageGallerySaver.saveImage(
-                                Uint8List.fromList(response.data),
-                                quality: 60,
-                              );
+                              await GallerySaver.saveImage('${notifier.singleNewsData.first.media!.first.path}');
                               pr.close();
-                              ShowSnackbar.snackbar(ctx, "Gambar telah disimpan di galeri", "", ColorResources.success);
-                            } catch(e, stacktrace) {
-                              debugPrint(stacktrace.toString());
+                              ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                            } catch(_) {
                               pr.close();
-                              ShowSnackbar.snackbar(ctx, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                              ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
                             }
                           },
                           icon: const Icon(Icons.more_horiz),

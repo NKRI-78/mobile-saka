@@ -96,8 +96,7 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                   children: [
                     InkWell(
                       onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                        fdv2.setStateWritePost(WritePostStatus.loading);
-                        
+                       
                         File f = File(fileX!.path);
                         fdv2.feedType = "video";
                         await fdv2.postVideo(context, "video", f);

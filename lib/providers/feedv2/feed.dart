@@ -73,6 +73,12 @@ class FeedProviderV2 with ChangeNotifier {
   WritePostStatus _writePostStatus = WritePostStatus.idle;
   WritePostStatus get writePostStatus => _writePostStatus;
 
+  void resetFeedType() {
+    feedType = "text";
+
+    notifyListeners();
+  }
+
   void setStateFeedRecentStatus(FeedRecentStatus feedRecentStatus) {
     _feedRecentStatus = feedRecentStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -85,7 +91,6 @@ class FeedProviderV2 with ChangeNotifier {
     _feedSelfStatus = feedSelfStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
-
 
   void setStateWritePost(WritePostStatus writePostStatus) {
     _writePostStatus = writePostStatus;
@@ -103,7 +108,6 @@ class FeedProviderV2 with ChangeNotifier {
   List<Forum> get forum3 => [..._forum3];
 
   Future<void> fetchFeedMostRecent(BuildContext context) async {
-    setStateFeedRecentStatus(FeedRecentStatus.loading);
     pageKey = 1;
     hasMore = true;
 
@@ -125,6 +129,7 @@ class FeedProviderV2 with ChangeNotifier {
       setStateFeedRecentStatus(FeedRecentStatus.error);
     }
   }
+
   Future<void> fetchFeedPopuler(BuildContext context) async {
     setStateFeedPopulerStatus(FeedPopulerStatus.loading);
     pageKey2 = 1;
@@ -148,6 +153,7 @@ class FeedProviderV2 with ChangeNotifier {
       setStateFeedPopulerStatus(FeedPopulerStatus.error);
     }
   }
+
   Future<void> fetchFeedSelf(BuildContext context) async {
     setStateFeedSelfStatus(FeedSelfStatus.loading);
     pageKey3 = 1;
@@ -311,7 +317,6 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> postVideo(BuildContext context,String type, File files) async {
-    setStateWritePost(WritePostStatus.loading);
     String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
@@ -325,34 +330,28 @@ class FeedProviderV2 with ChangeNotifier {
       return;
     }
 
+    setStateWritePost(WritePostStatus.loading);
+
     if (feedType == "video") {
 
-      try {
-
-        Map<String, dynamic>? d = await fr.uploadMedia(folder: "videos", media: files);
-        
-        await fr.post(
-          forumId: forumId,
-          appName: 'saka', 
-          userId: ar.getUserId().toString(), 
-          feedType: type, 
-          media: d!["data"]["path"], 
-          link: '',
-          caption: postC.text, 
-        );
-
-        await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
-
-      } catch(e) {
-
-        setStateWritePost(WritePostStatus.error);
+      Map<String, dynamic>? d = await fr.uploadMedia(folder: "videos", media: files);
       
+      await fr.post(
+        forumId: forumId,
+        appName: 'saka', 
+        userId: ar.getUserId().toString(), 
+        feedType: type, 
+        media: d!["data"]["path"], 
+        link: '',
+        caption: postC.text, 
+      );
+
+      await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
+
+      for (int i = 0; i < 2; i++) {
+        Navigator.of(context).pop();
       }
-      
-    }
 
-    for (int i = 0; i < 2; i++) {
-      Navigator.of(context).pop();
     }
 
     setStateWritePost(WritePostStatus.loaded);
@@ -416,7 +415,9 @@ class FeedProviderV2 with ChangeNotifier {
 
     setStateWritePost(WritePostStatus.loaded);
 
-    Navigator.pop(context);
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
+    }
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -460,7 +461,9 @@ class FeedProviderV2 with ChangeNotifier {
 
     setStateWritePost(WritePostStatus.loaded);
 
-    Navigator.pop(context);
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
+    }
     
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);

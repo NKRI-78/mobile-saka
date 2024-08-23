@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saka/providers/profile/profile.dart';
+import 'package:saka/views/screens/dashboard/dashboard.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
@@ -182,6 +183,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     return InkWell(
                       onTap: () {
                         NS.push(context, PostDetailScreen(
+                          from: "index",
                           data: {
                             "forum_id": feedProvider.forum1[i].id,
                             "comment_id": "",
@@ -251,6 +253,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.push(context, NS.fromLeft(
                           PostDetailScreen(
+                          from: "index",
                           data: {
                             "forum_id": feedProvider.forum1[i].id,
                             "comment_id": "",
@@ -329,6 +332,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.push(context, NS.fromLeft(
                           PostDetailScreen(
+                            from: "index",
                             data: {
                               "forum_id": feedProvider.forum1[i].id,
                               "comment_id": "",
@@ -366,71 +370,76 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI(); 
-  }
-
-  Widget buildUI() {
-    return Scaffold(
-     body: NestedScrollView(
-       physics: const ScrollPhysics(),
-       headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
-          return [
-
-            SliverAppBar(
-              systemOverlayStyle: SystemUiOverlayStyle.dark,
-              backgroundColor: ColorResources.white,
-              automaticallyImplyLeading: false,
-              toolbarHeight: 150.0,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-
-                  Image.asset('assets/images/logo/logo.png',
-                    width: 70.0,
-                  ),
-
-                  const SizedBox(height: 8.0),
-
-                  Text('Forum',
-                    style: robotoRegular.copyWith(
-                      color: ColorResources.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: Dimensions.fontSizeOverLarge
-                    )
-                  ),
-
-                  const SizedBox(height: 8.0),
-
-                  const Text("Saka Dirgantara",
-                    style: TextStyle(
-                      color: ColorResources.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: Dimensions.fontSizeLarge
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          return;
+        }
+        NS.push(context, DashboardScreen());;
+      },
+      child: Scaffold(
+       body: NestedScrollView(
+         physics: const ScrollPhysics(),
+         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+            return [
+      
+              SliverAppBar(
+                systemOverlayStyle: SystemUiOverlayStyle.dark,
+                backgroundColor: ColorResources.white,
+                automaticallyImplyLeading: false,
+                toolbarHeight: 150.0,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+      
+                    Image.asset('assets/images/logo/logo.png',
+                      width: 70.0,
                     ),
-                  )
-
-                ],
+      
+                    const SizedBox(height: 8.0),
+      
+                    Text('Forum',
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: Dimensions.fontSizeOverLarge
+                      )
+                    ),
+      
+                    const SizedBox(height: 8.0),
+      
+                    const Text("Saka Dirgantara",
+                      style: TextStyle(
+                        color: ColorResources.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: Dimensions.fontSizeLarge
+                      ),
+                    )
+      
+                  ],
+                ),
+                leading: CupertinoNavigationBarBackButton(
+                  color: ColorResources.black,
+                  onPressed: () {
+                    NS.push(context, DashboardScreen());
+                  },
+                ),
+                elevation: 0.0,
+                forceElevated: true,
+                pinned: false,
+                centerTitle: true,
+                floating: true,
               ),
-              leading: CupertinoNavigationBarBackButton(
-                color: ColorResources.black,
-                onPressed: () {
-                  NS.pop(context);
-                },
-              ),
-              elevation: 0.0,
-              forceElevated: true,
-              pinned: false,
-              centerTitle: true,
-              floating: true,
-            ),
-            
-            const InputPostWidget(),
-
-          ];
-         },
-        body: tabbarviewsection(context),
-      )
+              
+              const InputPostWidget(),
+      
+            ];
+           },
+          body: tabbarviewsection(context),
+        )
+      ),
     );
   }
 }

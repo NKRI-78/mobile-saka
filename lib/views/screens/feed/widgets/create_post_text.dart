@@ -169,12 +169,13 @@ class CreatePostTextState extends State<CreatePostText> {
     if(result != null) {
       File file = File(result.files.single.path!);
       int sizeInBytes = file.lengthSync();
-      String fs = filesize(sizeInBytes, 0).replaceAll(RegExp(r'[^0-9]'),'');
+      
+      // String fs = filesize(sizeInBytes, 0).replaceAll(RegExp(r'[^0-9]'),'');
 
-      if(int.parse(fs) >= 100) {
-        ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
-        return;
-      }
+      // if(int.parse(fs) >= 100) {
+      //   ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
+      //   return;
+      // }
 
       setState(() =>  fileVideo = file);
 
@@ -211,10 +212,11 @@ class CreatePostTextState extends State<CreatePostText> {
   @override 
   void initState() {
     super.initState();
-
     fd = context.read<FeedProviderV2>();
+
     scrollController = ScrollController();
     fd.postC = TextEditingController();
+    fd.resetFeedType();
   }
 
   @override 
@@ -255,7 +257,9 @@ class CreatePostTextState extends State<CreatePostText> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
-                  onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
+                  onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
+                  ? () {} 
+                  : () async {
                     await fd.post(context, "text", []);   
                   },
                   child: Container(

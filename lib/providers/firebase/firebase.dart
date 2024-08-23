@@ -81,6 +81,7 @@ class FirebaseProvider with ChangeNotifier {
     if(message.data["click_action"] == "create-comment") {       
       NS.pushUntil(navigatorKey.currentContext!, 
         PostDetailScreen(
+          from: "direct",
           data: {
             "forum_id": message.data["forum_id"],
             "comment_id": message.data["comment_id"],
@@ -94,6 +95,7 @@ class FirebaseProvider with ChangeNotifier {
     if(message.data["click_action"] == "create-reply") {
       NS.pushUntil(navigatorKey.currentContext!, 
         PostDetailScreen(
+          from: "direct",
           data: {
             "forum_id": message.data["forum_id"],
             "comment_id": message.data["comment_id"],

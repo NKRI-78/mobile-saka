@@ -28,6 +28,7 @@ class CreatePostLinkState extends State<CreatePostLink> {
   @override 
   void initState() {
     super.initState();
+    
     scrollController = ScrollController();
     fdv2 = context.read<FeedProviderV2>();
     fdv2.postC = TextEditingController();

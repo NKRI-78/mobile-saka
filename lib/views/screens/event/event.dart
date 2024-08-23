@@ -386,7 +386,7 @@ class _EventScreenState extends State<EventScreen> {
                                           ),
 
                                           Container(
-                                            margin: const EdgeInsets.only(top: 15.0, bottom: 5.0),
+                                            margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: [

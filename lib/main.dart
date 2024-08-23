@@ -1,23 +1,16 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:saka/services/navigation.dart';
-import 'package:saka/services/services.dart';
-import 'package:saka/views/screens/feed/index.dart';
-import 'package:saka/views/screens/feed/post_detail.dart';
-import 'package:saka/views/screens/news/detail.dart';
 import 'localization/app_localization.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:saka/container.dart' as core;
 
+import 'package:saka/services/navigation.dart';
+import 'package:saka/services/services.dart';
 import 'package:saka/services/notification.dart';
 
 import 'package:saka/providers.dart';
@@ -29,6 +22,9 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/constant.dart';
 
 import 'package:saka/views/screens/splash/splash.dart';
+import 'package:saka/views/screens/feed/index.dart';
+import 'package:saka/views/screens/feed/post_detail.dart';
+import 'package:saka/views/screens/news/detail.dart';
 
 Future<void> main() async {
   // await JustAudioBackground.init(
@@ -59,16 +55,6 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
-  Future<void> checkPermissions() async {
-    if(Platform.isAndroid) {
-      await Permission.contacts.request();
-      LocationPermission lp = await Geolocator.requestPermission();
-      if(lp == LocationPermission.denied) {
-        await Geolocator.openAppSettings();
-      }
-    }
-  }
-
   @override 
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state); 
@@ -79,22 +65,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // - Detached (View Destroyed - App Closed)
     if(state == AppLifecycleState.resumed) {
       debugPrint("=== APP RESUME ===");
-      if(Platform.isAndroid) {
-        bool isLocationDeny = await Permission.location.isDenied;
-        if(isLocationDeny) {
-          await Geolocator.openAppSettings();
-        } else {
-          Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-          Helper.prefs?.setString("lat", position.latitude.toString());
-          Helper.prefs?.setString("lng", position.longitude.toString());
-          List<Placemark> placemarks = await placemarkFromCoordinates(
-            position.latitude,
-            position.longitude
-          );
-          Placemark place = placemarks[0];
-          Helper.prefs?.setString("membernearAddress", "${place.thoroughfare} ${place.subThoroughfare} \n${place.locality}, ${place.postalCode}");
-        }
-      }
     }
     if(state == AppLifecycleState.inactive) {
       debugPrint("=== APP INACTIVE ===");
@@ -120,8 +90,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
-
-    checkPermissions();  
 
     Future.microtask(() => getData()); 
 
@@ -171,6 +139,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       NS.pushUntil(
         navigatorKey.currentContext!, 
         PostDetailScreen(
+          from: "direct",
           data: {
             "forum_id": data["forum_id"],
             "comment_id": data["comment_id"],
@@ -185,6 +154,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       NS.pushUntil(
         navigatorKey.currentContext!, 
         PostDetailScreen(
+          from: "direct",
           data: {
             "forum_id": data["forum_id"],
             "comment_id": data["comment_id"],
