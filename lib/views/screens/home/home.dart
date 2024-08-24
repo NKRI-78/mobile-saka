@@ -71,7 +71,7 @@ class HomeScreenState extends State<HomeScreen> {
       fp.initFcm(context);
     }
     if(mounted) {
-      ip.getInbox(context, "payment");
+      ip.getInbox(context, "sos");
     }
     if(mounted) {
       bp.getBanner(context);
@@ -168,7 +168,7 @@ class HomeScreenState extends State<HomeScreen> {
                     np.getNews(context);
                     bp.getBanner(context);
                     pp.getUserProfile(context);
-                    ip.getInbox(context, "payment");
+                    ip.getInbox(context, "sos");
                     ep.checkEvent(context);
                     ap.mascot(context);
                     // ppopP.getBalance(context);

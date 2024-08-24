@@ -59,11 +59,10 @@ class InboxDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<InboxDetailScreen> createState() => _InboxDetailScreenState();
+  State<InboxDetailScreen> createState() => InboxDetailScreenState();
 }
 
-class _InboxDetailScreenState extends State<InboxDetailScreen> {
-  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+class InboxDetailScreenState extends State<InboxDetailScreen> {
 
   @override
   void initState() {
@@ -77,12 +76,7 @@ class _InboxDetailScreenState extends State<InboxDetailScreen> {
  
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
-      key: globalKey,
       backgroundColor: ColorResources.backgroundColor,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -119,6 +113,7 @@ class _InboxDetailScreenState extends State<InboxDetailScreen> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start, 
+                  mainAxisSize: MainAxisSize.min,
                   children: [
 
                     Text(DateFormat('dd MMM yyyy kk:mm').format(widget.created!.toLocal()), 
@@ -307,4 +302,5 @@ class _InboxDetailScreenState extends State<InboxDetailScreen> {
       )
     );
   }
+
 }

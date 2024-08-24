@@ -17,11 +17,8 @@ class MediaRepo {
         "folder": "images",
         "subfolder": "saka",
         "media": await MultipartFile.fromFile(file.path, filename: basename(file.path)),
-
       });
       Response res = await dio.post("${AppConstants.baseUrl}/media-service/upload", data: formData);
-      debugPrint(res.data.toString());
-      
       response = res;
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());

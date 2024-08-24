@@ -25,19 +25,29 @@ import 'package:saka/views/basewidgets/loader/circular.dart';
 
 class InboxScreen extends StatefulWidget {
   @override
-  _InboxScreenState createState() => _InboxScreenState();
+  InboxScreenState createState() => InboxScreenState();
 }
 
-class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin {
-  GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-
+class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin {
   int tabbarview = 0;
   String tabbarname = "sos";
   late TabController tabController;
 
+  Future<void> getData() async {
+    if(!mounted) return;
+      context.read<InboxProvider>().getInbox(context, tabbarname);
+  }
+
   void initState() {
     super.initState();
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
+
+    tabController.addListener(() {
+      if(!mounted) return;
+        context.read<InboxProvider>().getInbox(context, tabbarname); 
+    });
+
+    Future.microtask(() => getData());
   }
 
   void dispose() {
@@ -152,8 +162,6 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
 
   Widget getInbox(BuildContext context, String type) {
     
-    Provider.of<InboxProvider>(context, listen: false).getInbox(context, type);
-
     return Consumer<InboxProvider>(
       builder: (BuildContext context, InboxProvider inboxProvider, Widget? child) {
         if(inboxProvider.inboxStatus == InboxStatus.loading) {
@@ -218,7 +226,9 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
                   elevation: 0.0,
                   child: ListTile(
                     onTap: () async {
+
                       await Provider.of<InboxProvider>(context, listen: false).updateInbox(context, inboxProvider.inboxes[i].inboxId!, type);
+                      
                       if(inboxProvider.inboxes[i].subject == "Emergency") {
                         Provider.of<ProfileProvider>(context, listen: false).getSingleUser(context, inboxProvider.inboxes[i].senderId!);
 
@@ -359,7 +369,7 @@ class _InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixi
 
                                                   SizedBox(height: 10.0),
 
-                                                    Text(inboxProvider.inboxes[i].body!.split('-')[2].toString(),
+                                                  Text(inboxProvider.inboxes[i].body!.split('-')[2].toString(),
                                                     textAlign: TextAlign.justify,
                                                     style: robotoRegular.copyWith(
                                                       height: 1.4,
