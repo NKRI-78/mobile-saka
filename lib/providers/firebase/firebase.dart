@@ -13,6 +13,7 @@ import 'package:saka/views/screens/news/detail.dart';
 
 import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
+import 'package:saka/views/screens/inbox/inbox.dart';
 
 import 'package:saka/providers/auth/auth.dart';
 
@@ -53,10 +54,16 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> handleMessage(message) async {
 
-    if(message.data["news_id"] != "-") {
+    if(message.data["click_action"] == "news") {
       NS.push(navigatorKey.currentContext!, DetailNewsScreen(
         contentId: message.data["news_id"],
       ));
+    }
+
+    if(message.data["click_action"] == "sos") {
+      NS.push(navigatorKey.currentContext!,
+        InboxScreen()
+      );    
     }
 
     // FORUM

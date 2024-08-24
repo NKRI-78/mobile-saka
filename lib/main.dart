@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:saka/views/screens/inbox/inbox.dart';
 import 'localization/app_localization.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -110,10 +111,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
-    if(data["news_id"] != "-") {
+    if(data["click_action"] == "news") {
       NS.push(navigatorKey.currentContext!, DetailNewsScreen(
         contentId: data["news_id"],
       ));
+    }
+
+    if(data["click_action"] == "sos") {
+      NS.push(navigatorKey.currentContext!,
+        InboxScreen()
+      );    
     }
 
     // FORUM
