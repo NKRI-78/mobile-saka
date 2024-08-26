@@ -58,8 +58,7 @@ class FileStorage {
 
       File file = File('${directory.path}/$filename');
       return await file.writeAsBytes(bytes);
-    } catch (e) {
-      print('Error saving file: $e');
+    } catch (_) {
       rethrow; 
     }
   }

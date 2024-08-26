@@ -96,7 +96,7 @@
   "FAVORITE_NEWS": "Favorite News",
   "LATEST_NEWS": "Latest News",
   "CAPTION": "Caption",
-  "SIZE_MAXIMUM": "Maximum 200 MB",
+  "SIZE_MAXIMUM": "Maximum 20 MB",
   "CAPTION_MAXIMAL": "Caption Maximal 1000 Character",
   "CAPTION_MINIMUM": "Caption Minimum 10 Character",
   "CAPTION_IS_REQUIRED": "Caption is Required",

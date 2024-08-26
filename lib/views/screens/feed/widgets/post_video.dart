@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
 import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/file_storage.dart';
 import 'package:video_player/video_player.dart';
 
@@ -52,12 +53,11 @@ class PostVideoState extends State<PostVideo> {
       total = response.contentLength ?? 0;
 
       response.stream.listen((value) {
-        if(mounted) {
+        if(!mounted) return;
           setState(() {
             bytes.addAll(value);
             received += value.length;
           });
-        }
       }).onDone(() async {
         Uint8List uint8List = Uint8List.fromList(bytes);
 
@@ -67,19 +67,17 @@ class PostVideoState extends State<PostVideo> {
           
         videoC = VideoPlayerController.file(io.File(fileToPlay))
           ..initialize().then((_) {
-            if(mounted) {
-              setState(() {
-                finishDownload = true;
+          if(!mounted) return;
+            setState(() {
+              finishDownload = true;
 
-                chewieC = ChewieController(
-                  videoPlayerController: videoC!,
-                  aspectRatio: videoC?.value.aspectRatio,
-                  autoInitialize: true,
-                  autoPlay: false,
-                  looping: false,
-                );
-              });
-            }
+              chewieC = ChewieController(
+                videoPlayerController: videoC!,
+                aspectRatio: videoC?.value.aspectRatio,
+                autoPlay: false,
+                looping: false,
+              );
+            });
         });
       });
 
@@ -110,7 +108,6 @@ class PostVideoState extends State<PostVideo> {
         chewieC = ChewieController(
           videoPlayerController: videoC!,
           aspectRatio: videoC?.value.aspectRatio,
-          autoInitialize: true,
           autoPlay: false,
           looping: false,
         );
@@ -121,7 +118,7 @@ class PostVideoState extends State<PostVideo> {
   @override 
   void initState() {
     super.initState();
-    
+
     Future.microtask(() => initializePlayer());
   }
 
@@ -163,7 +160,7 @@ class PostVideoState extends State<PostVideo> {
             Text("${(received / total * 100).isNaN || (received / total * 100).isInfinite ? '0' : (received / total * 100).toStringAsFixed(2)}%",
               style: TextStyle(
                 color: ColorResources.primaryOrange,
-                fontSize: 18.0,
+                fontSize: Dimensions.fontSizeDefault,
                 fontWeight: FontWeight.bold
               ),
             ),

@@ -170,13 +170,15 @@ class CreatePostTextState extends State<CreatePostText> {
     if(result != null) {
       File file = File(result.files.single.path!);
       int sizeInBytes = file.lengthSync();
-      
-      // String fs = filesize(sizeInBytes, 0).replaceAll(RegExp(r'[^0-9]'),'');
 
-      // if(int.parse(fs) >= 100) {
-      //   ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
-      //   return;
-      // }
+      double sizeInMb = sizeInBytes / (1024 * 1024);
+
+      int roundedSizeInMb = sizeInMb.round();
+
+      if(roundedSizeInMb >= 20) {
+        ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
+        return;
+      }
 
       setState(() =>  fileVideo = file);
 
