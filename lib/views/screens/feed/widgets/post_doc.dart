@@ -87,7 +87,7 @@ class PostDocState extends State<PostDoc> {
                       margin: const EdgeInsets.only(left: 12.0),
                       child: Text(type!,
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
+                          fontSize: Dimensions.fontSizeExtraSmall,
                           fontWeight: FontWeight.w600,
                           color: ColorResources.white
                         ),
@@ -97,7 +97,7 @@ class PostDocState extends State<PostDoc> {
                   Expanded(
                     child: Text(widget.medias[0].path!.split('/').last,
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
+                        fontSize: Dimensions.fontSizeExtraSmall,
                         color: ColorResources.white
                       )
                     ),

@@ -78,6 +78,7 @@ class InputPostWidgetState extends State<InputPostWidget> {
                           color: ColorResources.black
                         ),
                       ),
+                      
                       enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         borderSide: BorderSide(

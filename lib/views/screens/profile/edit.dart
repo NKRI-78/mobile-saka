@@ -17,6 +17,7 @@ import 'package:saka/providers/profile/profile.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
+import 'package:saka/utils/input_formatters.dart';
 
 import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
@@ -391,6 +392,9 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                   child: TextField(
                     cursorColor: ColorResources.primaryOrange,
                     controller: fullnameC,
+                    inputFormatters: [
+                      CapitalizeWordsInputFormatter()
+                    ],
                     decoration: InputDecoration(
                       isDense: true,
                       hintStyle: robotoRegular.copyWith(

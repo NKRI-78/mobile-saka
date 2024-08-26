@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:saka/services/navigation.dart';
 import 'package:provider/provider.dart';
+import 'package:saka/utils/input_formatters.dart';
 
 import 'package:sn_progress_dialog/progress_dialog.dart';
 import 'package:image_picker/image_picker.dart';
@@ -373,6 +374,9 @@ class CreatePostTextState extends State<CreatePostText> {
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
+                inputFormatters: [
+                  CapitalizeWordsInputFormatter()
+                ],
                 decoration: InputDecoration(
                   alignLabelWithHint: true,
                   labelText: getTranslated("WRITE_POST", context),

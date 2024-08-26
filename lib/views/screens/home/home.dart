@@ -145,165 +145,158 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-    
-  Widget buildUI() {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: ColorResources.backgroundColor,
       drawerEnableOpenDragGesture: false,
       drawer: DrawerWidget(),
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-      
-              RefreshIndicator(
-                backgroundColor: ColorResources.brown,
-                color: ColorResources.white,
-                onRefresh: () {
-                  return Future.sync(() {
-                    np.getNews(context);
-                    bp.getBanner(context);
-                    pp.getUserProfile(context);
-                    ip.getInbox(context, "sos");
-                    ep.checkEvent(context);
-                    ap.mascot(context);
-                    // ppopP.getBalance(context);
-                    // sp.getDataStore(context);
-                    // sp.getDataCategoryProduct(context, "commerce");
-                  });
-                },
-                child: CustomScrollView(
-                  physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                  slivers: [
-      
-                    SliverAppBar(
-                      systemOverlayStyle: SystemUiOverlayStyle.dark,
-                      backgroundColor: ColorResources.transparent,
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      title: Text("SAKA DIRGANTARA",
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+  
+          RefreshIndicator(
+            backgroundColor: ColorResources.brown,
+            color: ColorResources.white,
+            onRefresh: () {
+              return Future.sync(() {
+                np.getNews(context);
+                bp.getBanner(context);
+                pp.getUserProfile(context);
+                ip.getInbox(context, "sos");
+                ep.checkEvent(context);
+                ap.mascot(context);
+                // ppopP.getBalance(context);
+                // sp.getDataStore(context);
+                // sp.getDataCategoryProduct(context, "commerce");
+              });
+            },
+            child: CustomScrollView(
+              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              slivers: [
+  
+                SliverAppBar(
+                  systemOverlayStyle: SystemUiOverlayStyle.dark,
+                  backgroundColor: ColorResources.transparent,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  title: Text("SAKA DIRGANTARA",
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
+                      fontWeight: FontWeight.w600,
+                      color: ColorResources.brown
+                    ),
+                  ),
+                  actions: [
+                    Container(
+                      margin: EdgeInsets.only(right: 15.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          scaffoldKey.currentState!.openDrawer();
+                        },
+                        child: SvgPicture.asset("assets/imagesv2/svg/hamburger-menu.svg",
+                          color: ColorResources.brown,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+  
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    
+                    banner(context),
+
+                    infoAccount(context),
+
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: 25.0, 
+                        right: 25.0,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(getTranslated("OUR_SERVICE", context),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              fontWeight: FontWeight.w600,
+                              color: ColorResources.brown
+                            )
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    ourService(context),
+
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: 25.0, 
+                        right: 25.0,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text(getTranslated("NEWS", context),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              fontWeight: FontWeight.w600,
+                              color: ColorResources.brown
+                            )
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    newsWidget(context),
+
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 15.0
+                      ),
+                      alignment: Alignment.center,
+                      child: Text("@ PT Inovatif 78",
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           fontWeight: FontWeight.w600,
                           color: ColorResources.brown
                         ),
                       ),
-                      actions: [
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              scaffoldKey.currentState!.openDrawer();
-                            },
-                            child: SvgPicture.asset("assets/imagesv2/svg/hamburger-menu.svg",
-                              color: ColorResources.brown,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-      
-                    SliverList(
-                      delegate: SliverChildListDelegate([
-                        
-                        banner(context),
-
-                        infoAccount(context),
-
-                        Container(
-                          margin: EdgeInsets.only(
-                            left: 25.0, 
-                            right: 25.0,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(getTranslated("OUR_SERVICE", context),
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorResources.brown
-                                )
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        ourService(context),
-
-                        Container(
-                          margin: EdgeInsets.only(
-                            left: 25.0, 
-                            right: 25.0,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(getTranslated("NEWS", context),
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorResources.brown
-                                )
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        newsWidget(context),
-
-                        Container(
-                          margin: EdgeInsets.only(
-                            bottom: 15.0
-                          ),
-                          alignment: Alignment.center,
-                          child: Text("@ PT Inovatif 78",
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              fontWeight: FontWeight.w600,
-                              color: ColorResources.brown
-                            ),
-                          ),
-                        )
-
-                      ])
                     )
-                  ],
+
+                  ])
                 )
+              ],
+            )
+          ),
+  
+          context.watch<AuthProvider>().mascotStatus == MascotStatus.loading 
+          ? Container() 
+          : context.read<AuthProvider>().isShow == 1  
+          ? DraggableFloatWidget(
+              width: 120.0,
+              height: 120.0,
+              child: BounceIn(
+                preferences: AnimationPreferences(autoPlay: AnimationPlayStates.Loop),
+                child: Image.asset("assets/images/ic-jambore.png"),
               ),
-      
-              context.watch<AuthProvider>().mascotStatus == MascotStatus.loading 
-              ? Container() 
-              : context.read<AuthProvider>().isShow == 1  
-              ? DraggableFloatWidget(
-                  width: 120.0,
-                  height: 120.0,
-                  child: BounceIn(
-                    preferences: AnimationPreferences(autoPlay: AnimationPlayStates.Loop),
-                    child: Image.asset("assets/images/ic-jambore.png"),
-                  ),
-                  config: const DraggableFloatWidgetBaseConfig(
-                    isFullScreen: false,
-                    initPositionYInTop: false,    
-                    borderRight: 5.0,
-                    initPositionXInLeft: false,                        
-                    initPositionYMarginBorder: 100.0,
-                  ),
-                  onTap: () {
-                    NS.push(context, EventJoinScreen());
-                  },
-                )
-              : Container()
-            ],
-          );                 
-        },
-      )
+              config: const DraggableFloatWidgetBaseConfig(
+                isFullScreen: false,
+                initPositionYInTop: false,    
+                borderRight: 5.0,
+                initPositionXInLeft: false,                        
+                initPositionYMarginBorder: 100.0,
+              ),
+              onTap: () {
+                NS.push(context, EventJoinScreen());
+              },
+            )
+          : Container()
+        ],
+      )                     
     );
   }
+  
 }
 
 
@@ -589,10 +582,11 @@ Widget ourService(BuildContext context) {
   List<Map<String, dynamic>> menus = [
     {
       "id": 1,
-      "name": "Forum",
-      "asset": "forum.svg",
-      "link": FeedIndex(),
+      "name": getTranslated("SAKA_MART", context),
+      "asset": "shop.png",
+      "link": ComingSoonScreen(title: "Saka Mart")
     },
+
     {
       "id": 2,
       "name": "Radio",
@@ -601,102 +595,90 @@ Widget ourService(BuildContext context) {
     },
     {
       "id": 3,
-      "name": "PPOB",
-      "asset": "ppob.svg",
-      "link": ComingSoonScreen(title: "PPOB"),
+      "name": "Forum",
+      "asset": "forum.png",
+      "link": FeedIndex(),
     },
     {
       "id": 4,
       "name": "Media",
-      "asset": "media.svg",
+      "asset": "media.png",
       "link": MediaScreen(),
     },
     {
       "id": 5,
-      "name": getTranslated("SAKA_MART", context),
-      "asset": "saka-mart.svg",
-      "link": ComingSoonScreen(title: "Saka Mart")
+      "name": "PPOB",
+      "asset": "ppob.png",
+      "link": ComingSoonScreen(title: "PPOB"),
     },
   ];
 
   return Container(
-    margin: EdgeInsets.only(
-      bottom: 25.0
+    margin: EdgeInsets.symmetric(
+      vertical: 10.0,
     ),
-    height: 190.0,
+    height: 100.0,
     child: StaggeredGridView.countBuilder(
-      crossAxisCount: 3,
+      crossAxisCount: 5,
       shrinkWrap: true,
       itemCount: menus.length,
       padding: EdgeInsets.zero,
       crossAxisSpacing: 0.0,
       mainAxisSpacing: 0.0,
       physics: const NeverScrollableScrollPhysics(),
-      staggeredTileBuilder: (int i) => const StaggeredTile.count(1, 0.77),
+      staggeredTileBuilder: (int i) => const StaggeredTile.count(1, 1.0),
       itemBuilder: (BuildContext context, int i) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-
-          if(menus[i]["name"] == "Radio")
-            InkWell(
-              borderRadius: BorderRadius.circular(50.0),
+        return Container(
+          decoration: BoxDecoration(
+            color: ColorResources.white,
+            boxShadow: kElevationToShadow[3],
+            borderRadius: BorderRadius.circular(10.0)
+          ),
+          margin: EdgeInsets.symmetric(
+            vertical: 4.0,
+            horizontal: 4.0
+          ),
+          child: Material(
+            borderRadius: BorderRadius.circular(10.0),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10.0),
               onTap: () {
-                if(Platform.isAndroid) {
-                  NS.push(context, RadioScreen());
+                if(menus[i]["name"] == "Radio") {
+                  if(Platform.isAndroid) {
+                    NS.push(context, RadioScreen());
+                  } else {
+                    NS.push(context, ComingSoonScreen(title: "Airmen FM"));
+                  }
                 } else {
-                  NS.push(context, ComingSoonScreen(title: "Airmen FM"));
+                  NS.push(context, menus[i]["link"]);
                 }
               },
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  width: 50.0,
-                  height: 50.0,
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset('assets/imagesv2/${menus[i]["asset"]}',
-                    width: double.infinity,
-                    height: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+              
+                  Container(
+                    width: 40.0,
+                    height: 40.0,
+                    child: Image.asset('assets/images/${menus[i]["asset"]}')
                   ),
-                ),
-              ),
-            ),
-
-          if(menus[i]["name"] != "Radio")
-            InkWell(
-              borderRadius: BorderRadius.circular(50.0),
-              onTap: () {
-                NS.push(context, menus[i]["link"]);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  width: 50.0,
-                  height: 50.0,
-                  padding: const EdgeInsets.all(8.0),
-                  child: SvgPicture.asset('assets/imagesv2/svg/${menus[i]["asset"]}',
-                    width: double.infinity,
-                    height: double.infinity,
+              
+                  const SizedBox(height: 8.0),
+              
+                  Text(menus[i]["name"],
+                    textAlign: TextAlign.center,
+                    style: robotoRegular.copyWith(
+                      color: ColorResources.brown,
+                      fontSize: Dimensions.fontSizeExtraSmall
+                    ),
                   ),
-                ),
+              
+                ],
               ),
             ),
-
-            SizedBox(height: 10.0),
-
-            Container(
-              child: Text(menus[i]["name"],
-                textAlign: TextAlign.center,
-                style: robotoRegular.copyWith(
-                  color: ColorResources.brown,
-                  fontSize: Dimensions.fontSizeSmall
-                ),
-              ),
-            ),
-
-          ],
+          ),
         );
       },
     )
@@ -707,9 +689,8 @@ Widget newsWidget(BuildContext context) {
   return Consumer<NewsProvider>(
     builder: (BuildContext context, NewsProvider newsProvider, Widget? child) {
       if(newsProvider.getNewsStatus == GetNewsStatus.loading) {
-          return Container(
-            margin: EdgeInsets.only(
-            top: 10.0,
+        return Container(
+          margin: EdgeInsets.only(
             left: 25.0,
             right: 25.0,
             bottom: 10.0

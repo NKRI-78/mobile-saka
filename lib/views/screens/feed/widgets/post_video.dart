@@ -1,120 +1,182 @@
+import 'dart:io' as io;
+import 'dart:typed_data';
+
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+
 import 'package:chewie/chewie.dart';
+import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/file_storage.dart';
+import 'package:video_player/video_player.dart';
 
 class PostVideo extends StatefulWidget {
   final String media;
-
   const PostVideo({
-    Key? key, 
+    super.key, 
     required this.media,
-  }) : super(key: key);
+  });
 
   @override
-  PostVideoState createState() => PostVideoState();
+  State<PostVideo> createState() => PostVideoState();
 }
 
 class PostVideoState extends State<PostVideo> {
 
-  VideoPlayerController? videoPlayerC;
+  VideoPlayerController? videoC;
   ChewieController? chewieC;
-  
-  Future<void> getData() async {
-    if(!mounted) return;
 
-    videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
-    ..setLooping(false)
-    ..initialize().then((_) {
-      if (mounted) {
-        setState(() {
-          chewieC = ChewieController(
-            videoPlayerController: videoPlayerC!,
-            aspectRatio: videoPlayerC!.value.aspectRatio,
-            autoPlay: false,
-            looping: false,
-          );
+  int total = 0;
+  int received = 0;
+
+  bool finishDownload = false;
+
+  late http.StreamedResponse response;
+
+  final List<int> bytes = [];
+  
+  Future<void> initializePlayer() async {
+    String originName = p.basename(widget.media.split('/').last).split('.').first;
+    String ext = p.basename(widget.media).toString().split('.').last;
+
+    String filename = "${DateFormat('yyyydd').format(DateTime.now())}-$originName.$ext";
+
+    bool isExistFile = await FileStorage.checkFileExist(filename);
+
+    if(!isExistFile) {
+      response = await http.Client().send(http.Request('GET', Uri.parse(widget.media)));
+    
+      total = response.contentLength ?? 0;
+
+      response.stream.listen((value) {
+        if(mounted) {
+          setState(() {
+            bytes.addAll(value);
+            received += value.length;
+          });
+        }
+      }).onDone(() async {
+        Uint8List uint8List = Uint8List.fromList(bytes);
+
+        await FileStorage.saveFile(uint8List, filename);
+
+        String fileToPlay = await FileStorage.getFileFromAsset(filename);
+          
+        videoC = VideoPlayerController.file(io.File(fileToPlay))
+          ..initialize().then((_) {
+            if(mounted) {
+              setState(() {
+                finishDownload = true;
+
+                chewieC = ChewieController(
+                  videoPlayerController: videoC!,
+                  aspectRatio: videoC?.value.aspectRatio,
+                  autoInitialize: true,
+                  autoPlay: false,
+                  looping: false,
+                );
+              });
+            }
         });
-      }
-    });
+      });
+
+      // Create a ByteBuilder to accumulate bytes
+      // BytesBuilder byteBuilder = BytesBuilder();
+
+      // Listen to the stream and accumulate bytes
+      // await for (List<int> chunk in response.stream) {
+      //   byteBuilder.add(chunk);
+      // }
+
+      // Get the final bytes
+      // Uint8List resultBytes = byteBuilder.toBytes();
+
+    } else {
+      playMediaFromAsset(filename);
+    }
   }
 
-  @override
+  Future<void> playMediaFromAsset(String filename) async {
+    String fileToPlay = await FileStorage.getFileFromAsset(filename);
+
+    videoC = VideoPlayerController.file(io.File(fileToPlay))
+      ..initialize().then((_) {
+      setState(() {
+        finishDownload = true;
+
+        chewieC = ChewieController(
+          videoPlayerController: videoC!,
+          aspectRatio: videoC?.value.aspectRatio,
+          autoInitialize: true,
+          autoPlay: false,
+          looping: false,
+        );
+      });
+    });    
+  }
+
+  @override 
   void initState() {
     super.initState();
-     
-    getData();
+    
+    Future.microtask(() => initializePlayer());
   }
 
-  @override
+  @override 
   void dispose() {
-    videoPlayerC!.dispose();
-    chewieC!.dispose();
+    videoC?.dispose();
+    chewieC?.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
-     if (chewieC == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(
-            top: 30.0,
-            bottom: 30.0
+    return finishDownload && chewieC != null && chewieC!.videoPlayerController.value.isInitialized
+    ? Container(
+        margin: EdgeInsets.only(
+          top: 10.0,
+          left: 12.0,
+          right: 12.0
+        ),
+        child: AspectRatio(
+          aspectRatio: videoC!.value.aspectRatio,
+          child: ClipRRect(
+            borderRadius:  BorderRadius.circular(10.0),
+            child: Chewie(
+              controller: chewieC!
+            ),
           ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              AspectRatio(
-                aspectRatio: chewieC!.aspectRatio!,
-                child: Chewie(
-                  controller: chewieC!,
-                )
+        ),
+    )
+    : SizedBox(
+        height: 80.0,
+        child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            
+            Text("${(received / total * 100).isNaN || (received / total * 100).isInfinite ? '0' : (received / total * 100).toStringAsFixed(2)}%",
+              style: TextStyle(
+                color: ColorResources.primaryOrange,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold
               ),
-              // Positioned.fill(
-              //   child: GestureDetector(
-              //     behavior: HitTestBehavior.opaque,
-              //     onTap: () => videoPlayerC!.value.isPlaying 
-              //     ? videoPlayerC!.pause() 
-              //     : videoPlayerC!.play(),
-              //     child: Stack(
-              //       clipBehavior: Clip.none,
-              //       children: [
-              //         videoPlayerC!.value.isPlaying 
-              //         ? Container() 
-              //         : Container(
-              //             alignment: Alignment.center,
-              //             child: const Icon(
-              //               Icons.play_arrow,
-              //               color: ColorResources.white,
-              //               size: 80.0
-              //             ),
-              //           ),
-              //         Positioned(
-              //           bottom: 0.0,
-              //           left: 0.0,
-              //           right: 0.0,
-              //           child: VideoProgressIndicator(
-              //             videoPlayerC!,
-              //             allowScrubbing: true,
-              //           )
-              //         ),
-              //       ],
-              //     ),
-              //   )
-              // )
-            ],
-          ),
-        ) 
-        
-      ],
+            ),
+
+            SizedBox(width: 12.0),
+
+            SpinKitChasingDots(
+              color: ColorResources.primaryOrange,
+            )
+
+          ],
+        )
+      ),
     );
   }
 }

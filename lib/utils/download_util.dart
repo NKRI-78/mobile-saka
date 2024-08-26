@@ -54,13 +54,13 @@ class DownloadHelper {
                 Uint8List uint8List = Uint8List.fromList(bytes);
 
                 await FileStorage.saveFile(uint8List, filename);
-                await FileStorage.getFileFromAsset(filename, context, isExistFile);
+                await FileStorage.getFileFromAsset(filename);
               });
             }
           }
       );
     } else {
-      await FileStorage.getFileFromAsset(filename, context, isExistFile); 
+      await FileStorage.getFileFromAsset(filename); 
     }
   }
 }
