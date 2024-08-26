@@ -174,7 +174,7 @@ class WebViewScreenState extends State<WebViewScreen> {
             return NavigationDecision.prevent; 
           } else if(request.url.contains('mailto:')) {
             await launchURL('mailto:customcare@inovasi78.com');
-            return NavigationDecision.prevent;
+            return NavigationDecision.navigate;
           }
           return NavigationDecision.navigate;
         },

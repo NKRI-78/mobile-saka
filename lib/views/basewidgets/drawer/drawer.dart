@@ -612,7 +612,15 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   key: UniqueKey(),
                 ));
               } else if(menu == "bantuan") {
-                await launchUrl(Uri.parse('mailto:customcare@inovasi78.com'));
+                final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'customercare@inovatiftujuh8.com',
+                  queryParameters: {
+                    'subject': '',
+                    'body': ''
+                  },
+                );
+                await launchUrl(emailLaunchUri);
               }
               else if(menu == "tos") {
                 termsAndCondition();
