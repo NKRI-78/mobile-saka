@@ -175,7 +175,7 @@ class CreatePostTextState extends State<CreatePostText> {
 
       int roundedSizeInMb = sizeInMb.round();
 
-      if(roundedSizeInMb >= 20) {
+      if(roundedSizeInMb >= 150) {
         ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
         return;
       }

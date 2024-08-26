@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:uuid/uuid.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
-
-import 'package:uuid/uuid.dart';
 
 import 'package:saka/providers/profile/profile.dart';
 
@@ -351,15 +351,12 @@ class FeedProviderV2 with ChangeNotifier {
       for (int i = 0; i < 2; i++) {
         Navigator.of(context).pop();
       }
-
     }
 
     setStateWritePost(WritePostStatus.loaded);
     
     Future.delayed(Duration.zero, () {
-      fetchFeedSelf(context);
       fetchFeedMostRecent(context);
-      fetchFeedPopuler(context);
     });
   }
 

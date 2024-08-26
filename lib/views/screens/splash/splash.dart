@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'package:geolocator/geolocator.dart';
+
 import 'package:saka/providers/splash/splash.dart';
 import 'package:saka/providers/auth/auth.dart';
+
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/color_resources.dart';
@@ -13,6 +16,7 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/images.dart';
+
 import 'package:saka/views/basewidgets/button/custom.dart';
 
 import 'package:saka/views/screens/auth/sign_in.dart';
@@ -257,15 +261,21 @@ class SplashScreenState extends State<SplashScreen> {
     });
 
     Future.delayed(Duration.zero, () async {
+
+      await Geolocator.requestPermission();
+
       if(mounted) {
         if(Helper.prefs!.getBool("isAccept") == null) {
           termsAndCondition();
         }
       }
+
       PackageInfo info = await PackageInfo.fromPlatform();
+      
       setState(() {
         packageInfo = info;
       });
+
     });
 
   }

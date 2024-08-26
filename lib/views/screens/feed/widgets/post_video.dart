@@ -25,8 +25,8 @@ class PostVideo extends StatefulWidget {
   State<PostVideo> createState() => PostVideoState();
 }
 
-class PostVideoState extends State<PostVideo> {
 
+class PostVideoState extends State<PostVideo> {
   VideoPlayerController? videoC;
   ChewieController? chewieC;
 
@@ -38,7 +38,30 @@ class PostVideoState extends State<PostVideo> {
   late http.StreamedResponse response;
 
   final List<int> bytes = [];
-  
+
+  @override
+  void didUpdateWidget(PostVideo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.media != oldWidget.media) {
+      // If the media URL changes, reinitialize the player
+      reinitializePlayer();
+    }
+  }
+
+  Future<void> reinitializePlayer() async {
+    // Dispose of the previous controllers if they exist
+    videoC?.dispose();
+    chewieC?.dispose();
+
+    // Reinitialize with the new media
+    finishDownload = false;
+    total = 0;
+    received = 0;
+    bytes.clear();
+
+    await initializePlayer();
+  }
+
   Future<void> initializePlayer() async {
     String originName = p.basename(widget.media.split('/').last).split('.').first;
     String ext = p.basename(widget.media).toString().split('.').last;
@@ -47,51 +70,36 @@ class PostVideoState extends State<PostVideo> {
 
     bool isExistFile = await FileStorage.checkFileExist(filename);
 
-    if(!isExistFile) {
+    if (!isExistFile) {
       response = await http.Client().send(http.Request('GET', Uri.parse(widget.media)));
-    
       total = response.contentLength ?? 0;
 
       response.stream.listen((value) {
-        if(!mounted) return;
-          setState(() {
-            bytes.addAll(value);
-            received += value.length;
-          });
+        if (!mounted) return;
+        setState(() {
+          bytes.addAll(value);
+          received += value.length;
+        });
       }).onDone(() async {
         Uint8List uint8List = Uint8List.fromList(bytes);
-
         await FileStorage.saveFile(uint8List, filename);
-
         String fileToPlay = await FileStorage.getFileFromAsset(filename);
-          
+
         videoC = VideoPlayerController.file(io.File(fileToPlay))
           ..initialize().then((_) {
-          if(!mounted) return;
+            if (!mounted) return;
             setState(() {
               finishDownload = true;
-
               chewieC = ChewieController(
                 videoPlayerController: videoC!,
                 aspectRatio: videoC?.value.aspectRatio,
+                autoInitialize: true,
                 autoPlay: false,
                 looping: false,
               );
             });
-        });
+          });
       });
-
-      // Create a ByteBuilder to accumulate bytes
-      // BytesBuilder byteBuilder = BytesBuilder();
-
-      // Listen to the stream and accumulate bytes
-      // await for (List<int> chunk in response.stream) {
-      //   byteBuilder.add(chunk);
-      // }
-
-      // Get the final bytes
-      // Uint8List resultBytes = byteBuilder.toBytes();
-
     } else {
       playMediaFromAsset(filename);
     }
@@ -102,78 +110,71 @@ class PostVideoState extends State<PostVideo> {
 
     videoC = VideoPlayerController.file(io.File(fileToPlay))
       ..initialize().then((_) {
-      setState(() {
-        finishDownload = true;
-
-        chewieC = ChewieController(
-          videoPlayerController: videoC!,
-          aspectRatio: videoC?.value.aspectRatio,
-          autoPlay: false,
-          looping: false,
-        );
+        setState(() {
+          finishDownload = true;
+          chewieC = ChewieController(
+            videoPlayerController: videoC!,
+            aspectRatio: videoC?.value.aspectRatio,
+            autoInitialize: true,
+            autoPlay: false,
+            looping: false,
+          );
+        });
       });
-    });    
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
-
     Future.microtask(() => initializePlayer());
   }
 
-  @override 
+  @override
   void dispose() {
     videoC?.dispose();
     chewieC?.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return finishDownload && chewieC != null && chewieC!.videoPlayerController.value.isInitialized
-    ? Container(
-        margin: EdgeInsets.only(
-          top: 10.0,
-          left: 12.0,
-          right: 12.0
-        ),
-        child: AspectRatio(
-          aspectRatio: videoC!.value.aspectRatio,
-          child: ClipRRect(
-            borderRadius:  BorderRadius.circular(10.0),
-            child: Chewie(
-              controller: chewieC!
+        ? Container(
+            margin: const EdgeInsets.only(
+              top: 10.0,
+              left: 12.0,
+              right: 12.0,
             ),
-          ),
-        ),
-    )
-    : SizedBox(
-        height: 80.0,
-        child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            
-            Text("${(received / total * 100).isNaN || (received / total * 100).isInfinite ? '0' : (received / total * 100).toStringAsFixed(2)}%",
-              style: TextStyle(
-                color: ColorResources.primaryOrange,
-                fontSize: Dimensions.fontSizeDefault,
-                fontWeight: FontWeight.bold
+            child: AspectRatio(
+              aspectRatio: videoC!.value.aspectRatio,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Chewie(controller: chewieC!),
               ),
             ),
-
-            SizedBox(width: 12.0),
-
-            SpinKitChasingDots(
-              color: ColorResources.primaryOrange,
-            )
-
-          ],
-        )
-      ),
-    );
+          )
+        : SizedBox(
+            height: 80.0,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    "${(received / total * 100).isNaN || (received / total * 100).isInfinite ? '0' : (received / total * 100).toStringAsFixed(2)}%",
+                    style: TextStyle(
+                      color: ColorResources.primaryOrange,
+                      fontSize: Dimensions.fontSizeDefault,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 12.0),
+                  SpinKitChasingDots(
+                    color: ColorResources.primaryOrange,
+                  ),
+                ],
+              ),
+            ),
+          );
   }
 }

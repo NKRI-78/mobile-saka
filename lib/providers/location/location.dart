@@ -2,15 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+
 import 'package:saka/utils/helper.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saka/maps/google_maps_place_picker.dart';
 
 class LocationProvider extends ChangeNotifier {
   final SharedPreferences sp;
-  LocationProvider({required this.sp});
-  
+  LocationProvider({
+    required this.sp
+  });
+
   Future<void> getCurrentPosition({required double latitude, required double longitude}) async {
     try {
       sp.setDouble("lat", latitude);

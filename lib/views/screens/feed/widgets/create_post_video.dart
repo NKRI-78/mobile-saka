@@ -59,10 +59,6 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),

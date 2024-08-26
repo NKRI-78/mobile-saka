@@ -37,6 +37,8 @@ class NewsProvider with ChangeNotifier {
   }
 
   Future<void> getNews(BuildContext context) async {
+    setStateGetNewsStatus(GetNewsStatus.loading);
+
     try {
       Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/article");
@@ -71,6 +73,7 @@ class NewsProvider with ChangeNotifier {
   }
 
   Future<void> getNewsSingle(BuildContext context, String contentId) async {
+    setStateGetSingleNewsStatus(GetNewsSingleStatus.loading);
     try { 
       Dio dio = await DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/article/$contentId");

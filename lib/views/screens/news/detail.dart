@@ -91,6 +91,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
       backgroundColor: ColorResources.backgroundColor,
       body: Consumer<NewsProvider>(
         builder: (__, notifier, _) {
+          
           if(notifier.getNewsSingleStatus == GetNewsSingleStatus.loading) {
             return Center(
               child: CircularProgressIndicator()
