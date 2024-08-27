@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
 import 'package:flutter/material.dart';
@@ -74,9 +74,9 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
 
   Map<String, dynamic>? dataGoogleVerification;
 
-  GoogleSignIn googleSignIn = GoogleSignIn();
+  // GoogleSignIn googleSignIn = GoogleSignIn();
   FacebookAuth facebookAuth = FacebookAuth.instance;
-  GoogleSignInAccount? currentUser;
+  // GoogleSignInAccount? currentUser;
 
   int _isShow = 0;
   int get isShow => _isShow;
@@ -356,40 +356,40 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
   }
 
-  Future<void> signInWithGoogle(BuildContext context) async {
-    try {
-      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      currentUser = googleUser;
-      await isEmailAddressExistWithGmail(context, currentUser!.email);
-      if(dataGoogleVerification!["code"] != 400) {
-        UserModel user = UserModel.fromJson(dataGoogleVerification!);
-        if(user.data!.user!.emailActivated!) {
-          writeData(user);
-          sp.setString("avatar_g", currentUser!.photoUrl!);
-          sp.setString("loginType", "google");
-          NS.pushReplacement(
-            context, 
-            DashboardScreen()
-          );
-        } else {
-          sp.setString("email_otp", currentUser!.email);
-          NS.pushReplacement(
-            context,
-            OtpScreen(key: UniqueKey())
-          );
-        }
-      } else {
-        NS.push(context, SignUpSocialMediaScreen(
-          fullName: currentUser!.displayName!,
-          emailAddress: currentUser!.email,
-          profilePic: currentUser!.photoUrl!,
-          type: "google",
-        ));
-      }
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-    }
-  } 
+  // Future<void> signInWithGoogle(BuildContext context) async {
+  //   try {
+  //     GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+  //     currentUser = googleUser;
+  //     await isEmailAddressExistWithGmail(context, currentUser!.email);
+  //     if(dataGoogleVerification!["code"] != 400) {
+  //       UserModel user = UserModel.fromJson(dataGoogleVerification!);
+  //       if(user.data!.user!.emailActivated!) {
+  //         writeData(user);
+  //         sp.setString("avatar_g", currentUser!.photoUrl!);
+  //         sp.setString("loginType", "google");
+  //         NS.pushReplacement(
+  //           context, 
+  //           DashboardScreen()
+  //         );
+  //       } else {
+  //         sp.setString("email_otp", currentUser!.email);
+  //         NS.pushReplacement(
+  //           context,
+  //           OtpScreen(key: UniqueKey())
+  //         );
+  //       }
+  //     } else {
+  //       NS.push(context, SignUpSocialMediaScreen(
+  //         fullName: currentUser!.displayName!,
+  //         emailAddress: currentUser!.email,
+  //         profilePic: currentUser!.photoUrl!,
+  //         type: "google",
+  //       ));
+  //     }
+  //   } catch (e, stacktrace) {
+  //     debugPrint(stacktrace.toString());
+  //   }
+  // } 
 
   Future<void> signInWithFb(BuildContext context) async {
     await facebookAuth.login(

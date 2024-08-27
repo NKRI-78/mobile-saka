@@ -30,38 +30,17 @@ class FeedIndex extends StatefulWidget {
 
 class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
+  bool pause = false;
+
   late TabController tabController;
   late FeedProviderV2 feedProvider;
   late ProfileProvider profileProvider;
 
-  GlobalKey g1Key = GlobalKey();
-  GlobalKey g2Key = GlobalKey();
-  GlobalKey g3Key = GlobalKey();
-
-  GlobalKey<RefreshIndicatorState> refreshIndicatorKey1 = GlobalKey<RefreshIndicatorState>();
-  GlobalKey<RefreshIndicatorState> refreshIndicatorKey2 = GlobalKey<RefreshIndicatorState>();
-  GlobalKey<RefreshIndicatorState> refreshIndicatorKey3 = GlobalKey<RefreshIndicatorState>();
-  
-  FocusNode groupsFocusNode = FocusNode();
-  FocusNode commentFocusNode = FocusNode();
-
-  Future refresh(BuildContext context) async {
-    Future.sync((){
-      feedProvider.fetchFeedMostRecent(context);
-      feedProvider.fetchFeedPopuler(context);
-      feedProvider.fetchFeedSelf(context);
-    });
-  }
+  late ScrollController sc;
 
   Future<void> getData() async {
     if(!mounted) return;
       await feedProvider.fetchFeedMostRecent(context);
-
-    if(!mounted) return;
-      await feedProvider.fetchFeedPopuler(context);
-      
-    if(!mounted) return;
-      await feedProvider.fetchFeedSelf(context);  
 
     if(!mounted) return;  
       await profileProvider.getUserProfile(context);
@@ -75,9 +54,11 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
     profileProvider = context.read<ProfileProvider>();
 
-    Future.microtask(() => getData());
+    tabController = TabController(length: 1, vsync: this, initialIndex: 0);
 
-    tabController = TabController(length: 3, vsync: this, initialIndex: 0);
+    sc = ScrollController();
+
+    Future.microtask(() => getData());
   }
   
   @override
@@ -106,8 +87,6 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
         ),
       tabs: [
         Tab(text: getTranslated("LATEST", context)),
-        Tab(text: getTranslated("POPULAR", context)),
-        Tab(text: getTranslated("ME", context)),
       ]),
     );
   }
@@ -155,215 +134,55 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 }
                 return false;
               },
-              child: RefreshIndicator(
-                backgroundColor: ColorResources.primaryOrange,
-                color: ColorResources.white,
-                key: refreshIndicatorKey1,
-                  onRefresh: () => refresh(context),
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    separatorBuilder: (BuildContext context, int i) {
-                      return Container(
-                        color: Colors.blueGrey[50],
-                        height: 10.0,
-                      );
-                    },
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    key: g1Key,
-                    itemCount: feedProvider.forum1.length,
-                    itemBuilder: (BuildContext content, int i) {
-                    if (feedProvider.forum1.length == i) {
-                      return const Center(
-                        child: SpinKitThreeBounce(
-                          size: 20.0,
-                          color: ColorResources.primaryOrange,
-                        ),
-                      );
-                    }
-                    return InkWell(
-                      onTap: () {
-                        NS.push(context, PostDetailScreen(
-                          from: "index",
-                          data: {
-                            "forum_id": feedProvider.forum1[i].id,
-                            "comment_id": "",
-                            "reply_id": "",
-                            "from": "click",
-                          },
-                        )).then((_) {
-                          feedProvider.fetchFeedMostRecent(context);
-                        });
-
-                      },
-                      child: Posts(
-                        forum: feedProvider.forum1[i],
-                      ),
-                    );
-                  }
-                ),
-              ),
-            );
-          },
-        ),
-
-        Consumer<FeedProviderV2>(
-          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
-            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.loading) {
-              return const Center(
-                child: SpinKitThreeBounce(
-                  size: 20.0,
-                  color: ColorResources.primaryOrange,
-                ),
-              );
-            }
-            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.empty) {
-              return Center(
-                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
-              );
-            }
-            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.error) {
-              return Center(
-                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
-              );
-            }
-            return NotificationListener<ScrollNotification>(
               child: RefreshIndicator.adaptive(
-                key: refreshIndicatorKey2,
-                  onRefresh: () => refresh(context),
-                  child: ListView.separated(
-                    separatorBuilder: (BuildContext context, int i) {
-                      return Container(
-                        color: Colors.blueGrey[50],
-                        height: 40.0,
-                      );
-                    },
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    key: g2Key,
-                    itemCount: feedProviderv2.forum2.length,
-                    itemBuilder: (BuildContext content, int i) {
-                    if (feedProviderv2.forum2.length == i) {
-                      return const Center(
-                        child: SpinKitThreeBounce(
-                          size: 20.0,
-                          color: ColorResources.primaryOrange,
-                        ),
-                      );
-                    }
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context, NS.fromLeft(
-                          PostDetailScreen(
-                          from: "index",
-                          data: {
-                            "forum_id": feedProvider.forum1[i].id,
-                            "comment_id": "",
-                            "reply_id": "",
-                            "from": "click",
-                          },
-                          ))).then((_) => setState(() {
-                          feedProvider.fetchFeedPopuler(context);
-                        }));
-                      },
-                      child: Posts(
-                        forum: feedProviderv2.forum2[i],
-                      ),
+                onRefresh: () {
+                  return Future.sync(() {
+                    feedProvider.fetchFeedMostRecent(context);
+                  });
+                },
+                child: ListView.separated(
+                  key: PageStorageKey<String>('feedRecentListView'),
+                  shrinkWrap: true,
+                  separatorBuilder: (BuildContext context, int i) {
+                    return Container(
+                      color: Colors.blueGrey[50],
+                      height: 10.0,
                     );
-                  }
-                ),
-              ),
-              onNotification: (ScrollNotification notification) {
-                if (notification is ScrollEndNotification) {
-                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    if (feedProviderv2.hasMore2) {
-                      feedProviderv2.loadMorePopuler(context: context);
-                    }
-                  }
-                }
-                return false;
-              },
-            );
-          },
-        ),
-        
-        Consumer<FeedProviderV2>(
-          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
-            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.loading) {
-              return const Center(
-                child: SpinKitThreeBounce(
-                  size: 20.0,
-                  color: ColorResources.primaryOrange,
-                ),
-              );
-            }
-            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.empty) {
-              return Center(
-                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
-              );
-            }
-            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.error) {
-              return Center(
-                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
-              );
-            }
-            return NotificationListener<ScrollNotification>(
-              child: RefreshIndicator(
-                backgroundColor: ColorResources.primaryOrange,
-                color: ColorResources.white,
-                key: refreshIndicatorKey3,
-                  onRefresh: () => refresh(context),
-                  child: ListView.separated(
-                    separatorBuilder: (BuildContext context, int i) {
-                      return Container(
-                        color: Colors.blueGrey[50],
-                        height: 40.0,
-                      );
-                    },
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    key: g3Key,
-                    itemCount: feedProviderv2.forum3.length,
-                    itemBuilder: (BuildContext content, int i) {
-                    if (feedProviderv2.forum3.length == i) {
-                      return const SpinKitThreeBounce(
+                  },
+                  // physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: feedProvider.forum1.length,
+                  itemBuilder: (BuildContext content, int i) {
+                  if (feedProvider.forum1.length == i) {
+                    return const Center(
+                      child: SpinKitThreeBounce(
                         size: 20.0,
                         color: ColorResources.primaryOrange,
-                      );
-                    }
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context, NS.fromLeft(
-                          PostDetailScreen(
-                            from: "index",
-                            data: {
-                              "forum_id": feedProvider.forum1[i].id,
-                              "comment_id": "",
-                              "reply_id": "",
-                              "from": "click"
-                            },
-                          )
-                        )).then((_) => setState(() {
-                          feedProvider.fetchFeedSelf(context);
-                        }));
-                      },
-                      child: Posts(
-                        forum: feedProviderv2.forum3[i],
                       ),
                     );
                   }
-                ),
+                  return InkWell(
+                    onTap: () {
+                      NS.push(context, PostDetailScreen(
+                        from: "index",
+                        data: {
+                          "forum_id": feedProvider.forum1[i].id,
+                          "comment_id": "",
+                          "reply_id": "",
+                          "from": "click",
+                        },
+                      ));
+                    },
+                    child: Posts(
+                      pause: pause,
+                      forum: feedProvider.forum1[i],
+                    ),
+                  );
+                }),
               ),
-              onNotification: (ScrollNotification notification) {
-                if (notification is ScrollEndNotification) {
-                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    if (feedProviderv2.hasMore3) {
-                      feedProviderv2.loadMoreSelf(context: context);
-                    }
-                  }
-                }
-                return false;
-              },
             );
           },
-        )
+        ),
+
       ]
     );
   } 
@@ -376,10 +195,24 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
         if (didPop) {
           return;
         }
-        NS.push(context, DashboardScreen());;
+        setState(() {
+          pause = true;
+        });
+        if(sc.position.pixels == 0.0) {
+          NS.push(context, DashboardScreen());
+        } else {
+          Future.delayed(Duration(milliseconds: 1000),() {
+            sc.animateTo(
+              sc.position.minScrollExtent, 
+              duration: Duration(milliseconds: 1000), 
+              curve: Curves.easeIn
+            );
+          });
+        }
       },
       child: Scaffold(
        body: NestedScrollView(
+          controller: sc,
          physics: const ScrollPhysics(),
          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
             return [
@@ -423,7 +256,20 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 leading: CupertinoNavigationBarBackButton(
                   color: ColorResources.black,
                   onPressed: () {
-                    NS.push(context, DashboardScreen());
+                    setState(() {
+                      pause = true;
+                    });
+                    if(sc.position.pixels == 0.0) {
+                      NS.push(context, DashboardScreen());
+                    } else {
+                      Future.delayed(Duration(milliseconds: 1000),() {
+                        sc.animateTo(
+                          sc.position.minScrollExtent, 
+                          duration: Duration(milliseconds: 1000), 
+                          curve: Curves.easeIn
+                        );
+                      });
+                    }
                   },
                 ),
                 elevation: 0.0,
@@ -436,7 +282,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               const InputPostWidget(),
       
             ];
-           },
+          },
           body: tabbarviewsection(context),
         )
       ),

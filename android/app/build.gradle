@@ -101,8 +101,9 @@ flutter {
 }
 
 dependencies {
+    implementation "com.google.android.gms:play-services-location:21.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+    implementation platform('com.google.firebase:firebase-bom:32.2.3')
     implementation 'io.github.sangcomz:fishbun:1.1.1'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.firebase:firebase-analytics-ktx'

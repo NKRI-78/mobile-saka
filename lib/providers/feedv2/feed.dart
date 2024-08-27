@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 
 import 'package:flutter/services.dart';
+
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+
 import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
@@ -32,10 +36,14 @@ enum FeedSelfStatus { idle, loading, loaded, empty, error }
 class FeedProviderV2 with ChangeNotifier {
   final AuthRepo ar;
   final FeedRepoV2 fr;
+  
   FeedProviderV2({
     required this.ar,
     required this.fr
   });
+
+  VideoPlayerController? videoC;
+  ChewieController? chewieC;
 
   bool hasMore = true;
   bool hasMore2 = true;
@@ -106,6 +114,19 @@ class FeedProviderV2 with ChangeNotifier {
   List<Forum> get forum2 => [..._forum2];
   final List<Forum> _forum3 = [];
   List<Forum> get forum3 => [..._forum3];
+
+
+  @override
+  void dispose() {
+    if (videoC?.value.isPlaying ?? false) {
+      videoC?.pause();
+    }
+
+    videoC?.dispose();
+    chewieC?.dispose();
+    
+    super.dispose();
+  }
 
   Future<void> fetchFeedMostRecent(BuildContext context) async {
     pageKey = 1;

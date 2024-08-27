@@ -198,28 +198,17 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
         
               Container(
                 margin: const EdgeInsets.only(left: 15.0),
-                child: PostText(feedDetailProvider.feedDetailData.forum!.caption ?? "-")
+                child: PostText(feedDetailProvider.feedDetailData.forum!.caption!)
               ),
+
               if(feedDetailProvider.feedDetailData.forum!.type == "link")
-                PostLink(url: feedDetailProvider.feedDetailData.forum!.link ?? "-"),
+                PostLink(url: feedDetailProvider.feedDetailData.forum!.link!),
               if (feedDetailProvider.feedDetailData.forum!.type == "document")
-                feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
-                PostDoc(
-                  medias: feedDetailProvider.feedDetailData.forum!.media!, 
-                ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                PostDoc(medias: feedDetailProvider.feedDetailData.forum!.media!),
               if (feedDetailProvider.feedDetailData.forum!.type == "image")
-                feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
-                PostImage(
-                  feedDetailProvider.feedDetailData.forum!.user!.username,
-                  feedDetailProvider.feedDetailData.forum!.caption!,
-                  true,
-                  feedDetailProvider.feedDetailData.forum!.media!, 
-                ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                PostImage(feedDetailProvider.feedDetailData.forum!.user!.username, feedDetailProvider.feedDetailData.forum!.caption!, true, feedDetailProvider.feedDetailData.forum!.media!),
               if (feedDetailProvider.feedDetailData.forum!.type == "video")
-                feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
-                PostVideo(
-                  media: feedDetailProvider.feedDetailData.forum!.media![0].path,
-                ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                PostVideo(media: feedDetailProvider.feedDetailData.forum!.media![0].path, pause: false),
           
               Container(
                 margin: const EdgeInsets.only(

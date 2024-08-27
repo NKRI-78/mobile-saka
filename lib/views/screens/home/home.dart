@@ -584,7 +584,7 @@ Widget ourService(BuildContext context) {
       "id": 1,
       "name": getTranslated("SAKA_MART", context),
       "asset": "shop.png",
-      "link": ComingSoonScreen(title: "Saka Mart")
+      "link": ComingSoonScreen(title: getTranslated("SAKA_MART", context))
     },
 
     {

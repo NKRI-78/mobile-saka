@@ -7,20 +7,21 @@ class NotificationService {
   static final notifications = FlutterLocalNotificationsPlugin();
   static final onNotifications = BehaviorSubject<String>();
 
-  static Future notificationDetails({required Map<String, dynamic> payload}) async {
+  static Future notificationDetails() async {
     AndroidNotificationDetails androidNotificationDetails = const AndroidNotificationDetails(
       'notification',
       'notification_channel',
       channelDescription: 'notification_channel',
       importance: Importance.max, 
       priority: Priority.high,
+      playSound: false,
       channelShowBadge: true,
       enableVibration: true,
       enableLights: true,
     );
     return NotificationDetails(
       android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails(
+      iOS: const IOSNotificationDetails(
         presentBadge: true,
         presentSound: true,
         presentAlert: true,
@@ -28,23 +29,23 @@ class NotificationService {
     );
   } 
 
-  static Future init({bool initScheduled = true}) async {
+  static Future init() async {
     InitializationSettings settings =  const InitializationSettings(
       android: AndroidInitializationSettings('@drawable/ic_notification'),
-      iOS: DarwinInitializationSettings(
+      iOS: IOSInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
         requestSoundPermission: true,
         defaultPresentAlert: true,
         defaultPresentBadge: true,
-        defaultPresentBanner: true,
         defaultPresentSound: true,
-        defaultPresentList: true
       )
     );
     await notifications.initialize(
       settings,
-      onDidReceiveNotificationResponse: (NotificationResponse details) {
-        onNotifications.add(details.payload!); 
-      },
+      onSelectNotification: (payload) async {
+        onNotifications.add(payload!);
+      }
     );
   }
 
@@ -58,7 +59,7 @@ class NotificationService {
       id!, 
       title, 
       body, 
-      await notificationDetails(payload: payload!),
+      await notificationDetails(),
       payload: json.encode(payload)
     );
   }

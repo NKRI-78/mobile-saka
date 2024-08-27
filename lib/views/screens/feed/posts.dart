@@ -36,8 +36,10 @@ import 'package:saka/views/screens/feed/widgets/post_text.dart';
 
 class Posts extends StatefulWidget {
   final Forum forum;
-   
+  final bool pause; 
+
   const Posts({Key? key, 
+    required this.pause,
     required this.forum,
   }) : super(key: key);
 
@@ -314,25 +316,13 @@ class PostsState extends State<Posts> {
         ),
     
         if(widget.forum.type == "link")
-          PostLink(url: widget.forum.link ?? "-"),
+          PostLink(url: widget.forum.link!),
         if(widget.forum.type == "document")
-          widget.forum.media!.isNotEmpty ?
-          PostDoc(
-            medias: widget.forum.media!, 
-          ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          PostDoc(medias: widget.forum.media!),
         if(widget.forum.type == "image")
-          widget.forum.media!.isNotEmpty ? 
-          PostImage(
-            widget.forum.user!.username!,
-            widget.forum.caption!,
-            false,
-            widget.forum.media!, 
-          ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          PostImage(widget.forum.user!.username!, widget.forum.caption!, false, widget.forum.media!),
         if(widget.forum.type == "video")
-          widget.forum.media!.isNotEmpty ? 
-          PostVideo(
-            media: widget.forum.media![0].path!,
-          ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          PostVideo(media: widget.forum.media![0].path!, pause: widget.pause),
       
         Container(
           margin: const EdgeInsets.only(

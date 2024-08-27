@@ -127,34 +127,18 @@ class FirebaseProvider with ChangeNotifier {
     } 
   }
 
-  Future<void> init() async {
-    InitializationSettings settings = const InitializationSettings(
-      android: AndroidInitializationSettings('@drawable/ic_notification'),
-      iOS: DarwinInitializationSettings(
-        requestSoundPermission: true,
-        defaultPresentAlert: true,
-        defaultPresentBadge: true,
-        defaultPresentBanner: true,
-        defaultPresentSound: true,
-        defaultPresentList: true
-      )
-    );
-    await notifications.initialize(
-      settings,
-      onDidReceiveNotificationResponse: (NotificationResponse details) {
-        onNotifications.add(details.payload!); 
-      },
-    );
-  }
-
   void listenNotification(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification notification = message.notification!;
+      
       Map<String, dynamic> data = message.data;
+      
       int soundId = await rootBundle.load("assets/sounds/notification.mpeg").then((ByteData soundData) {
         return soundpool.load(soundData);
       });
+
       await soundpool.play(soundId);
+
       NotificationService.showNotification(
         id: Helper.createUniqueId(),
         title: notification.title,
