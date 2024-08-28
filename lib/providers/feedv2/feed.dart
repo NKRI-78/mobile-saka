@@ -40,8 +40,6 @@ class FeedProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-
-
   bool hasMore = true;
   bool hasMore2 = true;
   bool hasMore3 = true;
@@ -67,8 +65,6 @@ class FeedProviderV2 with ChangeNotifier {
   List<Asset> images = [];
   List<Asset> resultList = [];
   List<File> files = [];
-
-  List<String> videoPaths = [];
 
   FeedRecentStatus _feedRecentStatus = FeedRecentStatus.loading;
   FeedRecentStatus get feedRecentStatus => _feedRecentStatus;
@@ -126,14 +122,6 @@ class FeedProviderV2 with ChangeNotifier {
       _forum1.clear();
       _forum1.addAll(g.data!.forums!);
       setStateFeedRecentStatus(FeedRecentStatus.loaded);
-
-      videoPaths = [];
-
-      for (var forum in forum1) {
-        if(forum.type == "video") {
-          videoPaths.add(forum.media!.first.path.toString());
-        } 
-      }
 
       if (_forum1.isEmpty) {
         setStateFeedRecentStatus(FeedRecentStatus.empty);

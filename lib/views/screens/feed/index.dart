@@ -272,7 +272,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                             ),
                           ),
                           trailing: feedProvider.ar.getUserId() == forum.user!.id! 
-                          ? grantedDeletePost(context) 
+                          ? grantedDeletePost(context, forum.id) 
                           : PopupMenuButton(
                               itemBuilder: (BuildContext buildContext) { 
                                 return forum.type == "video" 
@@ -493,7 +493,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                             key: Key('video-widget'),
                             onVisibilityChanged: onVisibilityChanged,
                             child: PostVideo(
-                              media: feedProvider.videoPaths[i], 
+                              media: forum.media!.first.path!, 
                               isPlaying: isPlaying,
                               onPlay: () => playVideo(i),
                               onPause: () => pauseVideo(i),
@@ -672,7 +672,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                      NS.push(context, PostDetailScreen(
+                                    NS.push(context, PostDetailScreen(
                                       from: "index",
                                       data: {
                                         "forum_id": forum.id,
@@ -797,7 +797,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
     );
   } 
 
-   Widget grantedDeletePost(context) {
+   Widget grantedDeletePost(context, forumId) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
@@ -862,8 +862,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                               try {         
                                 await context.read<FeedProviderV2>().deletePost(
                                   context, 
-                                  context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!,
-                                  "detail"
+                                  forumId,
+                                  "index"
                                 );               
                                 setStatefulBuilder(() => deletePostBtn = false);
                               } catch(e) {

@@ -124,6 +124,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
   }
 
   Future<void> getFeedDetail(BuildContext context, String forumId) async {
+    setStateFeedDetailStatus(FeedDetailStatus.loading);
+
     pageKey = 1;
     hasMore = true;
 
