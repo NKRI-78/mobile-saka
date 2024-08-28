@@ -1,33 +1,25 @@
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:visibility_detector/visibility_detector.dart';
-
 import 'package:flutter/material.dart';
 
 import 'package:saka/utils/color_resources.dart';
 
 import 'package:video_player/video_player.dart';
 
-class PostVideo extends StatefulWidget {
+class PostVideoDetail extends StatefulWidget {
   final String media;
-  final bool isPlaying;
-  final VoidCallback onPlay;
-  final VoidCallback onPause;
 
-  const PostVideo({
+  const PostVideoDetail({
     super.key, 
     required this.media,
-    required this.isPlaying,
-    required this.onPlay,
-    required this.onPause,
   });
 
   @override
-  State<PostVideo> createState() => PostVideoState();
+  State<PostVideoDetail> createState() => PostVideoDetailState();
 }
 
-class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin {
+class PostVideoDetailState extends State<PostVideoDetail> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -36,18 +28,10 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
   VideoPlayerController? videoC;
 
   @override
-  void didUpdateWidget(PostVideo oldWidget) {
+  void didUpdateWidget(PostVideoDetail oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.media != oldWidget.media) {
       reinitializePlayer();
-    }
-
-    if (widget.isPlaying != oldWidget.isPlaying) {
-      if (widget.isPlaying) {
-        videoC?.play();
-      } else {
-        videoC?.pause();
-      }
     }
   }
 
@@ -76,10 +60,20 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
     }
   }
 
-  void onVisibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction == 0.0) {
-      videoC?.pause();
-    }
+  void play() {
+    videoC?.play();
+
+    setState(() {
+      isPlay = true;
+    });
+  }
+
+  void pause() {
+    videoC?.pause();
+
+    setState(() {
+      isPlay = false;
+    });
   }
 
   @override
@@ -114,7 +108,7 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
     return Stack(
       clipBehavior: Clip.none,
       children: [
-    
+
         Container(
           margin: const EdgeInsets.only(
             top: 10.0,
@@ -129,7 +123,7 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
             ),
           ),
         ),
-    
+
         Positioned.fill(
           child: Center(
             child: Container(
@@ -141,7 +135,7 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
                 borderRadius: BorderRadius.circular(10.0),
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: widget.isPlaying
+                  child: isPlay
                   ? Icon(Icons.pause,
                       color: ColorResources.white,
                     )
@@ -149,12 +143,12 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
                       color: ColorResources.white,
                     )
                 ),
-                onTap: widget.isPlaying ? widget.onPause : widget.onPlay,
+                onTap: isPlay ? pause : play,
               ),
             )
           )
         ),
-    
+
       ],
     );
   }

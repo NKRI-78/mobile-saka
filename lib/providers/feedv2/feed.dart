@@ -1,11 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:flutter/services.dart';
-
-import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
 
 import 'package:flutter/widgets.dart';
 
@@ -42,8 +40,7 @@ class FeedProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-  VideoPlayerController? videoC;
-  ChewieController? chewieC;
+
 
   bool hasMore = true;
   bool hasMore2 = true;
@@ -70,6 +67,8 @@ class FeedProviderV2 with ChangeNotifier {
   List<Asset> images = [];
   List<Asset> resultList = [];
   List<File> files = [];
+
+  List<String> videoPaths = [];
 
   FeedRecentStatus _feedRecentStatus = FeedRecentStatus.loading;
   FeedRecentStatus get feedRecentStatus => _feedRecentStatus;
@@ -115,30 +114,26 @@ class FeedProviderV2 with ChangeNotifier {
   final List<Forum> _forum3 = [];
   List<Forum> get forum3 => [..._forum3];
 
-
-  @override
-  void dispose() {
-    if (videoC?.value.isPlaying ?? false) {
-      videoC?.pause();
-    }
-
-    videoC?.dispose();
-    chewieC?.dispose();
-    
-    super.dispose();
-  }
-
   Future<void> fetchFeedMostRecent(BuildContext context) async {
     pageKey = 1;
     hasMore = true;
 
     try {
+
       FeedModel? g = await fr.fetchFeedMostRecent(context, pageKey, ar.getUserId().toString());
       _fd = g!.data!;
 
       _forum1.clear();
       _forum1.addAll(g.data!.forums!);
       setStateFeedRecentStatus(FeedRecentStatus.loaded);
+
+      videoPaths = [];
+
+      for (var forum in forum1) {
+        if(forum.type == "video") {
+          videoPaths.add(forum.media!.first.path.toString());
+        } 
+      }
 
       if (_forum1.isEmpty) {
         setStateFeedRecentStatus(FeedRecentStatus.empty);

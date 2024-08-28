@@ -11,6 +11,8 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import 'package:saka/maps/src/utils/uuid.dart';
 
+import 'package:saka/views/basewidgets/loader/circular.dart';
+
 import 'package:saka/data/models/feedv2/feedDetail.dart' as m;
 import 'package:saka/data/models/feedv2/feedDetail.dart';
 
@@ -22,21 +24,18 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/date_util.dart';
-import 'package:saka/views/screens/feed/index.dart';
 
+import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:saka/views/screens/feed/widgets/post_link.dart';
-import 'package:saka/views/screens/feed/widgets/post_video.dart';
 import 'package:saka/views/screens/feed/widgets/post_text.dart';
+import 'package:saka/views/screens/feed/widgets/post_video_detail.dart';
+import 'package:saka/views/screens/feed/widgets/terms_popup.dart';
 
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/localization/language_constraints.dart';
-
-import 'package:saka/views/basewidgets/loader/circular.dart';
-
-import 'package:saka/views/screens/feed/widgets/terms_popup.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final dynamic data;
@@ -198,9 +197,8 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
         
               Container(
                 margin: const EdgeInsets.only(left: 15.0),
-                child: PostText(feedDetailProvider.feedDetailData.forum!.caption!)
+                child: PostText(feedDetailProvider.feedDetailData.forum!.caption ?? "-")
               ),
-
               if(feedDetailProvider.feedDetailData.forum!.type == "link")
                 PostLink(url: feedDetailProvider.feedDetailData.forum!.link!),
               if (feedDetailProvider.feedDetailData.forum!.type == "document")
@@ -208,7 +206,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
               if (feedDetailProvider.feedDetailData.forum!.type == "image")
                 PostImage(feedDetailProvider.feedDetailData.forum!.user!.username, feedDetailProvider.feedDetailData.forum!.caption!, true, feedDetailProvider.feedDetailData.forum!.media!),
               if (feedDetailProvider.feedDetailData.forum!.type == "video")
-                PostVideo(media: feedDetailProvider.feedDetailData.forum!.media![0].path, pause: false),
+                PostVideoDetail(media: feedDetailProvider.feedDetailData.forum!.media![0].path),
           
               Container(
                 margin: const EdgeInsets.only(

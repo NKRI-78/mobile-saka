@@ -155,6 +155,7 @@ dev_dependencies:
 
   # V
   video_player: ^2.3.0
+  visibility_detector: ^0.4.0+2
 
   # W
   webview_flutter: ^4.2.1

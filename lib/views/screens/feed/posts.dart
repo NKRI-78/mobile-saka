@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:saka/views/screens/feed/widgets/terms_popup.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -27,8 +26,10 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
+import 'package:saka/views/screens/feed/widgets/terms_popup.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
-import 'package:saka/views/screens/feed/widgets/post_video.dart';
+// FOR TEMPORARY
+// import 'package:saka/views/screens/feed/widgets/post_video.dart';
 import 'package:saka/views/screens/feed/widgets/post_doc.dart';
 import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:saka/views/screens/feed/widgets/post_link.dart';
@@ -36,10 +37,9 @@ import 'package:saka/views/screens/feed/widgets/post_text.dart';
 
 class Posts extends StatefulWidget {
   final Forum forum;
-  final bool pause; 
 
-  const Posts({Key? key, 
-    required this.pause,
+  const Posts({
+    Key? key, 
     required this.forum,
   }) : super(key: key);
 
@@ -322,7 +322,9 @@ class PostsState extends State<Posts> {
         if(widget.forum.type == "image")
           PostImage(widget.forum.user!.username!, widget.forum.caption!, false, widget.forum.media!),
         if(widget.forum.type == "video")
-          PostVideo(media: widget.forum.media![0].path!, pause: widget.pause),
+          // PostVideo(
+          //   media: widget.forum.media![0].path!, 
+          // ),
       
         Container(
           margin: const EdgeInsets.only(
@@ -603,10 +605,9 @@ class PostsState extends State<Posts> {
             ],
           )
         )
-    
-    ],
-        );
-}
+      ],
+    );
+  }
 
 
   Widget grantedDeleteComment(context, String commentId, String forumId) {
