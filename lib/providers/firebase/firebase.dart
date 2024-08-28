@@ -54,12 +54,21 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> handleMessage(message) async {
 
+    // NEWS
     if(message.data["click_action"] == "news") {
       NS.push(navigatorKey.currentContext!, DetailNewsScreen(
         contentId: message.data["news_id"],
       ));
     }
 
+    // BROADCAST
+    if(message.data["click_action"] == "broadcast") {
+      NS.push(navigatorKey.currentContext!, 
+        InboxScreen()
+      );
+    }
+
+    // SOS
     if(message.data["click_action"] == "sos") {
       NS.push(navigatorKey.currentContext!,
         InboxScreen()
@@ -73,18 +82,21 @@ class FirebaseProvider with ChangeNotifier {
       );
     }
 
+    // LIKE
     if(message.data["click_action"] == "like") {
       NS.push(navigatorKey.currentContext!,
         const FeedIndex()
       );
     }
 
+    // COMMENT LIKE
     if(message.data["click_action"] == "comment-like") {
       NS.push(navigatorKey.currentContext!,
         const FeedIndex()
       );
     }
 
+    // CREATE COMMENT
     if(message.data["click_action"] == "create-comment") {       
       NS.pushUntil(navigatorKey.currentContext!, 
         PostDetailScreen(
@@ -97,8 +109,9 @@ class FirebaseProvider with ChangeNotifier {
           },
         )
       );
-    }
+    } 
 
+    // CREATE REPLY
     if(message.data["click_action"] == "create-reply") {
       NS.pushUntil(navigatorKey.currentContext!, 
         PostDetailScreen(

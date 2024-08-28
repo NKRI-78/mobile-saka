@@ -111,12 +111,21 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
+    // NEWS
     if(data["click_action"] == "news") {
       NS.push(navigatorKey.currentContext!, DetailNewsScreen(
         contentId: data["news_id"],
       ));
     }
 
+    // BROADCAST
+    if(data["click_action"] == "broadcast") {
+      NS.push(navigatorKey.currentContext!, 
+        InboxScreen()
+      );
+    }
+
+    // SOS
     if(data["click_action"] == "sos") {
       NS.push(navigatorKey.currentContext!,
         InboxScreen()

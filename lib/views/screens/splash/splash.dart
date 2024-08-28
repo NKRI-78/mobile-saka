@@ -261,7 +261,8 @@ class SplashScreenState extends State<SplashScreen> {
     });
 
     Future.delayed(Duration.zero, () async {
-
+      
+      // LOCATION
       await Geolocator.requestPermission();
 
       if(mounted) {
