@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class CartModel {
   int status;
   bool error;
@@ -38,13 +40,17 @@ class CartData {
 }
 
 class Cart {
+  TextEditingController totalCartC;
+  TextEditingController noteC;
   String id;
   bool selected;
   int qty;
   bool isOutStock;
   String note;
-
+  
   Cart({
+    required this.totalCartC,
+    required this.noteC,
     required this.id,
     required this.selected,
     required this.qty,
@@ -58,6 +64,8 @@ class Cart {
     qty: json["qty"],
     isOutStock: json["is_out_stock"],
     note: json["note"],
+    noteC: TextEditingController(text: json["note"].toString()),
+    totalCartC: TextEditingController(text: json["qty"].toString()),
   );
 }
 

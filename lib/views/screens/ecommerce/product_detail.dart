@@ -7,6 +7,7 @@ import 'package:readmore/readmore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:saka/providers/ecommerce/ecommerce.dart';
 
 import 'package:saka/services/navigation.dart';
@@ -15,7 +16,10 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
+
 import 'package:saka/views/basewidgets/button/bounce.dart';
+
+import 'package:saka/views/screens/ecommerce/cart.dart';
 
 class ProductDetail extends StatefulWidget {
   final String productId;
@@ -182,15 +186,20 @@ class ProductDetailState extends State<ProductDetail> {
                             right: 16.0,
                             left: 16.0
                           ),
-                          child: Badge(
-                            label: Text(notifier.cartData.totalItem.toString(),
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
+                          child: Bouncing(
+                            onPress: () {
+                              NS.push(context, CartScreen());
+                            },
+                            child: Badge(
+                              label: Text(notifier.cartData.totalItem.toString(),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall
+                                ),
                               ),
-                            ),
-                            child: Icon(
-                              Icons.shopping_cart,
-                              size: 20.0
+                              child: Icon(
+                                Icons.shopping_cart,
+                                size: 20.0
+                              ),
                             ),
                           ),
                         ),

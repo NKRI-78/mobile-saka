@@ -12,6 +12,8 @@ import 'package:saka/services/navigation.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
+import 'package:saka/views/basewidgets/button/bounce.dart';
+import 'package:saka/views/screens/ecommerce/cart.dart';
 
 import 'package:saka/views/screens/ecommerce/widget/product_item.dart';
 
@@ -175,15 +177,20 @@ class EcommerceScreenState extends State<EcommerceScreen> {
                             ),
                         
                          if(notifier.getCartStatus == GetCartStatus.loaded)
-                            Badge(
-                              label: Text(notifier.cartData.totalItem.toString(),
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall
+                            Bouncing(
+                              onPress: () {
+                                NS.push(context, CartScreen());
+                              },
+                              child: Badge(
+                                label: Text(notifier.cartData.totalItem.toString(),
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall
+                                  ),
                                 ),
-                              ),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                size: 20.0
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  size: 20.0
+                                ),
                               ),
                             ),
 
