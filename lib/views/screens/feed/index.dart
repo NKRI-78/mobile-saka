@@ -77,7 +77,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   }
 
   void onVisibilityChanged(VisibilityInfo info) {
-    if(info.visibleFraction == 0) {
+    if(info.visibleFraction <= 0.5) {
       setState(() {
         for (var key in videoStates.keys) {
           videoStates[key] = false;

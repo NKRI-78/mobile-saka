@@ -5,8 +5,6 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
-import 'package:saka/views/screens/store/search_product.dart';
-
 class SearchWidget extends StatelessWidget {
   final String? hintText;
   final String? type;
@@ -20,9 +18,7 @@ class SearchWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        if(type == "commerce") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => SearchProductScreen(typeProduct: "commerce")));
-        } 
+      
       },
       child: Container(
         padding: const EdgeInsets.all(12.0),

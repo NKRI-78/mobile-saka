@@ -6,11 +6,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:soundpool/soundpool.dart';
 
+import 'package:saka/data/repository/firebase/firebase.dart';
+
 import 'package:saka/services/navigation.dart';
+import 'package:saka/services/notification.dart';
 import 'package:saka/services/services.dart';
 
 import 'package:saka/views/screens/news/detail.dart';
-
 import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:saka/views/screens/inbox/inbox.dart';
@@ -18,9 +20,6 @@ import 'package:saka/views/screens/inbox/inbox.dart';
 import 'package:saka/providers/auth/auth.dart';
 
 import 'package:saka/utils/helper.dart';
-
-import 'package:saka/services/notification.dart';
-import 'package:saka/data/repository/firebase/firebase.dart';
 
 class FirebaseProvider with ChangeNotifier {
   final AuthProvider ap;

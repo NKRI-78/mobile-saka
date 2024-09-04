@@ -4,6 +4,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/providers/banner/banner.dart';
 import 'package:saka/providers/category/category.dart';
+import 'package:saka/providers/ecommerce/ecommerce.dart';
 import 'package:saka/providers/event/event.dart';
 import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/providers/feedv2/feed.dart';
@@ -36,13 +37,13 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<SosProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<EventProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<MediaProvider>()),
-  ChangeNotifierProvider(create: (_) => c.getIt<StoreProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedProviderV2>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedDetailProviderV2>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedReplyProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<NewsProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<LocationProvider>()),
+  ChangeNotifierProvider(create: (_) => c.getIt<EcommerceProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<InboxProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<BannerProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FirebaseProvider>()),

@@ -24,8 +24,8 @@ class LocationProvider extends ChangeNotifier {
         longitude
       );
       Placemark place = placemarks[0];
-      sp.setString("currentNameAddress", "${place.thoroughfare} ${place.subThoroughfare} \n${place.locality}, ${place.postalCode}");
-      sp.setString("membernearAddress", "${place.thoroughfare} ${place.subThoroughfare} \n${place.locality}, ${place.postalCode}");
+      sp.setString("currentNameAddress", "${place.thoroughfare} ${place.subThoroughfare} ${place.locality} ${place.postalCode}");
+      sp.setString("membernearAddress", "${place.thoroughfare} ${place.subThoroughfare} ${place.locality} ${place.postalCode}");
       Future.delayed(Duration.zero, () => notifyListeners());
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
@@ -39,7 +39,7 @@ class LocationProvider extends ChangeNotifier {
       sp.setDouble("lat", position.geometry!.location.lat);
       sp.setDouble("lng", position.geometry!.location.lng);
       sp.setString("currentNameAddress","${place.thoroughfare} ${place.subThoroughfare} ${place.locality} ${place.postalCode}");
-      sp.setString("membernearAddress", "${place.thoroughfare} ${place.subThoroughfare} \n${place.locality}, ${place.postalCode}");
+      sp.setString("membernearAddress", "${place.thoroughfare} ${place.subThoroughfare} ${place.locality} ${place.postalCode}");
       Future.delayed(Duration.zero, () => notifyListeners());
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());

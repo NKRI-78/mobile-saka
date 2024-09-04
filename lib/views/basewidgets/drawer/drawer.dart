@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
 import 'package:saka/providers/auth/auth.dart';
-import 'package:saka/providers/store/store.dart';
 import 'package:saka/providers/profile/profile.dart';
 
 import 'package:saka/localization/language_constraints.dart';
@@ -21,8 +20,6 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 
-import 'package:saka/views/screens/store/form_store.dart';
-import 'package:saka/views/screens/store/seller_store.dart';
 import 'package:saka/views/screens/about/about.dart';
 import 'package:saka/views/screens/comingsoon/comingsoon.dart';
 import 'package:saka/views/screens/more/widgets/signout.dart';
@@ -580,70 +577,60 @@ class DrawerWidgetState extends State<DrawerWidget> {
   Widget drawerItems(BuildContext context, Widget widget, String menu, String svg, String title) {
     return Container(
       margin: EdgeInsets.only(left: 16.0, right: 16.0),
-      child: Consumer<StoreProvider>(
-        builder: (BuildContext context, StoreProvider sp, Widget? child) {
-          return ListTile(
-            dense: true,
-            isThreeLine: false,
-            visualDensity: VisualDensity(
-              horizontal: 0.0, 
-              vertical: 0.0
-            ),
-            minVerticalPadding: 0.0,
-            minLeadingWidth: 0.0,
-            contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-            onTap: () async { 
-              if(menu == "logout") {
-                cw.showAnimatedDialog(context,
-                  SignOutConfirmationDialog(),
-                  isFlip: true
-                );
-              } else if(menu == "store") {
-                if(sp.sellerStoreStatus != SellerStoreStatus.empty) {
-                  NS.push(context,  SellerStoreScreen());
-                } else {
-                  NS.push(context, FormStoreScreen());
-                }
-              } else if(menu == "aboutus") {
-                NS.push(context, AboutUsScreen());
-              } else if(menu == "cashout") {
-                NS.push(context, ComingSoonScreen(
-                  title: "Cashout",
-                  key: UniqueKey(),
-                ));
-              } else if(menu == "bantuan") {
-                final Uri emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: 'customercare@inovatiftujuh8.com',
-                  queryParameters: {
-                    'subject': '',
-                    'body': ''
-                  },
-                );
-                await launchUrl(emailLaunchUri);
-              }
-              else if(menu == "tos") {
-                termsAndCondition();
-              } else {
-                NS.push(context, widget);
-              }
-            },  
-            title: Text(title,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.white
-              )
-            ),
-            leading: Container(
-              width: 20.0,
-              height: 20.0,
-              margin: EdgeInsets.only(left: 20.0),
-              child: SvgPicture.asset(svg,
-                color: ColorResources.white
-              ),
-            ),
-          );
-        },
+      child:  ListTile(
+        dense: true,
+        isThreeLine: false,
+        visualDensity: VisualDensity(
+          horizontal: 0.0, 
+          vertical: 0.0
+        ),
+        minVerticalPadding: 0.0,
+        minLeadingWidth: 0.0,
+        contentPadding: EdgeInsets.symmetric(vertical: 0.0),
+        onTap: () async { 
+          if(menu == "logout") {
+            cw.showAnimatedDialog(context,
+              SignOutConfirmationDialog(),
+              isFlip: true
+            );
+          } else if(menu == "aboutus") {
+            NS.push(context, AboutUsScreen());
+          } else if(menu == "cashout") {
+            NS.push(context, ComingSoonScreen(
+              title: "Cashout",
+              key: UniqueKey(),
+            ));
+          } else if(menu == "bantuan") {
+            final Uri emailLaunchUri = Uri(
+              scheme: 'mailto',
+              path: 'customercare@inovatiftujuh8.com',
+              queryParameters: {
+                'subject': '',
+                'body': ''
+              },
+            );
+            await launchUrl(emailLaunchUri);
+          }
+          else if(menu == "tos") {
+            termsAndCondition();
+          } else {
+            NS.push(context, widget);
+          }
+        },  
+        title: Text(title,
+          style: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeDefault,
+            color: ColorResources.white
+          )
+        ),
+        leading: Container(
+          width: 20.0,
+          height: 20.0,
+          margin: EdgeInsets.only(left: 20.0),
+          child: SvgPicture.asset(svg,
+            color: ColorResources.white
+          ),
+        ),
       )
     );
   }

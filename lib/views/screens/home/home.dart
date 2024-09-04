@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
+import 'package:saka/views/screens/ecommerce/product.dart';
 import 'package:saka/views/screens/feed/index.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_animator/flutter_animator.dart';
@@ -21,7 +22,6 @@ import 'package:saka/services/navigation.dart';
 
 import 'package:saka/localization/language_constraints.dart';
 
-import 'package:saka/providers/store/store.dart';
 import 'package:saka/providers/inbox/inbox.dart';
 import 'package:saka/providers/ppob/ppob.dart';
 import 'package:saka/providers/banner/banner.dart';
@@ -62,7 +62,6 @@ class HomeScreenState extends State<HomeScreen> {
   late BannerProvider bp;
   late ProfileProvider pp;
   late AuthProvider ap;
-  late StoreProvider sp;
   late PPOBProvider ppopP;
   late EventProvider ep;
 
@@ -118,7 +117,6 @@ class HomeScreenState extends State<HomeScreen> {
     pp = context.read<ProfileProvider>();
     lp = context.read<LocationProvider>();
     ap = context.read<AuthProvider>();
-    sp = context.read<StoreProvider>();
     ppopP = context.read<PPOBProvider>();
     ep = context.read<EventProvider>();
 
@@ -582,9 +580,9 @@ Widget ourService(BuildContext context) {
   List<Map<String, dynamic>> menus = [
     {
       "id": 1,
-      "name": getTranslated("SAKA_MART", context),
+      "name": "Toko Saka",
       "asset": "shop.png",
-      "link": ComingSoonScreen(title: getTranslated("SAKA_MART", context))
+      "link": EcommerceScreen()
     },
 
     {

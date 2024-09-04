@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:geolocator/geolocator.dart';
 
 import 'package:saka/providers/splash/splash.dart';
@@ -262,14 +264,21 @@ class SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(Duration.zero, () async {
       
-      // LOCATION
       await Geolocator.requestPermission();
 
-      if(mounted) {
-        if(Helper.prefs!.getBool("isAccept") == null) {
-          termsAndCondition();
-        }
-      }
+      await [ 
+        Permission.camera,
+        Permission.location,
+        Permission.storage,
+        Permission.microphone,
+        Permission.notification,
+      ].request();
+
+      // if(mounted) {
+        // if(Helper.prefs!.getBool("isAccept") == null) {
+          // termsAndCondition();
+        // }
+      // }
 
       PackageInfo info = await PackageInfo.fromPlatform();
       
@@ -293,7 +302,6 @@ class SplashScreenState extends State<SplashScreen> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            
             Positioned(
               top: 50.0,
               left: 0,

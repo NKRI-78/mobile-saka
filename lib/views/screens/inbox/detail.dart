@@ -3,20 +3,13 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/services/navigation.dart';
 
-import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/helper.dart';
 
-import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
-import 'package:saka/views/basewidgets/button/custom.dart';
 
 class InboxDetailScreen extends StatefulWidget {
   final String? inboxId;
@@ -116,181 +109,13 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
 
-                    Text(DateFormat('dd MMM yyyy kk:mm').format(widget.created!.toLocal()), 
-                      style: poppinsRegular.copyWith(
-                        color: ColorResources.black, 
-                        fontSize: Dimensions.fontSizeDefault
-                      )
-                    ),
-                    
-                    if(widget.type == "payment.waiting" || widget.type == "default" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "payment.expired" || widget.type == "order.seller.new" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.delivered" || widget.type == "order.buyer.shipping")
-                      Container(
-                        margin: const EdgeInsets.only(top: Dimensions.marginSizeSmall),
-                        decoration: BoxDecoration(
-                          color: ColorResources.white,
-                          borderRadius: BorderRadius.circular(10.0)
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if(widget.type == "payment.waiting" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "order.seller.new" || widget.type == "order.buyer.delivered" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.shipping")
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text("Nomor Transaksi",
-                                      style: poppinsRegular.copyWith(
-                                        color: ColorResources.black, 
-                                        fontSize: Dimensions.fontSizeDefault
-                                      )
-                                    ),
-                                    SelectableText("${widget.field1}",
-                                      style: poppinsRegular.copyWith(
-                                        color: ColorResources.black, 
-                                        fontSize: Dimensions.fontSizeDefault
-                                      )
-                                    ),
-                                  ]
-                                ),
-                                if(widget.type == "payment.waiting" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "order.seller.new" || widget.type == "order.buyer.delivered" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.shipping")
-                                  const SizedBox(height: 5.0),
-                                if(widget.type == "payment.waiting" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "order.seller.new" || widget.type == "order.buyer.delivered" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.shipping")
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Nominal",
-                                        style: poppinsRegular.copyWith(
-                                          color: ColorResources.black, 
-                                          fontSize: Dimensions.fontSizeDefault
-                                        )
-                                      ),
-                                      if(widget.field2 != null || widget.field2 != "")
-                                        Text(Helper.formatCurrency(double.parse(widget.field2.toString())),
-                                          style: poppinsRegular.copyWith(
-                                            color: ColorResources.black, 
-                                            fontSize: Dimensions.fontSizeDefault
-                                          )
-                                        ),
-                                    ]
-                                  ),
-                                if(widget.type == "default")
-                                  const SizedBox(height: 5.0),
-                                if(widget.type == "default") 
-                                  SelectableText(widget.subject!,
-                                    style: poppinsRegular.copyWith(
-                                      color: ColorResources.black, 
-                                      fontSize: Dimensions.fontSizeDefault,
-                                    )
-                                  ),
-                                if(widget.type == "payment.waiting" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "payment.expired" || widget.type == "order.seller.new" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.delivered" || widget.type == "order.buyer.shipping")
-                                  const SizedBox(height: 5.0),
-                                if(widget.type == "payment.waiting" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "payment.expired" || widget.type == "order.seller.new" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.delivered" || widget.type == "order.buyer.shipping") 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Status",
-                                        style: poppinsRegular.copyWith(
-                                          color: ColorResources.black, 
-                                          fontSize: Dimensions.fontSizeDefault
-                                        )
-                                      ),
-                                      SelectableText("${widget.subject}",
-                                        style: poppinsRegular.copyWith(
-                                          color: ColorResources.black, 
-                                          fontSize: Dimensions.fontSizeDefault
-                                        )
-                                      ),
-                                    ]
-                                  ),
-                                if(widget.type == "payment.waiting" || widget.type == "default" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "payment.expired" || widget.type == "order.seller.new" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.delivered" || widget.type == "order.buyer.shipping")
-                                  const SizedBox(height: 10.0),
-                                if(widget.type == "payment.waiting" || widget.type == "default" || widget.type == "purchase.success" || widget.type == "payment.paid" || widget.type == "payment.expired" || widget.type == "order.seller.new" || widget.type == "order.seller.delivered" || widget.type == "order.buyer.delivered" || widget.type == "order.buyer.shipping")
-                                  GestureDetector(
-                                    onTap: widget.type == "default" 
-                                    ? () async {
-                                        try {
-                                          await launch(widget.body!);
-                                        } catch(e, stacktrace) {
-                                          debugPrint(stacktrace.toString());
-                                        } 
-                                      } 
-                                    : () {},
-                                    child:  widget.body!.startsWith("https://") || widget.body!.startsWith("http://")  
-                                    ? Text(widget.body!, 
-                                        style: poppinsRegular.copyWith(
-                                          color: ColorResources.primaryOrange, 
-                                          fontSize: Dimensions.fontSizeDefault
-                                       )
-                                      )
-                                    : SelectableText(widget.body!, 
-                                      style: poppinsRegular.copyWith(
-                                        color: ColorResources.black, 
-                                        fontSize: Dimensions.fontSizeDefault
-                                      )
-                                    ),
-                                  ),
-                                if(widget.type == "payment.waiting" || widget.type == "purchase.success") 
-                                  if(widget.field6!.isNotEmpty)
-                                    SelectableText(widget.field6!, 
-                                      style: poppinsRegular.copyWith(
-                                        color: ColorResources.black, 
-                                        fontSize: Dimensions.fontSizeDefault
-                                      )
-                                    ),
-                              
-                                if(widget.type == "payment.waiting")
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                      top: Dimensions.marginSizeDefault, 
-                                      left: Dimensions.marginSizeExtraSmall, 
-                                      right: Dimensions.marginSizeExtraSmall
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if(widget.field5!.contains("://") && widget.field4! != 'topup')
-                                          CustomButton(
-                                            btnColor: ColorResources.primaryOrange,
-                                            onTap: () async {
-                                              if(widget.field5!.isNotEmpty) {
-                                                launch(widget.field5.toString());
-                                              } else {
-                                                ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
-                                              }
-                                            }, 
-                                            height: 35.0,
-                                            isBoxShadow: false,
-                                            isBorderRadius: true,
-                                            btnTxt: getTranslated("SEE_BILL", context)
-                                          ),
-                                        if(widget.field5!.contains("://") && widget.field4! != "topup")
-                                          const SizedBox(height: 12.0),
-                                        if(widget.field5!.contains("://") && widget.field4 != "topup")
-                                          if(widget.field5!.split("://")[1].split("/")[0] != "linkaja.id" && widget.field5!.split("://")[1].split("/")[0] != "wsa.wallet.airpay.co.id") 
-                                            CustomButton(
-                                              btnColor: ColorResources.primaryOrange,
-                                              onTap: () async {
-                                                try {
-                                                  await launch("${AppConstants.baseUrlHelpInboxPayment}/${widget.field1.toString()}");
-                                                } catch(e, stacktrace) {
-                                                  debugPrint(stacktrace.toString());
-                                                }
-                                              }, 
-                                              height: 35.0,
-                                              isBoxShadow: false,
-                                              isBorderRadius: true,
-                                              btnTxt: getTranslated("HOW_TO_PAYMENT", context)
-                                            ),
-                                        ]
-                                      ),
-                                    )
-                            ]
-                          ),
-                        ),
-                      )
+                      Text(DateFormat('dd MMM yyyy kk:mm').format(widget.created!.toLocal()), 
+                        style: poppinsRegular.copyWith(
+                          color: ColorResources.black, 
+                          fontSize: Dimensions.fontSizeDefault
+                        )
+                      ),
+                 
                     ]
                   ),
                 ),

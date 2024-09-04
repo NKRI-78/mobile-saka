@@ -28,8 +28,6 @@ class FeedRepo {
     try {
       Dio dio = await DioManager.shared.getClient();
       await dio.delete("${AppConstants.baseUrlFeed}/post/delete/$postId");
-   } on DioError catch(_) {
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -41,8 +39,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/fetch/$postId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchPost, data);
-    } on DioError catch(_) {
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -55,8 +51,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/sticker/list");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchListSticker, data);
-    } on DioError catch(_) {
-   
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -69,8 +63,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/reply/fetch/$postId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchReply, data);
-    } on DioError catch(_) {
-     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -83,8 +75,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/comment/fetch/$targetId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchComment, data);
-    } on DioError catch(_) {
-     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -97,8 +87,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/reply/list?targetId=$targetId&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchAllReply, data);
-    } on DioError catch(_) {
-     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -111,8 +99,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/notification/list?cursorId=$cursorId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchAllNotification, data);
-    } on DioError catch(_) {
-    
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -125,8 +111,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/comment/list?targetType=POST&type=MOST_RECENT&targetId=$targetId&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchListCommentMostRecent, data);      
-    } on DioError catch(_) {
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -139,8 +123,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_RECENT&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
-    } on DioError catch(_) {
-   
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -153,8 +135,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_POPULAR&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
-    } on DioError catch(_) {
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -167,8 +147,6 @@ class FeedRepo {
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=SELF&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
-    } on DioError catch(_) {
-   
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -188,9 +166,7 @@ class FeedRepo {
       });
       Response res = await dio.post("${AppConstants.baseUrl}/media-service/upload", data: formData);
       return res;
-    } on DioError catch(_) {
-    
-    }  catch(e) {
+    } catch(e) {
       debugPrint(e.toString());
     }
     return null;
@@ -207,8 +183,6 @@ class FeedRepo {
         }
       );
       return res;
-    } on DioError catch(_) {
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -230,10 +204,7 @@ class FeedRepo {
         }
       );
       return res;
-    } on DioError catch(_) {  
-     
-    }
-    catch(e) {
+    } catch(e) {
       debugPrint(e.toString());
     }
     return null;
@@ -255,8 +226,6 @@ class FeedRepo {
         }
       );
       return res;
-    } on DioError catch(_) {  
-     
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -285,9 +254,7 @@ class FeedRepo {
         }
       );
       return res;
-    } on DioError catch(_) {  
-     
-    }  catch(e) {
+    } catch(e) {
       debugPrint(e.toString());
     }
     return null;
@@ -340,8 +307,6 @@ class FeedRepo {
         data: postsData
       );
       return res;
-    } on DioError catch(_) {  
-     
     } catch(e) {
       debugPrint(e.toString());
     }  
@@ -372,8 +337,6 @@ class FeedRepo {
         data: postsData
       );
       return res;
-    } on DioError catch(_) {  
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -403,8 +366,6 @@ class FeedRepo {
         data: postsData
       );
       return res;
-    } on DioError catch(_) {
-    
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -425,8 +386,6 @@ class FeedRepo {
         data: postsData
       );
       return res;
-    } on DioError catch(_) {  
-      
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -462,8 +421,6 @@ class FeedRepo {
       await dio.post("${AppConstants.baseUrlFeed}/comment/write",
         data: data
       ); 
-    } on DioError catch(_) {  
-      
     } catch(e) {
       debugPrint(e.toString());
     }

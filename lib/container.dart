@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:saka/data/repository/ecommerce/ecommerce.dart';
+import 'package:saka/providers/ecommerce/ecommerce.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saka/data/repository/feed/feed.dart';
@@ -48,6 +50,8 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => AuthRepo(
     sp: getIt()
   ));
+
+  getIt.registerLazySingleton(() => EcommerceRepo(sp: getIt()));
 
   getIt.registerLazySingleton(() => CategoryRepo());
   getIt.registerLazySingleton(() => SosRepo());
@@ -125,6 +129,10 @@ Future<void> init() async {
     br: getIt()
   ));
 
+  getIt.registerFactory(() => EcommerceProvider(
+    er: getIt()
+  ));
+
   getIt.registerFactory(() => LocationProvider(sp: getIt()));
 
   getIt.registerFactory(() => OnboardingProvider(  
@@ -148,8 +156,6 @@ Future<void> init() async {
     lp: getIt()
   ));
 
-  getIt.registerFactory(() => StoreProvider());
-  
   getIt.registerFactory(() => InboxProvider());
   
   getIt.registerFactory(() => FirebaseProvider(

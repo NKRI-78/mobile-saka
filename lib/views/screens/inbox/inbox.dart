@@ -264,7 +264,7 @@ class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin
                                               radius: 30.0,
                                             )
                                           : CachedNetworkImage(
-                                            imageUrl: "${profileProvider.userProfile.profilePic}",
+                                            imageUrl: "${profileProvider.singleUserData.profilePic}",
                                             imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                               return CircleAvatar(
                                                 backgroundColor: Colors.transparent,
@@ -359,17 +359,7 @@ class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
 
-                                                  Text(getTranslated("${inboxProvider.inboxes[i].body!.split('-')[0].toString()}", context) + " " + getTranslated("${inboxProvider.inboxes[i].body!.split('-')[1].toString()}", context),
-                                                    textAlign: TextAlign.justify,
-                                                    style: robotoRegular.copyWith(
-                                                      height: 1.4,
-                                                      fontSize: Dimensions.fontSizeDefault
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 10.0),
-
-                                                  Text(inboxProvider.inboxes[i].body!.split('-')[2].toString(),
+                                                  Text(inboxProvider.inboxes[i].body!,
                                                     textAlign: TextAlign.justify,
                                                     style: robotoRegular.copyWith(
                                                       height: 1.4,
@@ -541,7 +531,7 @@ class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin
                           : inboxProvider.inboxStatus == InboxStatus.error 
                           ? "..."
                           : inboxProvider.inboxes[i].subject == "Emergency" 
-                          ? getTranslated("${inboxProvider.inboxes[i].body!.split('-')[0].toString()}", context) + " " + getTranslated("${inboxProvider.inboxes[i].body!.split('-')[1].toString()}", context) 
+                          ? inboxProvider.inboxes[i].body! 
                           : inboxProvider.inboxes[i].body!,
                             overflow: inboxProvider.inboxes[i].subject == "Emergency" 
                           ? TextOverflow.fade

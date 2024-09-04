@@ -157,7 +157,7 @@ class StoreElementItem {
   });
 
   String? productId;
-  Product? product;
+  CartProduct? product;
   String? storeId;
   int? quantity;
   double? price;
@@ -169,7 +169,7 @@ class StoreElementItem {
 
   factory StoreElementItem.fromJson(Map<String, dynamic> json) => StoreElementItem(
     productId: json["productId"],
-    product: Product.fromJson(json["product"]),
+    product: CartProduct.fromJson(json["product"]),
     storeId: json["storeId"],
     quantity: json["quantity"],
     price: json["price"],
@@ -181,8 +181,8 @@ class StoreElementItem {
   );
 }
 
-class Product {
-  Product({
+class CartProduct {
+  CartProduct({
     this.id,
     this.name,
     this.price,
@@ -214,7 +214,7 @@ class Product {
   bool? fragile;
   String? classId;
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
+  factory CartProduct.fromJson(Map<String, dynamic> json) => CartProduct(
     id: json["id"],
     name: json["name"],
     price: json["price"],

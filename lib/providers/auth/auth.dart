@@ -241,7 +241,11 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   }
 
   @override
-  Future<void> logout() {
+  Future<void> logout() async {
+    await dio.delete("https://api-forum-general.inovatiftujuh8.com/forums/v1/delete-token-notification", data: {
+      "app_name": "saka",
+      "user_id": sp.getString("userId")
+    });
     deleteData();
     return Future.value(true);
   }

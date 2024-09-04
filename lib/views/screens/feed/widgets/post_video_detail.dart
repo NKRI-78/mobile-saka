@@ -54,7 +54,7 @@ class PostVideoDetailState extends State<PostVideoDetail> with AutomaticKeepAliv
     }
   }
 
-    void updateState() {
+  void updateState() {
     if (mounted) {
       setState(() {});
     }

@@ -42,10 +42,10 @@ class SignInScreenState extends State<SignInScreen> {
       ShowSnackbar.snackbar(context, getTranslated("PHONE_MUST_BE_REQUIRED", context), "", ColorResources.error); 
       return;
     } 
-    if(phone.length <= 10) {
-      ShowSnackbar.snackbar(context, getTranslated("PHONE_NUMBER_10_REQUIRED", context), "", ColorResources.error);
-      return;
-    }
+    // if(phone.length <= 10) {
+    //   ShowSnackbar.snackbar(context, getTranslated("PHONE_NUMBER_10_REQUIRED", context), "", ColorResources.error);
+    //   return;
+    // }
     if(password.trim().isEmpty) {
       ShowSnackbar.snackbar(context, getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error); 
       return;
