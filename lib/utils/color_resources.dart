@@ -25,7 +25,7 @@ class ColorResources {
   static const Color delete = Color(0xffFD1212);
   static const Color brown = Color(0xff645556);
   static const Color brownDark = Color(0xff645556);
-  static const Color purpleDark = Color(0xff542e71);
+  static const Color purple = Color(0xFF67328F);
   static const Color success = Color(0xff5CB85C);
   static const Color greyLightPrimary = Color(0xffebebeb);
   static const Color greyDarkPrimary = Color(0xff707070);

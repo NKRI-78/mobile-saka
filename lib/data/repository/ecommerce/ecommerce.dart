@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:saka/data/models/ecommerce/cart/cart.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
+import 'package:saka/data/models/ecommerce/product/detail.dart';
 
 import 'package:saka/utils/dio.dart';
 
@@ -26,6 +27,19 @@ class EcommerceRepo {
     } catch(e) {
       debugPrint(e.toString());
       throw Exception('Failed to load products');
+    }
+  }
+
+  Future<ProductDetailModel> getProduct({required String productId}) async {
+    try {   
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/detail/$productId");
+      Map<String, dynamic> data = response.data;
+      ProductDetailModel productDetailModel = ProductDetailModel.fromJson(data);
+      return productDetailModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed to load product");
     }
   }
 

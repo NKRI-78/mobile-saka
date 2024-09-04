@@ -209,7 +209,7 @@ class _VoucherPulsaByPrefixScreenState extends State<VoucherPulsaByPrefixScreen>
                                     shape: RoundedRectangleBorder(
                                       side: BorderSide(
                                         width: 0.5,
-                                        color: selected == i ? ColorResources.purpleDark : Colors.transparent
+                                        color: selected == i ? ColorResources.purple : Colors.transparent
                                       )
                                     ),
                                     child: GestureDetector(
@@ -303,7 +303,7 @@ class _VoucherPulsaByPrefixScreenState extends State<VoucherPulsaByPrefixScreen>
                                                             child: Text(getTranslated("CHANGE", context),
                                                               style: robotoRegular.copyWith(
                                                                 fontSize: Dimensions.fontSizeSmall,
-                                                                color: ColorResources.purpleDark
+                                                                color: ColorResources.purple
                                                               ),
                                                             ),
                                                           ),
@@ -313,7 +313,7 @@ class _VoucherPulsaByPrefixScreenState extends State<VoucherPulsaByPrefixScreen>
                                                           child: TextButton(
                                                             style: TextButton.styleFrom(
                                                               elevation: 0.0,
-                                                              backgroundColor: ColorResources.purpleDark,
+                                                              backgroundColor: ColorResources.purple,
                                                               shape: RoundedRectangleBorder(
                                                                 borderRadius: BorderRadius.circular(20.0),
                                                                 side: BorderSide.none
@@ -363,7 +363,7 @@ class _VoucherPulsaByPrefixScreenState extends State<VoucherPulsaByPrefixScreen>
                                         child: Center(
                                           child: Text(Helper.formatCurrency(double.parse(ppobProvider.listVoucherPulsaByPrefixData[i].price.toString())),
                                             style: robotoRegular.copyWith(
-                                              color: selected == i ? ColorResources.purpleDark : ColorResources.dimGrey,
+                                              color: selected == i ? ColorResources.purple : ColorResources.dimGrey,
                                               fontSize: Dimensions.fontSizeExtraSmall
                                             ),
                                           ),

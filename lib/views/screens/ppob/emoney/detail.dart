@@ -345,7 +345,7 @@ class _DetailVoucherEmoneyScreenState extends State<DetailVoucherEmoneyScreen> {
                                                             child: Text(getTranslated("CHANGE", context),
                                                               style: robotoRegular.copyWith(
                                                                 fontSize: Dimensions.fontSizeSmall,
-                                                                color: ColorResources.purpleDark
+                                                                color: ColorResources.purple
                                                               ),
                                                             ),
                                                           ),
@@ -355,7 +355,7 @@ class _DetailVoucherEmoneyScreenState extends State<DetailVoucherEmoneyScreen> {
                                                           child: TextButton(
                                                             style: TextButton.styleFrom(
                                                               elevation: 0.0,
-                                                              backgroundColor: ColorResources.purpleDark,
+                                                              backgroundColor: ColorResources.purple,
                                                               shape: RoundedRectangleBorder(
                                                                 borderRadius: BorderRadius.circular(20.0),
                                                                 side: BorderSide.none
@@ -408,7 +408,7 @@ class _DetailVoucherEmoneyScreenState extends State<DetailVoucherEmoneyScreen> {
                                             Center(
                                               child: Text(Helper.formatCurrency(double.parse(ppobProvider.listTopUpEmoney[i].name!)),
                                                 style: robotoRegular.copyWith(
-                                                  color: selected == i ? ColorResources.purpleDark : ColorResources.dimGrey,
+                                                  color: selected == i ? ColorResources.purple : ColorResources.dimGrey,
                                                   fontSize: Dimensions.fontSizeSmall
                                                 ),
                                               ),

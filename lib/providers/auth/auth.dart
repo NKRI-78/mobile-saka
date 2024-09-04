@@ -455,7 +455,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         || e.response!.statusCode == 504
         || e.response!.statusCode == 505
       ) {
-        ShowSnackbar.snackbar(context, "(${e.response!.statusCode.toString()}) : Internal Server Error ( ${e.response?.data["error"]} )", "", ColorResources.purpleDark);
+        ShowSnackbar.snackbar(context, "(${e.response!.statusCode.toString()}) : Internal Server Error ( ${e.response?.data["error"]} )", "", ColorResources.purple);
       }
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());

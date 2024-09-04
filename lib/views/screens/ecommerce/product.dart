@@ -209,14 +209,10 @@ class EcommerceScreenState extends State<EcommerceScreen> {
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: Center(
-                      child: SizedBox(
-                        width: 32.0,
-                        height: 32.0,
-                        child: Text("Hmm... Mohon tunggu yaa",
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        )
+                      child: Text("Hmm... Mohon tunggu yaa",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault
+                        ),
                       )
                     )
                   ),

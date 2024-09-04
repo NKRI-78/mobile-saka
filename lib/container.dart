@@ -27,7 +27,6 @@ import 'package:saka/providers/region/region.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
 import 'package:saka/providers/feedv2/feedReply.dart';
-import 'package:saka/providers/store/store.dart';
 import 'package:saka/providers/sos/sos.dart';
 import 'package:saka/providers/location/location.dart';
 import 'package:saka/providers/auth/auth.dart';

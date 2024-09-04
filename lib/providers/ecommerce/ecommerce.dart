@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:saka/data/models/ecommerce/cart/cart.dart';
 
 import 'package:saka/data/models/ecommerce/product/all.dart';
+import 'package:saka/data/models/ecommerce/product/detail.dart';
 
 import 'package:saka/data/repository/ecommerce/ecommerce.dart';
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
+enum DetailProductStatus { idle, loading, loaded, empty, error }
 enum GetCartStatus { idle, loading, loaded, empty, error }
 
 class EcommerceProvider extends ChangeNotifier {
@@ -18,6 +20,9 @@ class EcommerceProvider extends ChangeNotifier {
   ListProductStatus _listProductStatus = ListProductStatus.loading;
   ListProductStatus get listProductStatus => _listProductStatus;
 
+  DetailProductStatus _detailProductStatus = DetailProductStatus.loading;
+  DetailProductStatus get detailProductStatus => _detailProductStatus;
+
   GetCartStatus _getCartStatus = GetCartStatus.loading; 
   GetCartStatus get getCartStatus => _getCartStatus;
 
@@ -27,8 +32,18 @@ class EcommerceProvider extends ChangeNotifier {
   List<Product> _products = [];
   List<Product> get products => [..._products];
 
+  ProductDetailData _productDetailData = ProductDetailData();
+  ProductDetailData get productDetailData => _productDetailData;
+
   void setStateListProductStatus(ListProductStatus param) {
     _listProductStatus = param;
+    
+    notifyListeners();
+  }
+
+  void setStateDetailProductStatus(DetailProductStatus param) {
+    _detailProductStatus = param;
+
     notifyListeners();
   }
 
@@ -54,6 +69,18 @@ class EcommerceProvider extends ChangeNotifier {
     } catch (e) {
       setStateListProductStatus(ListProductStatus.error);
     } 
+  }
+  
+  Future<void> fetchProduct({required String productId}) async {
+    setStateDetailProductStatus(DetailProductStatus.loading);
+    try {
+      ProductDetailModel productDetailModel = await er.getProduct(productId: productId);
+      _productDetailData = productDetailModel.data;
+      
+      setStateDetailProductStatus(DetailProductStatus.loaded);
+    } catch(e) {  
+      setStateDetailProductStatus(DetailProductStatus.error);
+    }
   }
 
   Future<void> getCart() async {

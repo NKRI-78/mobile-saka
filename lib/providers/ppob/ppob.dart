@@ -1407,7 +1407,7 @@ class PPOBProvider with ChangeNotifier {
                         child: Text(getTranslated("EDIT", context),
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeExtraSmall,
-                            color: ColorResources.purpleDark
+                            color: ColorResources.purple
                           ),
                         ),
                       ),
@@ -1416,7 +1416,7 @@ class PPOBProvider with ChangeNotifier {
                       width: 140.0,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorResources.purpleDark,
+                          backgroundColor: ColorResources.purple,
                           elevation: 0.0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
@@ -1636,7 +1636,7 @@ class PPOBProvider with ChangeNotifier {
                         child: Text(getTranslated("EDIT", context),
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.purpleDark
+                            color: ColorResources.purple
                           ),
                         ),
                       ),
@@ -1646,7 +1646,7 @@ class PPOBProvider with ChangeNotifier {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 0.0,
-                          backgroundColor: ColorResources.purpleDark,
+                          backgroundColor: ColorResources.purple,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: BorderSide.none

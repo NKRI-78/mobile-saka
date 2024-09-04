@@ -23,7 +23,6 @@ import 'package:saka/providers/region/region.dart';
 import 'package:saka/providers/sos/sos.dart';
 import 'package:saka/providers/splash/splash.dart';
 import 'package:saka/providers/ppob/ppob.dart';
-import 'package:saka/providers/store/store.dart';
 
 import 'container.dart' as c;
 

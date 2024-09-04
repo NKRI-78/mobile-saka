@@ -20,10 +20,10 @@ class ProductDetailModel {
 }
 
 class ProductDetailData {
-  ProductDetail product;
+  ProductDetail? product;
 
   ProductDetailData({
-    required this.product,
+    this.product,
   });
 
   factory ProductDetailData.fromJson(Map<String, dynamic> json) => ProductDetailData(

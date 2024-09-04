@@ -188,7 +188,7 @@ class _TokenListrikScreenState extends State<TokenListrikScreen> {
                                   side: BorderSide(
                                     width: 0.5,
                                     color: selected == i 
-                                    ? ColorResources.purpleDark 
+                                    ? ColorResources.purple 
                                     : Colors.transparent
                                   )
                                 ),
@@ -212,7 +212,7 @@ class _TokenListrikScreenState extends State<TokenListrikScreen> {
                                           child: Text(NumberFormat("###,000", "id_ID").format(ppobProvider.listPricePLNPrabayarData[i].price),
                                             style: robotoRegular.copyWith(
                                               color: selected == i 
-                                              ? ColorResources.purpleDark 
+                                              ? ColorResources.purple 
                                               : ColorResources.dimGrey.withOpacity(0.8),
                                               fontSize: Dimensions.fontSizeSmall
                                             ),

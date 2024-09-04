@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
-import 'package:saka/utils/color_resources.dart';
+import 'package:saka/services/navigation.dart';
 
+import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/currency.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 import 'package:saka/views/basewidgets/bounce/gesture.dart';
+import 'package:saka/views/screens/ecommerce/product_detail.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -22,7 +24,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureBounce(
       onPress: () {
-
+        NS.push(context, ProductDetail(productId: product.id));
       },  
       child: Card(
         elevation: 0.80,
