@@ -223,29 +223,21 @@ class EcommerceScreenState extends State<EcommerceScreen> {
                       vertical: 25.0,
                       horizontal: 16.0
                     ),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-
-                        GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 2.0 / 4.5,
-                            mainAxisSpacing: 10.0
-                          ),
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: EdgeInsets.zero,
-                          itemCount: notifier.products.length, 
-                          itemBuilder: (BuildContext context, int i) {
-                            final product = notifier.products[i];
-
-                            return ProductItem(product: product);
-                          },  
-                        ),
-
-                    ])
+                    sliver: SliverGrid(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 2.0 / 4.5,
+                        mainAxisSpacing: 10.0,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int i) {
+                          final product = notifier.products[i];
+                          return ProductItem(product: product);
+                        },
+                        childCount: notifier.products.length,
+                      ),
+                    ),
                   ),
-                )
 
               ],
             );

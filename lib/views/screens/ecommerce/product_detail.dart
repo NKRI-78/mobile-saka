@@ -15,6 +15,7 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
+import 'package:saka/views/basewidgets/button/bounce.dart';
 
 class ProductDetail extends StatefulWidget {
   final String productId;
@@ -36,6 +37,9 @@ class ProductDetailState extends State<ProductDetail> {
   Future<void> getData() async {
     if(!mounted) return;
       await ep.fetchProduct(productId: widget.productId);
+
+    if(!mounted) return;
+      await ep.getCart();
   }
 
   @override 
@@ -105,32 +109,92 @@ class ProductDetailState extends State<ProductDetail> {
                         //     ),
                         //   ),
                         // ),
-                        Center(
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              right: 5.0
-                            ),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(50.0),
-                              onTap: () {
+                        // Center(
+                        //   child: 
+                          
+                          // Container(
+                          //   margin: EdgeInsets.only(
+                          //     right: 5.0
+                          //   ),
+                          //   child: InkWell(
+                          //     borderRadius: BorderRadius.circular(50.0),
+                          //     onTap: () {
                                 
-                              },  
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Badge(
-                                  label: Text("0",
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall
-                                    ),
-                                  ),
-                                  child: Icon(Icons.shopping_cart,
-                                    color: ColorResources.black,
-                                  )
-                                ),
-                              )
+                          //     },  
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Badge(
+                          //         label: Text("0",
+                          //           style: robotoRegular.copyWith(
+                          //             fontSize: Dimensions.fontSizeSmall
+                          //           ),
+                          //         ),
+                          //         child: Icon(Icons.shopping_cart,
+                          //           color: ColorResources.black,
+                          //         )
+                          //       ),
+                          //     )
+                          //   ),
+                          // ),
+                        // ),
+
+                      if(notifier.getCartStatus == GetCartStatus.loading)
+                        Container(
+                          margin: EdgeInsets.only(
+                            right: 16.0,
+                            left: 16.0
+                          ),
+                          child: Badge(
+                            label: Text("0",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.shopping_cart,
+                              size: 20.0
                             ),
                           ),
                         ),
+
+                      if(notifier.getCartStatus == GetCartStatus.error)
+                        Container(
+                          margin: EdgeInsets.only(
+                            right: 16.0,
+                            left: 16.0
+                          ),
+                          child: Badge(
+                            label: Text("0",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.shopping_cart,
+                              size: 20.0
+                            ),
+                          ),
+                        ),
+                    
+                      if(notifier.getCartStatus == GetCartStatus.loaded)
+                        Container(
+                          margin: EdgeInsets.only(
+                            right: 16.0,
+                            left: 16.0
+                          ),
+                          child: Badge(
+                            label: Text(notifier.cartData.totalItem.toString(),
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.shopping_cart,
+                              size: 20.0
+                            ),
+                          ),
+                        ),
+
                       ],
                     ),
                 
@@ -167,11 +231,44 @@ class ProductDetailState extends State<ProductDetail> {
                             child: Stack(
                               clipBehavior: Clip.none,
                               children: [
-                        
-                                CarouselSlider(
+
+                                notifier.productDetailData.product!.medias.isEmpty 
+                                ? CachedNetworkImage(
+                                  imageUrl: "https://dummyimage.com/300x300/000/fff",
+                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: imageProvider
+                                        )
+                                      ),
+                                    );
+                                  },
+                                  placeholder: (BuildContext context, String url) {
+                                    return Center(
+                                      child: SizedBox(
+                                        width: 32.0,
+                                        height: 32.0,
+                                        child: CircularProgressIndicator.adaptive()
+                                      )
+                                    );
+                                  },
+                                  errorWidget: (BuildContext context, String url, dynamic error) {
+                                    return Container(
+                                      decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage("https://dummyimage.com/300x300/000/fff")
+                                        )
+                                      ),
+                                    );
+                                  },
+                                )
+                              : CarouselSlider(
                                   items: notifier.productDetailData.product!.medias.map((image) {
                                     return CachedNetworkImage(
-                                      imageUrl: image.path.toString(),
+                                      imageUrl: image.path,
                                       imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                         return Container(
                                           decoration: BoxDecoration(
@@ -241,7 +338,7 @@ class ProductDetailState extends State<ProductDetail> {
                                             Icons.image
                                           ),
                                         ),
-                                        Text("${current+1} / ${notifier.productDetailData.product!.medias.length}",
+                                        Text("${notifier.productDetailData.product!.medias.isNotEmpty ? current+1 : 0} / ${notifier.productDetailData.product!.medias.length}",
                                           style: const TextStyle(
                                             color: ColorResources.black,
                                             fontSize: Dimensions.fontSizeExtraSmall
@@ -454,35 +551,98 @@ class ProductDetailState extends State<ProductDetail> {
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: ColorResources.white,
+                    boxShadow: kElevationToShadow[4]
                   ),
                   child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
             
                     Expanded(
-                      child: Material(
+                      flex: 5,
+                      child:  Material(
                         color: ColorResources.transparent,
-                        child: InkWell(
-                          onTap: () {
+                        child: Bouncing(
+                          onPress: () {
         
                           },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: ColorResources.purple,
+                              borderRadius: BorderRadius.circular(10.0)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  
+                                  Icon(
+                                    Icons.shopping_bag,
+                                    color: ColorResources.white,  
+                                  ),
                               
-                              Icon(Icons.shopping_cart),
-                              
-                              Text("Tambah Keranjang",
-                                style: TextStyle(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.black
-                                ),
-                              )
-                                            
-                            ],
-                          )),
-                        )
+                                  const SizedBox(width: 8.0),
+                                  
+                                  Text("Beli langsung",
+                                    style: TextStyle(
+                                      fontSize: Dimensions.fontSizeSmall,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorResources.white
+                                    ),
+                                  )
+                                                
+                                ],
+                              ),
+                            ),
+                          )
+                        ))
                       ),
+
+                      Expanded(
+                        flex: 1,
+                        child: const SizedBox()
+                      ),
+
+                      Expanded(
+                        flex: 6,
+                        child: Material(
+                          color: ColorResources.transparent,
+                          child: Bouncing(
+                            onPress: () {
+          
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: ColorResources.purple,
+                                borderRadius: BorderRadius.circular(10.0)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    
+                                    Icon(
+                                      Icons.add_shopping_cart,
+                                      color: ColorResources.white,  
+                                    ),
+                                
+                                    const SizedBox(width: 8.0),
+                                    
+                                    Text("Tambah Keranjang",
+                                      style: TextStyle(
+                                        fontSize: Dimensions.fontSizeSmall,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorResources.white
+                                      ),
+                                    )
+                                                  
+                                  ],
+                                ),
+                              ),
+                            )
+                          ))
+                        ),
         
                     ],
                   ),
