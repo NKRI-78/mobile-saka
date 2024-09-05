@@ -94,7 +94,7 @@ class ProfileProvider extends ChangeNotifier {
       await pr.updateProfile(context, profileData);
       getUserProfile(context);
       Navigator.of(context).pop();
-      ShowSnackbar.snackbar(context, getTranslated("UPDATE_ACCOUNT_SUCCESSFUL", context), "", ColorResources.success);
+      ShowSnackbar.snackbar(getTranslated("UPDATE_ACCOUNT_SUCCESSFUL", context), "", ColorResources.success);
       setStateUpdateProfileStatus(UpdateProfileStatus.loaded);
     } catch(e) {
       debugPrint(e.toString());

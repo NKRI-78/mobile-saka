@@ -164,7 +164,7 @@ class PreviewForumImageScreenState extends State<PreviewForumImageScreen> {
                               await GallerySaver.saveImage("${widget.medias![current].path}");
                               setStateBuilder(() => loadingBtn = false);
                               Navigator.pop(context);
-                              ShowSnackbar.snackbar(context, "Gambar telah disimpan pada galeri", "", ColorResources.success);
+                              ShowSnackbar.snackbar("Gambar telah disimpan pada galeri", "", ColorResources.success);
                             },
                             child: loadingBtn 
                             ? Text(getTranslated("PLEASE_WAIT", context), 

@@ -15,6 +15,7 @@ import 'package:saka/utils/helper.dart';
 import 'package:saka/views/basewidgets/button/custom.dart';
 
 import 'package:saka/providers/ecommerce/ecommerce.dart';
+import 'package:saka/views/screens/ecommerce/shipping_address_list.dart';
 
 class DeliveryScreen extends StatefulWidget {
   const DeliveryScreen({super.key});
@@ -95,7 +96,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                               
                         InkWell(
                           onTap: () {
-
+                            NS.push(context, ShippingAddressListScreen());
                           },
                           child: Padding(
                             padding: EdgeInsets.all(5.0),

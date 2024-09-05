@@ -36,28 +36,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     userData.passwordConfirm = passwordConfirmC.text;
 
     if(passwordOldC.text.trim().isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_OLD_IS_REQUIRED", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_OLD_IS_REQUIRED", context), "", ColorResources.error);
       return;
     }
     if(passwordNewC.text.trim().isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_NEW_IS_REQUIRED", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_NEW_IS_REQUIRED", context), "", ColorResources.error);
       return;
     }
     if(passwordNewC.text.trim().length < 6) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_NEW_6_REQUIRED", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_NEW_6_REQUIRED", context), "", ColorResources.error);
       return;
     }
     if(passwordConfirmC.text.trim().isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_CONFIRM_IS_REQUIRED", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_CONFIRM_IS_REQUIRED", context), "", ColorResources.error);
       return;
     }
     if(passwordNewC.text != passwordConfirmC.text) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_CONFIRM_DOES_NOT_MATCH", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_CONFIRM_DOES_NOT_MATCH", context), "", ColorResources.error);
       return;
     }
 
     await context.read<AuthProvider>().changePassword(context, userData);
-    ShowSnackbar.snackbar(context, getTranslated("UPDATE_PASSWORD_SUCCESS", context), "", ColorResources.success);  
+    ShowSnackbar.snackbar(getTranslated("UPDATE_PASSWORD_SUCCESS", context), "", ColorResources.success);  
     Navigator.of(context).pop();
   }
 

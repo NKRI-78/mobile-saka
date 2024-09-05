@@ -70,7 +70,7 @@ class EventRepo {
           "user_id": ar.getUserId()
         }
       ); 
-      ShowSnackbar.snackbar(context, getTranslated("JOIN_EVENT_SUCCESS", context), "", ColorResources.success);
+      ShowSnackbar.snackbar(getTranslated("JOIN_EVENT_SUCCESS", context), "", ColorResources.success);
       NS.pop(context);
     } on DioError catch(_) {
       NS.pop(context);
@@ -111,7 +111,7 @@ class EventRepo {
           "user_id": ar.getUserId()
         }
       ); 
-      ShowSnackbar.snackbar(context, getTranslated("PRESENT_EVENT_SUCCESS", context), "", ColorResources.success);
+      ShowSnackbar.snackbar(getTranslated("PRESENT_EVENT_SUCCESS", context), "", ColorResources.success);
       NS.pop(context);
     } on DioError catch(_) {
       NS.pop(context);

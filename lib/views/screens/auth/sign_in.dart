@@ -39,7 +39,7 @@ class SignInScreenState extends State<SignInScreen> {
     String password = passwordC.text;
     
     if(phone.trim().isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated("PHONE_MUST_BE_REQUIRED", context), "", ColorResources.error); 
+      ShowSnackbar.snackbar(getTranslated("PHONE_MUST_BE_REQUIRED", context), "", ColorResources.error); 
       return;
     } 
     // if(phone.length <= 10) {
@@ -47,11 +47,11 @@ class SignInScreenState extends State<SignInScreen> {
     //   return;
     // }
     if(password.trim().isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error); 
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error); 
       return;
     }
     if(password.trim().length < 6) {
-      ShowSnackbar.snackbar(context, getTranslated("PASSWORD_6_REQUIRED", context), "", ColorResources.error); 
+      ShowSnackbar.snackbar(getTranslated("PASSWORD_6_REQUIRED", context), "", ColorResources.error); 
       return;
     }
     UserData userData = UserData();

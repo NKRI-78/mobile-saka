@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     profileData.shortBio = shortBio;
     profileData.gender = selectedGender;
     await context.read<ProfileProvider>().updateProfile(context, profileData, file);
-    ShowSnackbar.snackbar(context, getTranslated("UPDATE_ACCOUNT_SUCCESSFUL" ,context), "", Colors.green);
+    ShowSnackbar.snackbar(getTranslated("UPDATE_ACCOUNT_SUCCESSFUL" ,context), "", Colors.green);
     Navigator.of(context).pop();
   }
 

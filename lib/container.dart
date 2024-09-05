@@ -23,7 +23,6 @@ import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/providers/firebase/firebase.dart';
 import 'package:saka/providers/onboarding/onboarding.dart';
 import 'package:saka/providers/membernear/membernear.dart';
-import 'package:saka/providers/region/region.dart';
 import 'package:saka/providers/feedv2/feed.dart';
 import 'package:saka/providers/feedv2/feedDetail.dart';
 import 'package:saka/providers/feedv2/feedReply.dart';
@@ -36,7 +35,6 @@ import 'package:saka/providers/localization/localization.dart';
 import 'package:saka/providers/news/news.dart';
 import 'package:saka/providers/profile/profile.dart';
 import 'package:saka/providers/splash/splash.dart';
-import 'package:saka/providers/ppob/ppob.dart';
 import 'package:saka/providers/inbox/inbox.dart';
 import 'package:saka/providers/media/media.dart';
 import 'package:saka/providers/event/event.dart';
@@ -142,11 +140,6 @@ Future<void> init() async {
     mr: getIt(),
   ));
 
-  getIt.registerFactory(() => PPOBProvider(
-    ap: getIt(),
-    sp: getIt()
-  ));
-
   getIt.registerFactory(() => NewsProvider());
   
   getIt.registerFactory(() => MembernearProvider(
@@ -162,8 +155,6 @@ Future<void> init() async {
     fp: getIt(),
     sp: getIt()
   ));
-
-  getIt.registerFactory(() => RegionProvider());
 
   getIt.registerFactory(() => EventProvider(
     ar: getIt(),

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:saka/utils/color_resources.dart';
 
+import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
 
 import 'package:saka/views/basewidgets/appbar/custom_appbar.dart';
-import 'package:saka/views/screens/ppob/confirm_payment.dart';
 
 class VerifyScreen extends StatefulWidget {
 
@@ -266,18 +265,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             borderRadius: BorderRadius.circular(10.0),
                             splashColor: ColorResources.primaryOrange,
                             onTap: () { 
-                              Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => ConfirmPaymentScreen(
-                                  type: "register",
-                                  description: "REGISTER",
-                                  nominal: widget.productPrice,
-                                  bankFee: widget.bankFee,
-                                  transactionId: widget.transactionId,
-                                  provider: "register",
-                                  accountNumber: widget.accountNumber,
-                                  productId: widget.productId,
-                                )),
-                              );
+                             
                             },
                             child: Container(
                               decoration: BoxDecoration(

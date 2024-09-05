@@ -156,10 +156,10 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                               );
                               await GallerySaver.saveImage('${notifier.singleNewsData.first.media!.first.path}');
                               pr.close();
-                              ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                              ShowSnackbar.snackbar(getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
                             } catch(_) {
                               pr.close();
-                              ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                              ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
                             }
                           },
                           icon: const Icon(Icons.more_horiz),

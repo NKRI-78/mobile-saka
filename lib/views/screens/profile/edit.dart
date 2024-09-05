@@ -163,11 +163,11 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
     String fullname = fullnameC.text;
     String phone = noHpC.text;
     if(fullname.isEmpty) {
-      ShowSnackbar.snackbar(context, "Nama Lengkap tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Nama Lengkap tidak boleh kosong", "", ColorResources.error);
       return;
     }
     if(phone.isEmpty) {
-      ShowSnackbar.snackbar(context, "No HP tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("No HP tidak boleh kosong", "", ColorResources.error);
       return;
     }
     profileData.fullname = fullname;

@@ -23,7 +23,6 @@ import 'package:saka/services/navigation.dart';
 import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/providers/inbox/inbox.dart';
-import 'package:saka/providers/ppob/ppob.dart';
 import 'package:saka/providers/banner/banner.dart';
 import 'package:saka/providers/firebase/firebase.dart';
 import 'package:saka/providers/profile/profile.dart';
@@ -41,7 +40,6 @@ import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/views/basewidgets/drawer/drawer.dart';
 
 import 'package:saka/views/screens/comingsoon/comingsoon.dart';
-import 'package:saka/views/screens/ppob/topup/topup.dart';
 import 'package:saka/views/screens/radio/radio.dart';
 import 'package:saka/views/screens/media/media.dart';
 import 'package:saka/views/screens/news/detail.dart';
@@ -62,7 +60,6 @@ class HomeScreenState extends State<HomeScreen> {
   late BannerProvider bp;
   late ProfileProvider pp;
   late AuthProvider ap;
-  late PPOBProvider ppopP;
   late EventProvider ep;
 
   Future<void> getData() async {
@@ -117,7 +114,6 @@ class HomeScreenState extends State<HomeScreen> {
     pp = context.read<ProfileProvider>();
     lp = context.read<LocationProvider>();
     ap = context.read<AuthProvider>();
-    ppopP = context.read<PPOBProvider>();
     ep = context.read<EventProvider>();
 
     if(mounted) { 
@@ -527,7 +523,7 @@ Widget infoAccount(BuildContext context) {
           margin: EdgeInsets.all(15.0),
           child: GestureDetector(
             onTap: () {
-              NS.push(context, TopUpScreen());
+
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

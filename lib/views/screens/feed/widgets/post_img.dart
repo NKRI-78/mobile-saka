@@ -302,7 +302,7 @@ class PostImageState extends State<PostImage> {
                           onPressed: () async { 
                             await GallerySaver.saveImage("${widget.medias.first.path}");
                             NS.pop(context);
-                            ShowSnackbar.snackbar(context, "Gambar telah disimpan pada galeri", "", ColorResources.success);
+                            ShowSnackbar.snackbar("Gambar telah disimpan pada galeri", "", ColorResources.success);
                           },
                           child: Text("Unduh Gambar", 
                             style: robotoRegular.copyWith(

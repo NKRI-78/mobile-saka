@@ -182,20 +182,20 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       setStateMascotStatus(MascotStatus.loaded);
     } on DioError catch(e) {
       if(e.type == DioErrorType.connectTimeout) {
-        ShowSnackbar.snackbar(context, getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
       } 
       if(e.type == DioErrorType.other) {
-        ShowSnackbar.snackbar(context, e.error.toString(), "", ColorResources.error);
+        ShowSnackbar.snackbar(e.error.toString(), "", ColorResources.error);
       } 
       if(e.type == DioErrorType.response) {
         if(e.response!.statusCode == 400 || e.response!.statusCode == 500) {
-          ShowSnackbar.snackbar(context, "${e.response!.data["error"]}", "", ColorResources.error);
+          ShowSnackbar.snackbar("${e.response!.data["error"]}", "", ColorResources.error);
         } 
         if(e.response!.statusCode == 404) {
-          ShowSnackbar.snackbar(context, "URL no found", "", ColorResources.error);
+          ShowSnackbar.snackbar("URL no found", "", ColorResources.error);
         }
         if(e.response!.statusCode == 502) {
-          ShowSnackbar.snackbar(context, "Bad gateway", "", ColorResources.error);
+          ShowSnackbar.snackbar("Bad gateway", "", ColorResources.error);
         }
       }
       setStateMascotStatus(MascotStatus.error);
@@ -277,7 +277,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     } on DioError catch(e) {
       if(e.response?.data != null) {
         if(e.response?.data['code'] == 404 && user.data!.user!.status == "pending") {
-          ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+          ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
         }
         if(e.response?.data['code'] == 404 && user.data!.user!.status == "enabled") {
           writeData(user);
@@ -334,22 +334,22 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         writeData(user);
       } else {
         sp.setString("email_otp", userModel.data!.user!.emailAddress!);
-        ShowSnackbar.snackbar(context, "Silahkan periksa Alamat E-mail ${userModel.data!.user!.emailAddress!} Anda, untuk melihat kode OTP yang tercantum", "", ColorResources.success);
+        ShowSnackbar.snackbar("Silahkan periksa Alamat E-mail ${userModel.data!.user!.emailAddress!} Anda, untuk melihat kode OTP yang tercantum", "", ColorResources.success);
         NS.pushReplacement(context, OtpScreen(key: UniqueKey()));
       }
       setStateLoginStatus(LoginStatus.loaded);
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.type == DioErrorType.connectTimeout) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
         setStateLoginStatus(LoginStatus.error);
       }
       if(e.type == DioErrorType.response) {
         if(e.response?.statusCode == 500 || e.response?.statusCode == 400) {
-          ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+          ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
           setStateLoginStatus(LoginStatus.error);
         } else {
-          ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+          ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
           setStateLoginStatus(LoginStatus.error);
         }
       }
@@ -441,7 +441,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       dataGoogleVerification = data;
       Future.delayed(Duration.zero, () => notifyListeners());
       if(e.type == DioErrorType.connectTimeout) {
-        ShowSnackbar.snackbar(context, getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
       }
       if(e.response!.statusCode == 401
         || e.response!.statusCode == 402 
@@ -455,11 +455,11 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         || e.response!.statusCode == 504
         || e.response!.statusCode == 505
       ) {
-        ShowSnackbar.snackbar(context, "(${e.response!.statusCode.toString()}) : Internal Server Error ( ${e.response?.data["error"]} )", "", ColorResources.purple);
+        ShowSnackbar.snackbar("(${e.response!.statusCode.toString()}) : Internal Server Error ( ${e.response?.data["error"]} )", "", ColorResources.purple);
       }
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
     }
   }
 
@@ -494,22 +494,22 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         writeData(user);
       } else {
         sp.setString("email_otp", userModel.data!.user!.emailAddress!);
-        ShowSnackbar.snackbar(context, "Silahkan periksa Alamat E-mail ${userModel.data!.user!.emailAddress!} Anda, untuk melihat kode OTP yang tercantum", "", ColorResources.success);
+        ShowSnackbar.snackbar("Silahkan periksa Alamat E-mail ${userModel.data!.user!.emailAddress!} Anda, untuk melihat kode OTP yang tercantum", "", ColorResources.success);
         NS.pushReplacement(context, OtpScreen(key: UniqueKey())); 
       }
       setStateRegisterStatus(RegisterStatus.loaded);
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.type == DioErrorType.connectTimeout) {
-        ShowSnackbar.snackbar(context, getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
         setStateRegisterStatus(RegisterStatus.error);
       }
       if(e.type == DioErrorType.response) {
         if(e.response?.statusCode == 500 || e.response?.statusCode == 400) {
-          ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+          ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
           setStateLoginStatus(LoginStatus.error);
         } else {
-          ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+          ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
           setStateLoginStatus(LoginStatus.error);
         }
       }
@@ -540,7 +540,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
         setStateAuthDisbursement(AuthDisbursementStatus.error);
       }
       setStateAuthDisbursement(AuthDisbursementStatus.error);
@@ -572,7 +572,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     } on DioError catch(e) {  
       Map<String, dynamic> data = e.response!.data;
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
         setStateForgotPasswordStatus(ForgotPasswordStatus.error);
       }
       setStateForgotPasswordStatus(ForgotPasswordStatus.error);
@@ -599,13 +599,13 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
           }
         )
       );
-      ShowSnackbar.snackbar(context, "Kata Sandi telah berhasil diubah, Mohon periksa E-mail Anda", "", ColorResources.success);
+      ShowSnackbar.snackbar("Kata Sandi telah berhasil diubah, Mohon periksa E-mail Anda", "", ColorResources.success);
       setStateForgotPasswordStatus(ForgotPasswordStatus.loaded);
       Navigator.of(context).pop();
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
       }
       setStateForgotPasswordStatus(ForgotPasswordStatus.error);
     } catch(e, stacktrace) {
@@ -618,7 +618,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     changeEmailName = sp.getString("email_otp")!;
     bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(changeEmailName); 
     if(!emailValid) {
-      ShowSnackbar.snackbar(context, "Ex : customcare@inovasi78.com", "", ColorResources.error);
+      ShowSnackbar.snackbar("Ex : customcare@inovasi78.com", "", ColorResources.error);
       return;
     } else {
       if(emailCustom.trim().isNotEmpty) {
@@ -643,13 +643,13 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         )
       );
       sp.setString("email_otp", changeEmailName);
-      ShowSnackbar.snackbar(context, getTranslated("UPDATE_CHANGE_EMAIL_SUCCESSFUL", context), "", ColorResources.success);
+      ShowSnackbar.snackbar(getTranslated("UPDATE_CHANGE_EMAIL_SUCCESSFUL", context), "", ColorResources.success);
       changeEmail = true;
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.loaded);
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
         setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.error); 
       }
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.error);
@@ -662,7 +662,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
 
   Future<void> verifyOtp(BuildContext context) async {
     if(otp == null) {
-      ShowSnackbar.snackbar(context, "Mohon input OTP Anda", "", ColorResources.error);
+      ShowSnackbar.snackbar("Mohon input OTP Anda", "", ColorResources.error);
       return;
     }
     setVerifyOtpStatus(VerifyOtpStatus.loading);
@@ -682,7 +682,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
           }
         )
       );
-      ShowSnackbar.snackbar(context, "Akun Alamat E-mail $changeEmailName Anda sudah aktif", "", ColorResources.success);
+      ShowSnackbar.snackbar("Akun Alamat E-mail $changeEmailName Anda sudah aktif", "", ColorResources.success);
       UserModel user = UserModel.fromJson(json.decode(res.data));
       writeData(user);
       NS.pushReplacement(context, DashboardScreen());
@@ -690,7 +690,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
       }
       setVerifyOtpStatus(VerifyOtpStatus.error);
     } catch(e, stacktrace) {
@@ -716,12 +716,12 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
           }
         )
       );
-      ShowSnackbar.snackbar(context, "Silahkan periksa Alamat E-mail $email Anda, untuk melihat kode OTP yang tercantum", "", ColorResources.success);
+      ShowSnackbar.snackbar("Silahkan periksa Alamat E-mail $email Anda, untuk melihat kode OTP yang tercantum", "", ColorResources.success);
       setResendOtpStatus(ResendOtpStatus.loaded);
     } on DioError catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if(e.response?.statusCode == 500 || e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, data["error"], "", ColorResources.error);
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
       }
       setResendOtpStatus(ResendOtpStatus.error);
     } catch(e, stacktrace) {

@@ -216,12 +216,12 @@ class FeedProviderV2 with ChangeNotifier {
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
@@ -279,12 +279,12 @@ class FeedProviderV2 with ChangeNotifier {
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
@@ -325,12 +325,12 @@ class FeedProviderV2 with ChangeNotifier {
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
@@ -371,26 +371,26 @@ class FeedProviderV2 with ChangeNotifier {
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
     if(postC.text.trim().isNotEmpty) {
       if(postC.text.trim().length < 10) {
         setStateWritePost(WritePostStatus.error);
-        ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
         return;
       }
     } 
 
     if(link.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("URL_IS_REQUIRED", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("URL_IS_REQUIRED", context), "", ColorResources.error);
       return;
     } 
 
@@ -398,7 +398,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     if(!validURL) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("URL_FORMAT", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("URL_FORMAT", context), "", ColorResources.error);
       return;
     }
 
@@ -433,12 +433,12 @@ class FeedProviderV2 with ChangeNotifier {
     
     if (caption.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(caption.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 

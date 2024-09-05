@@ -8,9 +8,11 @@ import 'package:saka/providers/ecommerce/ecommerce.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
+import 'package:saka/views/screens/ecommerce/edit_shipping_address.dart';
 
 class ShippingAddressListScreen extends StatefulWidget {
   const ShippingAddressListScreen({super.key});
@@ -44,41 +46,67 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-
-        RefreshIndicator.adaptive(
-          onRefresh: () {
-            return Future.sync(() {
-              ep.getShippingAddressList();
-            });
-          },
-          child: Consumer<EcommerceProvider>(
-            builder: (_, notifier, __) {
-              return CustomScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                slivers: [
-                      
-                  SliverAppBar(
-                    title: const Text("Pilih Alamat Lain",
-                      style: TextStyle(
-                        color: ColorResources.black, 
-                        fontWeight: FontWeight.w600
+    return Scaffold(
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+      
+          RefreshIndicator.adaptive(
+            onRefresh: () {
+              return Future.sync(() {
+                ep.getShippingAddressList();
+              });
+            },
+            child: Consumer<EcommerceProvider>(
+              builder: (_, notifier, __) {
+                return CustomScrollView(
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  slivers: [
+                        
+                    SliverAppBar(
+                      title: Text("Pilih Alamat Lain",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.black, 
+                          fontWeight: FontWeight.w600
+                        ),
+                      ),
+                      centerTitle: true,
+                      elevation: 0,
+                      backgroundColor: ColorResources.white,
+                      iconTheme: const IconThemeData(color: ColorResources.black),
+                      leading: CupertinoNavigationBarBackButton(
+                        color: ColorResources.black,
+                        onPressed: () {
+                          NS.pop(context);
+                        },
                       ),
                     ),
-                    centerTitle: true,
-                    elevation: 0,
-                    backgroundColor: ColorResources.white,
-                    iconTheme: const IconThemeData(color: ColorResources.black),
-                    leading: CupertinoNavigationBarBackButton(
-                      color: ColorResources.black,
-                      onPressed: () {
-                        NS.pop(context);
-                      },
-                    ),
-                  ),
-            
+
+                    if(notifier.getShippingAddressListStatus == GetShippingAddressListStatus.loading)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: SizedBox(
+                            width: 32.0,
+                            height: 32.0,
+                            child: CircularProgressIndicator()
+                          ),
+                        )
+                      ),
+
+                    if(notifier.getShippingAddressListStatus == GetShippingAddressListStatus.error) 
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Text("Hmm... Mohon tunggu yaa",
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault
+                            ),
+                          )
+                        )
+                      ),
+              
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int i) {
@@ -113,23 +141,23 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(notifier.shippingAddress[i].name,
-                                                  style: const TextStyle(
+                                                Text(notifier.shippingAddress[i].name!,
+                                                  style: robotoRegular.copyWith(
                                                     color: ColorResources.black,
                                                     fontSize: Dimensions.fontSizeDefault,
                                                     fontWeight: FontWeight.w600
                                                   )
                                                 ),
                                                 const SizedBox(height: 5),
-                                                Text(notifier.shippingAddress[i].province,
-                                                  style: const TextStyle(
+                                                Text(notifier.shippingAddress[i].province!,
+                                                  style: robotoRegular.copyWith(
                                                     color: ColorResources.black,
                                                     fontSize: Dimensions.fontSizeDefault,
                                                   )
                                                 ),
                                                 const SizedBox(height: 3),
-                                                Text(notifier.shippingAddress[i].city,
-                                                  style: const TextStyle(
+                                                Text(notifier.shippingAddress[i].city!,
+                                                  style: robotoRegular.copyWith(
                                                     color: ColorResources.black,
                                                     fontSize: 14,
                                                   )
@@ -149,9 +177,9 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                       const SizedBox(height: 14.0),
                                       GestureDetector(
                                         onTap: () {
-                                          // NS.push(EditAddressScreen(
-                                          //   id: regionProvider.shippingAddressData[i].shippingAddressId!
-                                          // ));
+                                          NS.push(context, EditShippingAddressScreen(
+                                            id: notifier.shippingAddress[i].id!
+                                          ));
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(8.0),
@@ -162,10 +190,10 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                               color: Colors.grey[350]!,
                                             )
                                           ),
-                                          child: const Center(
+                                          child: Center(
                                             child: Text("Ubah Alamat",
-                                              style: TextStyle(
-                                                color: const Color(0xFF0F903B),
+                                              style: robotoRegular.copyWith(
+                                                color: ColorResources.black,
                                                 fontSize: Dimensions.fontSizeDefault,
                                               )
                                             ),
@@ -179,37 +207,38 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                             ),
                           );
                         },
-                        childCount: notifier.shippingAddress.length
+                      childCount: notifier.shippingAddress.length
                     )
                   )
-
+      
                 ]);
               }
             )
           ),
-        
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 60.0,
-            width: double.infinity,
-            padding: const EdgeInsets.all(8.0),
-            decoration: const BoxDecoration(
-              color: ColorResources.white,
-            ),
-            child: CustomButton(
-              onTap: () {
-                
-              },
-              btnTxt: "Tambah Alamat Baru",
-              isBorder: false,
-              isBorderRadius: true,
-              btnColor: const Color(0xFF0F903B),
-            )
-          )     
-        )
-
-      ]
+          
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 60.0,
+              width: double.infinity,
+              padding: const EdgeInsets.all(8.0),
+              decoration: const BoxDecoration(
+                color: ColorResources.white,
+              ),
+              child: CustomButton(
+                onTap: () {
+                  
+                },
+                btnTxt: "Tambah Alamat Baru",
+                isBorder: false,
+                isBorderRadius: true,
+                btnColor: ColorResources.purple,
+              )
+            )     
+          )
+      
+        ]
+      ),
     ); 
   } 
 }

@@ -2,7 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+
 import 'package:provider/provider.dart';
+import 'package:saka/data/models/ecommerce/googlemaps/googlemaps.dart';
+import 'package:saka/data/models/ecommerce/region/city.dart';
+import 'package:saka/data/models/ecommerce/region/district.dart';
+import 'package:saka/data/models/ecommerce/region/province.dart';
+import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
+
+import 'package:saka/providers/ecommerce/ecommerce.dart';
+import 'package:saka/services/navigation.dart';
+
+import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/dimensions.dart';
+import 'package:saka/views/basewidgets/button/custom.dart';
+
+import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 class EditShippingAddressScreen extends StatefulWidget {
   final String id;
@@ -19,6 +35,8 @@ class EditShippingAddressScreen extends StatefulWidget {
 class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  late EcommerceProvider ep;
+
   late TextEditingController detailAddressC;
   late TextEditingController typeAddressC;
   late TextEditingController postalCodeC;
@@ -33,23 +51,20 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
   List<String> typeTempat = ['Rumah', 'Kantor', 'Apartement', 'Kos'];
 
   Future<void> getData() async {
-    if(mounted) {
-      await context.read<ProfileProvider>().getProfile();
-    }
-    if(mounted) {
-      await context.read<RegionProvider>().getDataDetailAddress(id: widget.id);
 
-      setState(() {
-        detailAddressC = TextEditingController(text: context.read<RegionProvider>().shippingAddressSingle!.address);
-        typeAddressC = TextEditingController(text: context.read<RegionProvider>().shippingAddressSingle!.name);
-        postalCodeC = TextEditingController(text: context.read<RegionProvider>().shippingAddressSingle!.postalCode);
-   
-        province = context.read<RegionProvider>().shippingAddressSingle!.province!;
-        city = context.read<RegionProvider>().shippingAddressSingle!.city!;
-        district = context.read<RegionProvider>().shippingAddressSingle!.district!;
-        subdistrict = context.read<RegionProvider>().shippingAddressSingle!.subdistrict!;
-      });
-    }
+    if(!mounted) return;
+      await ep.getShippingAddressSingle(id: widget.id);
+    
+    setState(() {
+      detailAddressC = TextEditingController(text: ep.shippingAddressDetailData.address);
+      typeAddressC = TextEditingController(text: ep.shippingAddressDetailData.name);
+      postalCodeC = TextEditingController(text: ep.shippingAddressDetailData.postalCode);
+  
+      province = ep.shippingAddressDetailData.province!;
+      city = ep.shippingAddressDetailData.city!;
+      district = ep.shippingAddressDetailData.district!;
+      subdistrict = ep.shippingAddressDetailData.subdistrict!;
+    });
   }
 
   Future<void> submit() async {
@@ -57,41 +72,40 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
     String typeAddress = typeAddressC.text;
     String postalCode = postalCodeC.text;
 
-    try {
-      if(detailAddress.trim().isEmpty) { 
-        ShowSnackbar.snackbar("Detail Alamat tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      if(typeAddress.trim().isEmpty) {
-        ShowSnackbar.snackbar("Lokasi Alamat tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      if(province.trim().isEmpty) {
-        ShowSnackbar.snackbar("Provinsi tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      if(city.trim().isEmpty){
-        ShowSnackbar.snackbar("Kota tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      if(postalCodeC.text.trim().isEmpty) {
-        ShowSnackbar.snackbar("Kode Pos tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      if(district.trim().isEmpty) {
-        ShowSnackbar.snackbar("Daerah tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      if(subdistrict.trim().isEmpty) {
-        ShowSnackbar.snackbar("Kecamatan tidak boleh kosong", "", ColorResources.error);
-        return;
-      }
-      await context.read<RegionProvider>().createAddress(
-        context, uid: widget.id, name: typeAddress, address: detailAddress, 
-        city: city, lat: "0", lng: "0", postalCode: postalCode, 
-        province: province, district: district, subdistrict: subdistrict, defaultLocation: false
-      );
-    } catch(_) {}
+    if(detailAddress.trim().isEmpty) { 
+      ShowSnackbar.snackbar("Detail Alamat tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    if(typeAddress.trim().isEmpty) {
+      ShowSnackbar.snackbar("Lokasi Alamat tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    if(province.trim().isEmpty) {
+      ShowSnackbar.snackbar("Provinsi tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    if(city.trim().isEmpty){
+      ShowSnackbar.snackbar("Kota tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    if(postalCodeC.text.trim().isEmpty) {
+      ShowSnackbar.snackbar("Kode Pos tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    if(district.trim().isEmpty) {
+      ShowSnackbar.snackbar("Daerah tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    if(subdistrict.trim().isEmpty) {
+      ShowSnackbar.snackbar("Kecamatan tidak boleh kosong", "", ColorResources.error);
+      return;
+    }
+    
+    // await context.read<RegionProvider>().createAddress(
+    //   context, uid: widget.id, name: typeAddress, address: detailAddress, 
+    //   city: city, lat: "0", lng: "0", postalCode: postalCode, 
+    //   province: province, district: district, subdistrict: subdistrict, defaultLocation: false
+    // );
   }
 
   @override
@@ -102,9 +116,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
     typeAddressC = TextEditingController();
     postalCodeC = TextEditingController();
 
-    Future.delayed(Duration.zero, () {
-      getData();
-    }); 
+    ep = context.read<EcommerceProvider>();
+
+    Future.microtask(() => getData());
   }
 
   @override 
@@ -118,12 +132,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
 
   @override
   Widget build(BuildContext context) {  
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
-      key: globalKey,
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
         title: Text("Ubah Alamat",
@@ -138,7 +147,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         leading: CupertinoNavigationBarBackButton(
           color: ColorResources.white,
           onPressed: () {
-            NS.pop();
+            NS.pop(context);
           },
         ),
       ),
@@ -146,6 +155,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         padding: EdgeInsets.zero,
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
+
           Container(
             margin: const EdgeInsets.all(25.0),
             child: Form(
@@ -153,16 +163,20 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
                   inputFieldDetailAddress(context, "Alamat",  detailAddressC, "Alamat"),
+                  
                   const SizedBox(
                     height: 15.0,
                   ),
+                  
                   inputFieldLocationAddress(context),
                   const SizedBox(
                     height: 15.0,
                   ),
+
                   isCheck
-                  ? Container()
+                  ? SizedBox()
                   : Container(
                       height: 35.0,
                       margin: const EdgeInsets.only(bottom: 15),
@@ -203,10 +217,13 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                         ],
                       )
                     ),
+                  
                   inputFieldProvince(context, "Provinsi", province),
+                  
                   const SizedBox(
                     height: 15.0,
                   ),
+
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -215,21 +232,25 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                       inputFieldPostCode(context, "Kode Pos", postalCodeC, "Kode Pos"),
                     ],
                   ),
+                  
                   const SizedBox(height: 15.0),
+                  
                   inputFieldDistrict(context, district),
+                  
                   const SizedBox(height: 15.0),
+                  
                   inputFieldSubDistrict(context, subdistrict),
+                  
                   const SizedBox(height: 15.0),
+
                   CustomButton(
                     onTap: submit,
-                    isLoading: context.watch<RegionProvider>().createAddressStatus == CreateAddressStatus.loading 
-                    ? true 
-                    : false,
+                    isLoading: false,
                     isBorderRadius: true,
-                    btnColor: const Color(0xFF0F903B),
-                    btnTextColor: ColorResources.white,
+                    btnColor: ColorResources.purple,
                     btnTxt: "Simpan",
-                  )
+                  ),
+
                   // SizedBox(
                   //   height: 55.0,
                   //   width: double.infinity,
@@ -251,6 +272,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                   //     ),   
                   //   )
                   // )
+                  
                 ],
               ),
             ),
@@ -319,11 +341,11 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                      Row(
+                                    Row(
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            NS.pop();
+                                            NS.pop(context);
                                           },
                                           child: const Icon(
                                             Icons.close
@@ -347,12 +369,12 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 thickness: 3,
                               ),
                               Expanded(
-                              flex: 40,
-                              child: FutureBuilder<List<ProvinceData>>(
-                                future: context.read<RegionProvider>().getProvinces(),
-                                builder: (BuildContext context, AsyncSnapshot<List<ProvinceData>> snapshot) {
+                                flex: 40,
+                                child: FutureBuilder<void>(
+                                  future: ep.getProvince(),
+                                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                                   if (snapshot.hasData) {
-                                    final List<ProvinceData> provinces = snapshot.data!;
+                                    final List<ProvinceData> provinces = ep.provinces;
 
                                     return ListView.separated(
                                       shrinkWrap: true,
@@ -369,7 +391,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                               subdistrict = "";
                                               city = "";
                                             });
-                                            NS.pop();
+                                            NS.pop(context);
                                           },
                                         );
                                       },
@@ -380,8 +402,12 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                       },
                                     );
                                   }
-                                  return const LoadingCustomWidget(
-                                    color: ColorResources.bluePrimary,
+                                  return Center(
+                                    child: SizedBox(
+                                      width: 32.0,
+                                      height: 32.0,
+                                      child: CircularProgressIndicator()
+                                    ),
                                   );
                                 }
                               )
@@ -395,6 +421,181 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               }
             );
           },
+          readOnly: true,
+          cursorColor: ColorResources.black,
+          keyboardType: TextInputType.text,
+          inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
+          decoration: InputDecoration(
+            hintText: hintText,
+            contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            isDense: true,
+            hintStyle: TextStyle(
+              color: ColorResources.black
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 0.5
+              ),
+            ),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 0.5
+              ),
+            ),
+          ),
+        ))
+      ],
+    );          
+  }
+
+  Widget inputFieldCity(BuildContext context, String title, String hintText) {
+    return Expanded(
+      child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, 
+          style: TextStyle(
+            fontSize: Dimensions.fontSizeDefault,
+          )
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color:ColorResources.white,
+            borderRadius: BorderRadius.circular(6),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1), 
+                spreadRadius: 1.0, 
+                blurRadius: 3.0, 
+                offset: const Offset(0.0, 1.0)
+              )
+            ],
+          ),
+          child: TextFormField(
+            onTap: () {
+              if (province == "") {
+                ShowSnackbar.snackbar("Pilih provinsi Anda terlebih dahulu", "", ColorResources.error);
+                return;
+              } else {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.96,
+                      color: Colors.transparent,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: ColorResources.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            topRight: Radius.circular(10.0)
+                          )
+                        ),
+                        child: Stack(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                    left: 16.0, 
+                                    right: 16.0, 
+                                    top: 16.0,
+                                    bottom: 8.0
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              NS.pop(context);
+                                            },
+                                            child: const Icon(
+                                              Icons.close
+                                            )
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(left: 16.0),
+                                            child: Text("Pilih Kota Anda",
+                                              style: TextStyle(
+                                                fontSize: Dimensions.fontSizeDefault,
+                                                color: ColorResources.black
+                                              )
+                                            )
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(
+                                  thickness: 3,
+                                ),
+                                Expanded(
+                                  flex: 40,
+                                  child: FutureBuilder<void>(
+                                    future: ep.getCity(provinceName: province),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        final List<CityData> cities = ep.city;
+                                        return ListView.separated(
+                                          shrinkWrap: true,
+                                          physics: const BouncingScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount:cities.length,
+                                          itemBuilder: (BuildContext context, int i) {
+                                            return ListTile(
+                                              title: Text(cities[i].cityName),
+                                              onTap: () {
+                                                setState(() {
+                                                  city = cities[i].cityName;
+                                                  subdistrict = "";
+                                                  postalCodeC = TextEditingController(text: "");
+                                                });
+                                                NS.pop(context);
+                                              },
+                                            );
+                                          },
+                                          separatorBuilder: (BuildContext context, int i) {
+                                            return const Divider(
+                                              thickness: 1,
+                                            );
+                                          },
+                                        );
+                                      }
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 32.0,
+                                          height: 32.0,
+                                          child: CircularProgressIndicator()
+                                        ),
+                                      );
+                                    },
+                                  )
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                      )
+                    );
+                  }
+                );
+              } 
+            },
             readOnly: true,
             cursorColor: ColorResources.black,
             keyboardType: TextInputType.text,
@@ -420,9 +621,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               ),
             ),
           ),
-        )
+        ),
       ],
-    );          
+    ));
   }
   
   Widget inputFieldDistrict(BuildContext context, String hintText) {
@@ -491,7 +692,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              NS.pop();
+                                              NS.pop(context);
                                             },
                                             child: const Icon(
                                               Icons.close
@@ -516,11 +717,13 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
                                 Expanded(
                                 flex: 40,
-                                child: FutureBuilder<List<DistrictData>>(
-                                  future: context.read<RegionProvider>().getDistrict(context, cityId: city),
-                                  builder: (BuildContext context, AsyncSnapshot<List<DistrictData>> snapshot) {
+                                child: FutureBuilder<void>(
+                                  future: ep.getDistrict(cityName: city),
+                                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                                     if (snapshot.hasData) {
-                                      final List<DistrictData> districts = snapshot.data!;
+                                      
+                                      final List<DistrictData> districts = ep.district;
+
                                       return ListView.separated(
                                         shrinkWrap: true,
                                         physics: const BouncingScrollPhysics(),
@@ -533,7 +736,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                               setState(() {
                                                 district = districts[i].districtName;
                                               });
-                                              NS.pop();
+                                              NS.pop(context);
                                             },
                                           );
                                         },
@@ -544,8 +747,12 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         },
                                       );
                                     }
-                                    return const LoadingCustomWidget(
-                                      color: ColorResources.bluePrimary,
+                                    return Center(
+                                      child: SizedBox(
+                                        width: 32.0,
+                                        height: 32.0,
+                                        child: CircularProgressIndicator()
+                                      ),
                                     );
                                   }
                                 )
@@ -655,7 +862,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              NS.pop();
+                                              NS.pop(context);
                                             },
                                             child: const Icon(
                                               Icons.close
@@ -680,11 +887,11 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
                                 Expanded(
                                 flex: 40,
-                                child: FutureBuilder<List<SubdistrictData>>(
-                                  future: context.read<RegionProvider>().getSubdistrict(context, districtId: district),
-                                  builder: (BuildContext context, AsyncSnapshot<List<SubdistrictData>> snapshot) {
+                                child: FutureBuilder<void>(
+                                  future: ep.getSubdistrict(districtName: district),
+                                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                                     if (snapshot.hasData) {
-                                      final List<SubdistrictData> subdistricts = snapshot.data!;
+                                      final List<SubdistrictData> subdistricts = ep.subdistrict;
                                       return ListView.separated(
                                         shrinkWrap: true,
                                         physics: const BouncingScrollPhysics(),
@@ -698,7 +905,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                                 subdistrict = subdistricts[i].subdistrictName;
                                                 postalCodeC = TextEditingController(text: subdistricts[i].zipCode.toString());
                                               });
-                                              NS.pop();
+                                              NS.pop(context);
                                             },
                                           );
                                         },
@@ -709,8 +916,12 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         },
                                       );
                                     }
-                                    return const LoadingCustomWidget(
-                                      color: ColorResources.bluePrimary,
+                                    return Center(
+                                      child: SizedBox(
+                                        width: 32.0,
+                                        height: 32.0,
+                                        child: CircularProgressIndicator()
+                                      ),
                                     );
                                   }
                                 )
@@ -752,178 +963,6 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         )
       ],
     );       
-  }
-
-  Widget inputFieldCity(BuildContext context, String title, String hintText) {
-    return Expanded(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, 
-          style: TextStyle(
-            fontSize: Dimensions.fontSizeDefault,
-          )
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color:ColorResources.white,
-            borderRadius: BorderRadius.circular(6),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
-                spreadRadius: 1.0, 
-                blurRadius: 3.0, 
-                offset: const Offset(0.0, 1.0)
-              )
-            ],
-          ),
-          child: TextFormField(
-            onTap: () {
-              if (province == "") {
-                ShowSnackbar.snackbar("Pilih provinsi Anda terlebih dahulu", "", ColorResources.error);
-                return;
-              } else {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.96,
-                      color: Colors.transparent,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: ColorResources.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            topRight: Radius.circular(10.0)
-                          )
-                        ),
-                        child: Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    left: 16.0, 
-                                    right: 16.0, 
-                                    top: 16.0,
-                                    bottom: 8.0
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              NS.pop();
-                                            },
-                                            child: const Icon(
-                                              Icons.close
-                                            )
-                                          ),
-                                          Container(
-                                            margin: const EdgeInsets.only(left: 16.0),
-                                            child: Text("Pilih Kota Anda",
-                                              style: TextStyle(
-                                                fontSize: Dimensions.fontSizeDefault,
-                                                color: ColorResources.black
-                                              )
-                                            )
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Divider(
-                                  thickness: 3,
-                                ),
-                                Expanded(
-                                  flex: 40,
-                                  child: FutureBuilder<List<CityData>>(
-                                    future: context.read<RegionProvider>().getCities(provinceId: province),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        final List<CityData> cities = snapshot.data!;
-                                        return ListView.separated(
-                                          shrinkWrap: true,
-                                          physics: const BouncingScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount:cities.length,
-                                          itemBuilder: (BuildContext context, int i) {
-                                            return ListTile(
-                                              title: Text(cities[i].cityName),
-                                              onTap: () {
-                                                setState(() {
-                                                  city = cities[i].cityName;
-                                                  subdistrict = "";
-                                                  postalCodeC = TextEditingController(text: "");
-                                                });
-                                                NS.pop();
-                                              },
-                                            );
-                                          },
-                                          separatorBuilder: (BuildContext context, int i) {
-                                            return const Divider(
-                                              thickness: 1,
-                                            );
-                                          },
-                                        );
-                                      }
-                                      return const LoadingCustomWidget(
-                                        color: ColorResources.bluePrimary,
-                                      );
-                                    },
-                                  )
-                                )
-                              ]
-                            )
-                          ]
-                        )
-                      )
-                    );
-                  }
-                );
-              } 
-            },
-            readOnly: true,
-            cursorColor: ColorResources.black,
-            keyboardType: TextInputType.text,
-            inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
-              isDense: true,
-              hintStyle: TextStyle(
-                color: ColorResources.black
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
-              ),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ));
   }
 
   Widget inputFieldLocationAddress(BuildContext context) {
@@ -1173,7 +1212,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                   ),
                 ),
                 suggestionsCallback: (String pattern) async {
-                  return context.read<GoogleMapsProvider>().getAutocomplete(pattern);
+                  return context.read<EcommerceProvider>().getAutocomplete(pattern);
                 },
                 itemBuilder: (BuildContext context, PredictionModel suggestion) {
                   return ListTile(

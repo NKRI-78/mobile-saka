@@ -1,25 +1,26 @@
-class ShippingAddressModel {
+
+class ShippingAddressModelDetail {
   int status;
   bool error;
   String message;
-  List<ShippingAddressData> data;
+  ShippingAddressDetailData data;
 
-  ShippingAddressModel({
+  ShippingAddressModelDetail({
     required this.status,
     required this.error,
     required this.message,
     required this.data,
   });
 
-  factory ShippingAddressModel.fromJson(Map<String, dynamic> json) => ShippingAddressModel(
+  factory ShippingAddressModelDetail.fromJson(Map<String, dynamic> json) => ShippingAddressModelDetail(
     status: json["status"],
     error: json["error"],
     message: json["message"],
-    data: List<ShippingAddressData>.from(json["data"].map((x) => ShippingAddressData.fromJson(x))),
+    data: ShippingAddressDetailData.fromJson(json["data"]),
   );
 }
 
-class ShippingAddressData {
+class ShippingAddressDetailData {
   String? id;
   String? name;
   String? address;
@@ -30,7 +31,7 @@ class ShippingAddressData {
   String? postalCode;
   bool? defaultLocation;
 
-  ShippingAddressData({
+  ShippingAddressDetailData({
     this.id,
     this.name,
     this.address,
@@ -42,7 +43,7 @@ class ShippingAddressData {
     this.defaultLocation,
   });
 
-  factory ShippingAddressData.fromJson(Map<String, dynamic> json) => ShippingAddressData(
+  factory ShippingAddressDetailData.fromJson(Map<String, dynamic> json) => ShippingAddressDetailData(
     id: json["id"],
     name: json["name"],
     address: json["address"],
@@ -53,4 +54,5 @@ class ShippingAddressData {
     postalCode: json["postal_code"],
     defaultLocation: json["default_location"],
   );
+
 }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:saka/views/screens/ppob/cashout/setaccount.dart';
-import 'package:saka/providers/ppob/ppob.dart';
 import 'package:saka/views/basewidgets/appbar/custom_appbar.dart';
 
 class ListTileComponent extends StatefulWidget {
@@ -51,15 +48,7 @@ class _ListTileComponentState extends State<ListTileComponent> {
                           children: [
                             ListTile(
                               onTap: () {
-                                Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => CashoutSetAccountScreen(
-                                    title: widget.title,
-                                  )),
-                                );
-                                s(() {
-                                  Provider.of<PPOBProvider>(context, listen: false).changePaymentMethod(widget.items![i].name, widget.items![i].code.toString());
-                                  selected = i;                   
-                                });
+                               
                               },
                               dense: true,
                               leading: Text(widget.items![i].name),

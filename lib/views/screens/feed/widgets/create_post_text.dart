@@ -176,7 +176,7 @@ class CreatePostTextState extends State<CreatePostText> {
       int roundedSizeInMb = sizeInMb.round();
 
       if(roundedSizeInMb >= 150) {
-        ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
         return;
       }
 
@@ -203,7 +203,7 @@ class CreatePostTextState extends State<CreatePostText> {
     if(result != null) {
       for (int i = 0; i < result.files.length; i++) {
         if(result.files[i].size > 50000000) {
-          ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
+          ShowSnackbar.snackbar(getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
           return;
         } 
       }

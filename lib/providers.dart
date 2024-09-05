@@ -19,10 +19,8 @@ import 'package:saka/providers/membernear/membernear.dart';
 import 'package:saka/providers/news/news.dart';
 import 'package:saka/providers/onboarding/onboarding.dart';
 import 'package:saka/providers/profile/profile.dart';
-import 'package:saka/providers/region/region.dart';
 import 'package:saka/providers/sos/sos.dart';
 import 'package:saka/providers/splash/splash.dart';
-import 'package:saka/providers/ppob/ppob.dart';
 
 import 'container.dart' as c;
 
@@ -49,9 +47,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<OnboardingProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<ProfileProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<SplashProvider>()),
-  ChangeNotifierProvider(create: (_) => c.getIt<PPOBProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<MembernearProvider>()),
-  ChangeNotifierProvider(create: (_) => c.getIt<RegionProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<LocalizationProvider>()),
   Provider.value(value: Map<String, dynamic>())
 ];

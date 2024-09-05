@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
 import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
+import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_detail.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -81,6 +82,19 @@ class EcommerceRepo {
     } catch(e) {
       debugPrint(e.toString());
       throw Exception('Failed to load shipping address');
+    }
+  }
+
+  Future<ShippingAddressModelDetail> getShippingAddressDetail({required String id}) async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/shipping/address/$id");
+      Map<String, dynamic> data = response.data;
+      ShippingAddressModelDetail shippingAddressModelDetail = ShippingAddressModelDetail.fromJson(data);
+      return shippingAddressModelDetail;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed to load shipping address detail');
     }
   }
   

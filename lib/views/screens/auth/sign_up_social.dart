@@ -93,7 +93,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
       || e.response!.statusCode == 404 
       || e.response!.statusCode == 500 
       || e.response!.statusCode == 502) {
-        ShowSnackbar.snackbar(context,"(${e.response!.statusCode}) : Internal Server Error (${e.response!.data})", "", ColorResources.error);
+        ShowSnackbar.snackbar("(${e.response!.statusCode}) : Internal Server Error (${e.response!.data})", "", ColorResources.error);
       }
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
@@ -121,44 +121,44 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
       String passwordConfirm = passwordConfirmC.text;
 
       if(lanudType!.trim().isEmpty || lanudType == null) {
-        ShowSnackbar.snackbar(context, getTranslated("LANUD_MUST_BE_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("LANUD_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(fullname.trim().isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated("FULLNAME_MUST_BE_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("FULLNAME_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(fullname.trim().length < 6) {
-        ShowSnackbar.snackbar(context, getTranslated("FULLNAME_6_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("FULLNAME_6_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(phone.trim().isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated("PHONE_MUST_BE_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PHONE_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
       } 
       if(email.trim().isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated("EMAIL_MUST_BE_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("EMAIL_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
       }
       bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email); 
       if(!emailValid) {
-        ShowSnackbar.snackbar(context, "Ex : customercare@connexist.com", "", ColorResources.error);
+        ShowSnackbar.snackbar("Ex : customercare@connexist.com", "", ColorResources.error);
         return;
       }
       if(password.trim().isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(password.trim().length < 6) {
-        ShowSnackbar.snackbar(context, getTranslated("PASSWORD_6_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PASSWORD_6_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(passwordConfirm.trim().isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated("PASSWORD_CONFIRM_IS_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PASSWORD_CONFIRM_IS_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(password != passwordConfirm) {
-        ShowSnackbar.snackbar(context, getTranslated("PASSWORD_CONFIRM_DOES_NOT_MATCH", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PASSWORD_CONFIRM_DOES_NOT_MATCH", context), "", ColorResources.error);
         return;
       }
     

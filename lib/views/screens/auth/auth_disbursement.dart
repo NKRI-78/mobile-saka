@@ -42,7 +42,7 @@ class _AuthDisbursementScreenState extends State<AuthDisbursementScreen> {
   Future<void> signIn(BuildContext context) async {
     try {
       if(passwordC.text.trim().isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PASSWORD_MUST_BE_REQUIRED", context), "", ColorResources.error);
         return;
       }
       await context.read<AuthProvider>().authDisbursement(context, passwordC.text);

@@ -13,7 +13,7 @@ class PermissionHelper {
       return;
     } else if (await permissionType.status.isPermanentlyDenied) {
       if (context.mounted) {
-        ShowSnackbar.snackbar(context, "URL no found", "", ColorResources.error);
+        ShowSnackbar.snackbar("URL no found", "", ColorResources.error);
       }
       return;
     }

@@ -227,10 +227,10 @@ class PostsState extends State<Posts> {
                     );
                     await GallerySaver.saveVideo("${widget.forum.media![0].path}");
                     pr.close();
-                    ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                    ShowSnackbar.snackbar(getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
                   } catch(_) {
                     pr.close();
-                    ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                    ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
                   }
                 }
                 if(route == "/report-user") {

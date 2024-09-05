@@ -144,7 +144,7 @@ class _EventJoinScreenState extends State<EventJoinScreen> {
                             btnColor: ColorResources.primaryOrange,
                             onTap: () {
                               if(eventProvider.checkEventExist) {
-                                ShowSnackbar.snackbar(context, "Anda sudah terdaftar di Event Jambore Nasional XI", "", ColorResources.error);
+                                ShowSnackbar.snackbar("Anda sudah terdaftar di Event Jambore Nasional XI", "", ColorResources.error);
                                 return false;
                               } else {
                                 NS.push(context, QRViewScreen(
@@ -214,12 +214,12 @@ class _QRViewScreenState extends State<QRViewScreen> {
     try { 
       Dio dio = await DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/content-service/scanner-joins/joining");
-      ShowSnackbar.snackbar(context, "Terima kasih sudah berpartisipasi!", "", ColorResources.success);
+      ShowSnackbar.snackbar("Terima kasih sudah berpartisipasi!", "", ColorResources.success);
       NS.pushReplacement(context, DashboardScreen());
     } on DioError catch(e) {
       debugPrint(e.error.toString());
       if(e.response!.statusCode == 400) {
-        ShowSnackbar.snackbar(context, "${json.decode(e.response!.data)["error"]}", "", ColorResources.error);
+        ShowSnackbar.snackbar("${json.decode(e.response!.data)["error"]}", "", ColorResources.error);
         NS.pushReplacement(context, DashboardScreen());
       } 
       NS.pushReplacement(context, DashboardScreen());

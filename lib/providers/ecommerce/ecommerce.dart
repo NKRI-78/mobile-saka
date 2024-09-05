@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:dio/dio.dart';
+
 import 'package:saka/data/models/ecommerce/cart/cart.dart';
+import 'package:saka/data/models/ecommerce/googlemaps/googlemaps.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
 import 'package:saka/data/models/ecommerce/product/detail.dart';
 import 'package:saka/data/models/ecommerce/region/city.dart';
@@ -8,14 +11,17 @@ import 'package:saka/data/models/ecommerce/region/district.dart';
 import 'package:saka/data/models/ecommerce/region/province.dart';
 import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address.dart';
+import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_detail.dart';
 
 import 'package:saka/data/repository/ecommerce/ecommerce.dart';
-import 'package:saka/providers/region/region.dart';
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
 enum GetCartStatus { idle, loading, loaded, empty, error }
+
 enum GetShippingAddressListStatus { idle, loading, loaded, empty, error }
+enum GetShippingAddressSingleStatus { idle, loading, loaded, empty, error }
+
 enum GetProvinceStatus { idle, loading, loaded, empty, error }
 enum GetCityStatus { idle, loading, loaded, empty, error }
 enum GetDistrictStatus { idle, loading, loaded, empty, error }
@@ -40,6 +46,9 @@ class EcommerceProvider extends ChangeNotifier {
   GetShippingAddressListStatus _getShippingAddressListStatus = GetShippingAddressListStatus.loading;
   GetShippingAddressListStatus get getShippingAddressListStatus => _getShippingAddressListStatus;
 
+  GetShippingAddressSingleStatus _getShippingAddressSingleStatus = GetShippingAddressSingleStatus.loading;
+  GetShippingAddressSingleStatus get getShippingAddressSingleStatus => _getShippingAddressSingleStatus;
+
   GetProvinceStatus _getProvinceStatus = GetProvinceStatus.loading;
   GetProvinceStatus get getProvinceStatus => _getProvinceStatus;
 
@@ -58,8 +67,23 @@ class EcommerceProvider extends ChangeNotifier {
   List<Product> _products = [];
   List<Product> get products => [..._products];
 
+  List<ProvinceData> _provinces = [];
+  List<ProvinceData> get provinces => [..._provinces];
+
+  List<CityData> _city = [];
+  List<CityData> get city => [..._city];
+
+  List<DistrictData> _district = [];
+  List<DistrictData> get district => [..._district];
+
+  List<SubdistrictData> _subdistrict = [];
+  List<SubdistrictData> get subdistrict => [..._subdistrict];
+
   List<ShippingAddressData> _shippingAddressList = [];
   List<ShippingAddressData> get shippingAddress => [..._shippingAddressList];
+
+  ShippingAddressDetailData _shippingAddressDetailData = ShippingAddressDetailData();
+  ShippingAddressDetailData get shippingAddressDetailData => _shippingAddressDetailData;
 
   ProductDetailData _productDetailData = ProductDetailData();
   ProductDetailData get productDetailData => _productDetailData;
@@ -84,6 +108,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateGetShippingAddressList(GetShippingAddressListStatus param) {
     _getShippingAddressListStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateGetShippingAddressSingle(GetShippingAddressSingleStatus param) {
+    _getShippingAddressSingleStatus = param;
 
     notifyListeners();
   }
@@ -156,6 +186,19 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> getShippingAddressSingle({required String id}) async {
+    setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.loading);
+    try {
+
+      ShippingAddressModelDetail shippingAddressModelDetail = await er.getShippingAddressDetail(id: id);
+      _shippingAddressDetailData = shippingAddressModelDetail.data;
+
+      setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.loaded);
+    } catch(e) {
+      setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.error);
+    }
+  }
+
   Future<void> getCart() async {
     setStateGetCartStatus(GetCartStatus.loading);
 
@@ -220,6 +263,8 @@ class EcommerceProvider extends ChangeNotifier {
     try {
 
       ProvinceModel provinceModel = await er.getProvince();
+      _provinces = [];
+      _provinces.addAll(provinceModel.data);
 
       setStateCityStatus(GetCityStatus.loaded);
     } catch(e) {
@@ -232,6 +277,8 @@ class EcommerceProvider extends ChangeNotifier {
     try {
 
       CityModel cityModel = await er.getCity(provinceName: provinceName);
+      _city = [];
+      _city.addAll(cityModel.data);
 
       setStateCityStatus(GetCityStatus.loaded);
     } catch(e) {
@@ -244,6 +291,8 @@ class EcommerceProvider extends ChangeNotifier {
     try {
 
       DistrictModel districtModel = await er.getDistrict(cityName: cityName);
+      _district = [];
+      _district.addAll(districtModel.data);
 
       setStateDistrictStatus(GetDistrictStatus.loaded);
     } catch(e) {  
@@ -256,11 +305,27 @@ class EcommerceProvider extends ChangeNotifier {
     try {
 
       SubdistrictModel subdistrictModel = await er.getSubdistrict(districtName: districtName);
+      _subdistrict = [];
+      _subdistrict.addAll(subdistrictModel.data);
 
       setStateSubdistrictStatus(GetSubdistrictStatus.loaded);
     } catch(e) {
       setStateSubdistrictStatus(GetSubdistrictStatus.error);
     }
   }
+
+  Future<List<PredictionModel>> getAutocomplete(String query) async {
+    try {
+      Dio dio = Dio();
+      Response res = await dio.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyBFRpXPf8BXaR22nDvvx2ghBfbUbGGX8N8");
+      Map<String, dynamic> data = res.data;
+      AutocompleteModel autocompleteModel = AutocompleteModel.fromJson(data);
+      return autocompleteModel.predictions;
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+    }
+    return [];
+  }
+
 
 }
