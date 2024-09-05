@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 import 'package:saka/data/models/ecommerce/cart/cart.dart';
+import 'package:saka/data/models/ecommerce/checkout/list.dart';
 import 'package:saka/data/models/ecommerce/googlemaps/googlemaps.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
 import 'package:saka/data/models/ecommerce/product/detail.dart';
@@ -11,6 +12,7 @@ import 'package:saka/data/models/ecommerce/region/district.dart';
 import 'package:saka/data/models/ecommerce/region/province.dart';
 import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address.dart';
+import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_default.dart';
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_detail.dart';
 
 import 'package:saka/data/repository/ecommerce/ecommerce.dart';
@@ -21,6 +23,9 @@ enum GetCartStatus { idle, loading, loaded, empty, error }
 
 enum GetShippingAddressListStatus { idle, loading, loaded, empty, error }
 enum GetShippingAddressSingleStatus { idle, loading, loaded, empty, error }
+enum GetShippingAddressDefaultStatus { idle, loading, loaded, empty, error }
+
+enum GetCheckoutStatus { idle, loading, loaded ,empty, error }
 
 enum GetProvinceStatus { idle, loading, loaded, empty, error }
 enum GetCityStatus { idle, loading, loaded, empty, error }
@@ -43,11 +48,17 @@ class EcommerceProvider extends ChangeNotifier {
   GetCartStatus _getCartStatus = GetCartStatus.loading; 
   GetCartStatus get getCartStatus => _getCartStatus;
 
+  GetCheckoutStatus _getCheckoutStatus = GetCheckoutStatus.loading;
+  GetCheckoutStatus get getCheckoutStatus => _getCheckoutStatus;
+
   GetShippingAddressListStatus _getShippingAddressListStatus = GetShippingAddressListStatus.loading;
   GetShippingAddressListStatus get getShippingAddressListStatus => _getShippingAddressListStatus;
 
   GetShippingAddressSingleStatus _getShippingAddressSingleStatus = GetShippingAddressSingleStatus.loading;
   GetShippingAddressSingleStatus get getShippingAddressSingleStatus => _getShippingAddressSingleStatus;
+
+  GetShippingAddressDefaultStatus _getShippingAddressDefaultStatus = GetShippingAddressDefaultStatus.loading;
+  GetShippingAddressDefaultStatus get getShippingAddressDefaultStatus => _getShippingAddressDefaultStatus;
 
   GetProvinceStatus _getProvinceStatus = GetProvinceStatus.loading;
   GetProvinceStatus get getProvinceStatus => _getProvinceStatus;
@@ -63,6 +74,9 @@ class EcommerceProvider extends ChangeNotifier {
 
   CartData _cartData = CartData();
   CartData get cartData => _cartData;
+
+  CheckoutListData _checkoutListData = CheckoutListData();
+  CheckoutListData get checkoutListData => _checkoutListData;
 
   List<Product> _products = [];
   List<Product> get products => [..._products];
@@ -84,6 +98,9 @@ class EcommerceProvider extends ChangeNotifier {
 
   ShippingAddressDetailData _shippingAddressDetailData = ShippingAddressDetailData();
   ShippingAddressDetailData get shippingAddressDetailData => _shippingAddressDetailData;
+
+  ShippingAddressDataDefault _shippingAddressDataDefault = ShippingAddressDataDefault();
+  ShippingAddressDataDefault get shippingAddressDataDefault => _shippingAddressDataDefault;
 
   ProductDetailData _productDetailData = ProductDetailData();
   ProductDetailData get productDetailData => _productDetailData;
@@ -118,6 +135,12 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus param) {
+    _getShippingAddressDefaultStatus = param;
+
+    notifyListeners();
+  }
+
   void setStateProvinceStatus(GetProvinceStatus param) {
     _getProvinceStatus = param;
 
@@ -141,7 +164,13 @@ class EcommerceProvider extends ChangeNotifier {
 
     notifyListeners();
   }
- 
+
+  void setStateCheckoutStatus(GetCheckoutStatus param) {
+    _getCheckoutStatus = param;
+
+    notifyListeners();
+  }
+
   Future<void> fetchAllProducts({required String search}) async {
     setStateListProductStatus(ListProductStatus.loading);
 
@@ -199,6 +228,19 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> getShippingAddressDefault() async {
+    setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loading);
+    try {
+
+      ShippingAddressModelDefault shippingAddressModelDefault = await er.getShippingAddressDefault();
+      _shippingAddressDataDefault = shippingAddressModelDefault.data[0];
+
+      setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loaded);
+    } catch(e) {
+      setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.error);
+    }
+  }
+
   Future<void> getCart() async {
     setStateGetCartStatus(GetCartStatus.loading);
 
@@ -214,6 +256,19 @@ class EcommerceProvider extends ChangeNotifier {
 
   }
 
+  Future<void> getCheckoutList() async {
+    setStateCheckoutStatus(GetCheckoutStatus.loading);
+    try {
+
+      CheckoutListModel checkoutListModel = await er.getCheckoutList();
+      _checkoutListData = checkoutListModel.data;
+
+      setStateCheckoutStatus(GetCheckoutStatus.loaded);
+    } catch(e) {
+      setStateCheckoutStatus(GetCheckoutStatus.error);
+    }
+  }
+ 
   Future<void> decrementQty({required int i, required int z, required int qty}) async {
     _cartData.stores![i].selected = true;
     _cartData.stores![i].items[z].cart.selected = true;
@@ -257,7 +312,7 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getProvince() async {
+  Future<List<ProvinceData>> getProvince() async {
     setStateProvinceStatus(GetProvinceStatus.loading);
 
     try {
@@ -266,13 +321,15 @@ class EcommerceProvider extends ChangeNotifier {
       _provinces = [];
       _provinces.addAll(provinceModel.data);
 
-      setStateCityStatus(GetCityStatus.loaded);
+      return provinceModel.data;
+
     } catch(e) {
       setStateProvinceStatus(GetProvinceStatus.error);
+      throw [];    
     }
   }
 
-  Future<void> getCity({required String provinceName}) async {
+  Future<List<CityData>> getCity({required String provinceName}) async {
     setStateCityStatus(GetCityStatus.loading);
     try {
 
@@ -280,13 +337,15 @@ class EcommerceProvider extends ChangeNotifier {
       _city = [];
       _city.addAll(cityModel.data);
 
-      setStateCityStatus(GetCityStatus.loaded);
+      return cityModel.data;
+
     } catch(e) {
       setStateCityStatus(GetCityStatus.error);
+      throw [];
     }
   }
 
-  Future<void> getDistrict({required String cityName}) async {
+  Future<List<DistrictData>> getDistrict({required String cityName}) async {
     setStateDistrictStatus(GetDistrictStatus.loading);
     try {
 
@@ -294,34 +353,41 @@ class EcommerceProvider extends ChangeNotifier {
       _district = [];
       _district.addAll(districtModel.data);
 
-      setStateDistrictStatus(GetDistrictStatus.loaded);
+      return districtModel.data;
+
     } catch(e) {  
       setStateDistrictStatus(GetDistrictStatus.error);
+      throw [];
     } 
   }
 
-  Future<void> getSubdistrict({required String districtName}) async {
+  Future<List<SubdistrictData>> getSubdistrict({required String districtName}) async {
     setStateSubdistrictStatus(GetSubdistrictStatus.loading);
     try {
 
       SubdistrictModel subdistrictModel = await er.getSubdistrict(districtName: districtName);
       _subdistrict = [];
       _subdistrict.addAll(subdistrictModel.data);
+      
+      return subdistrictModel.data;
 
-      setStateSubdistrictStatus(GetSubdistrictStatus.loaded);
     } catch(e) {
       setStateSubdistrictStatus(GetSubdistrictStatus.error);
+      throw [];
     }
   }
 
   Future<List<PredictionModel>> getAutocomplete(String query) async {
     try {
       Dio dio = Dio();
-      Response res = await dio.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyBFRpXPf8BXaR22nDvvx2ghBfbUbGGX8N8");
+      Response res = await dio.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyCJD7w_-wHs4Pe5rWMf0ubYQFpAt2QF2RA");
       Map<String, dynamic> data = res.data;
       AutocompleteModel autocompleteModel = AutocompleteModel.fromJson(data);
       return autocompleteModel.predictions;
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
     } catch(e, stacktrace) {
+      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
     }
     return [];

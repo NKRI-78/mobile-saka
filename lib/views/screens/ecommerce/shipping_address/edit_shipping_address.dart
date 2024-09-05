@@ -15,6 +15,7 @@ import 'package:saka/providers/ecommerce/ecommerce.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/views/basewidgets/button/custom.dart';
 
@@ -136,16 +137,16 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
         title: Text("Ubah Alamat",
-          style: TextStyle(
-            color: ColorResources.white, 
+          style: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeDefault,
+            color: ColorResources.black, 
             fontWeight: FontWeight.w600
           ),
         ),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: const Color(0xFF0F903B),
         leading: CupertinoNavigationBarBackButton(
-          color: ColorResources.white,
+          color: ColorResources.black,
           onPressed: () {
             NS.pop(context);
           },
@@ -206,7 +207,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
                                 child: Center(
                                   child: Text(e,
-                                    style: TextStyle(
+                                    style: robotoRegular.copyWith(
                                       color: Colors.grey[600],
                                       fontSize: 14,
                                     )
@@ -250,28 +251,6 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                     btnColor: ColorResources.purple,
                     btnTxt: "Simpan",
                   ),
-
-                  // SizedBox(
-                  //   height: 55.0,
-                  //   width: double.infinity,
-                  //   child: TextButton(
-                  //     style: TextButton.styleFrom(
-                  //       backgroundColor: const Color(0xFF0F903B),
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(10.0),
-                  //       ),
-                  //     ),
-                  //     onPressed: submit,
-                  //     child: Center(
-                  //       child: Text("Simpan",
-                  //         style: TextStyle(
-                  //           fontSize: Dimensions.fontSizeDefault, 
-                  //           color: ColorResources.white
-                  //         )
-                  //       ),
-                  //     ),   
-                  //   )
-                  // )
                   
                 ],
               ),
@@ -288,7 +267,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: Text(title,
-            style: TextStyle(
+            style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
           ),
@@ -354,7 +333,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         Container(
                                           margin: const EdgeInsets.only(left: 16),
                                           child: Text("Pilih Provinsi Anda",
-                                            style: TextStyle(
+                                            style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault,
                                               color: ColorResources.black
                                             )
@@ -370,9 +349,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                               ),
                               Expanded(
                                 flex: 40,
-                                child: FutureBuilder<void>(
+                                child: FutureBuilder<List<ProvinceData>>(
                                   future: ep.getProvince(),
-                                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                                  builder: (BuildContext context, AsyncSnapshot<List<ProvinceData>> snapshot) {
                                   if (snapshot.hasData) {
                                     final List<ProvinceData> provinces = ep.provinces;
 
@@ -429,7 +408,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             hintText: hintText,
             contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
             isDense: true,
-            hintStyle: TextStyle(
+            hintStyle: robotoRegular.copyWith(
               color: ColorResources.black
             ),
             focusedBorder: const OutlineInputBorder(
@@ -456,7 +435,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, 
-          style: TextStyle(
+          style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
           )
         ),
@@ -530,7 +509,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(left: 16.0),
                                             child: Text("Pilih Kota Anda",
-                                              style: TextStyle(
+                                              style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeDefault,
                                                 color: ColorResources.black
                                               )
@@ -546,9 +525,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
                                 Expanded(
                                   flex: 40,
-                                  child: FutureBuilder<void>(
+                                  child: FutureBuilder<List<CityData>>(
                                     future: ep.getCity(provinceName: province),
-                                    builder: (context, snapshot) {
+                                    builder: (BuildContext context, AsyncSnapshot<List<CityData>> snapshot ) {
                                       if (snapshot.hasData) {
                                         final List<CityData> cities = ep.city;
                                         return ListView.separated(
@@ -604,7 +583,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               hintText: hintText,
               contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: TextStyle(
+              hintStyle: robotoRegular.copyWith(
                 color: ColorResources.black
               ),
               focusedBorder: const OutlineInputBorder(
@@ -632,7 +611,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: Text("Daerah",
-            style: TextStyle(
+            style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
           ),
@@ -701,7 +680,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(left: 16),
                                             child: Text("Pilih Daerah Anda",
-                                              style: TextStyle(
+                                              style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeDefault,
                                                 color: ColorResources.black
                                               )
@@ -717,9 +696,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
                                 Expanded(
                                 flex: 40,
-                                child: FutureBuilder<void>(
+                                child: FutureBuilder<List<DistrictData>>(
                                   future: ep.getDistrict(cityName: city),
-                                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                                  builder: (BuildContext context, AsyncSnapshot<List<DistrictData>> snapshot) {
                                     if (snapshot.hasData) {
                                       
                                       final List<DistrictData> districts = ep.district;
@@ -774,7 +753,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               hintText: hintText,
               contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: TextStyle(
+              hintStyle: robotoRegular.copyWith(
                 color: ColorResources.black
               ),
               focusedBorder: const OutlineInputBorder(
@@ -802,7 +781,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: Text("Kecamatan",
-            style: TextStyle(
+            style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
           ),
@@ -871,7 +850,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(left: 16),
                                             child: Text("Pilih Kecamatan Anda",
-                                              style: TextStyle(
+                                              style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeDefault,
                                                 color: ColorResources.black
                                               )
@@ -887,9 +866,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
                                 Expanded(
                                 flex: 40,
-                                child: FutureBuilder<void>(
+                                child: FutureBuilder<List<SubdistrictData>>(
                                   future: ep.getSubdistrict(districtName: district),
-                                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                                  builder: (BuildContext context, AsyncSnapshot<List<SubdistrictData>> snapshot) {
                                     if (snapshot.hasData) {
                                       final List<SubdistrictData> subdistricts = ep.subdistrict;
                                       return ListView.separated(
@@ -943,7 +922,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               hintText: hintText,
               contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: TextStyle(
+              hintStyle: robotoRegular.copyWith(
                 color: ColorResources.black
               ),
               focusedBorder: const OutlineInputBorder(
@@ -970,7 +949,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Label Alamat",
-          style: TextStyle(
+          style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
           )
         ),
@@ -1010,7 +989,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                 hintText: "Ex: Rumah",
                 contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
                 isDense: true,
-                hintStyle: TextStyle(
+                hintStyle: robotoRegular.copyWith(
                   color:ColorResources.white
                 ),
                 focusedBorder: const OutlineInputBorder(
@@ -1040,7 +1019,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         Container(
           alignment: Alignment.centerLeft,
             child: Text(title,
-              style: TextStyle(
+              style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
               )
             ),
@@ -1072,7 +1051,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                 hintText: hintText,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
                 isDense: true,
-                hintStyle: TextStyle(
+                hintStyle: robotoRegular.copyWith(
                   color:ColorResources.white
                 ),
                 focusedBorder: const OutlineInputBorder(
@@ -1101,7 +1080,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         Container(
           alignment: Alignment.centerLeft,
           child: Text(title,
-            style: TextStyle(
+            style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
           ),
@@ -1132,7 +1111,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               hintText: hintText,
               contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: TextStyle(
+              hintStyle: robotoRegular.copyWith(
                 color:ColorResources.white
               ),
               focusedBorder: const OutlineInputBorder(
@@ -1162,7 +1141,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             Container(
               alignment: Alignment.centerLeft,
               child: Text(title,
-                style: TextStyle(
+                style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                 )
               ),
@@ -1194,7 +1173,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                     hintText: hintText,
                     contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
                     isDense: true,
-                    hintStyle: TextStyle(
+                    hintStyle: robotoRegular.copyWith(
                       color:ColorResources.white
                     ),
                     focusedBorder: const OutlineInputBorder(
@@ -1218,7 +1197,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                   return ListTile(
                     leading: const Icon(Icons.location_city),
                     title: Text(suggestion.description,
-                      style: TextStyle(
+                      style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         color: ColorResources.black
                       ),
@@ -1246,7 +1225,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(title,
-            style: TextStyle(
+            style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
           ),
@@ -1277,7 +1256,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                 hintText: hintText,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
                 isDense: true,
-                hintStyle: TextStyle(
+                hintStyle: robotoRegular.copyWith(
                   color:ColorResources.white
                 ),
                 focusedBorder: const OutlineInputBorder(

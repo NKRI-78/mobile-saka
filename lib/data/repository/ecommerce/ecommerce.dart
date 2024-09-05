@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
+import 'package:saka/data/models/ecommerce/checkout/list.dart';
 import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
+import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_default.dart';
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_detail.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,6 +68,22 @@ class EcommerceRepo {
     }
   }
 
+  Future<CheckoutListModel> getCheckoutList() async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/checkout/list",
+        data: {
+          "user_id": sp.getString("userId")
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      CheckoutListModel checkoutListModel = CheckoutListModel.fromJson(data);
+      return checkoutListModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed to load checkout list');
+    }
+  }
 
   Future<ShippingAddressModel> getShippingAddressList() async {
     try {
@@ -82,6 +100,23 @@ class EcommerceRepo {
     } catch(e) {
       debugPrint(e.toString());
       throw Exception('Failed to load shipping address');
+    }
+  }
+
+  Future<ShippingAddressModelDefault> getShippingAddressDefault() async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/shipping/address/default",
+        data: {
+          "user_id": sp.getString("userId"),
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      ShippingAddressModelDefault shippingAddressModelDefault = ShippingAddressModelDefault.fromJson(data);
+      return shippingAddressModelDefault;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed to load shipping address default');
     }
   }
 

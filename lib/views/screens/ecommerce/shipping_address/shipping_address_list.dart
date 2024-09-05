@@ -12,7 +12,9 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
-import 'package:saka/views/screens/ecommerce/edit_shipping_address.dart';
+
+import 'package:saka/views/screens/ecommerce/shipping_address/create_shipping_address.dart';
+import 'package:saka/views/screens/ecommerce/shipping_address/edit_shipping_address.dart';
 
 class ShippingAddressListScreen extends StatefulWidget {
   const ShippingAddressListScreen({super.key});
@@ -227,7 +229,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
               ),
               child: CustomButton(
                 onTap: () {
-                  
+                  NS.push(context, CreateShippingAddressScreen());
                 },
                 btnTxt: "Tambah Alamat Baru",
                 isBorder: false,
