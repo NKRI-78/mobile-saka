@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
 import 'package:saka/data/models/ecommerce/checkout/list.dart';
+import 'package:saka/data/models/ecommerce/courier/courier.dart';
 import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_default.dart';
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_detail.dart';
@@ -84,6 +85,61 @@ class EcommerceRepo {
       throw Exception('Failed to load checkout list');
     }
   }
+
+  Future<CourierListModel> getCourier({
+    required String storeId
+  }) async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/couriers/cost/list",
+        data: {
+          "store_id": storeId,
+          "user_id": sp.getString("userId")
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      CourierListModel courierListModel = CourierListModel.fromJson(data);
+      return courierListModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed to load get get courier');
+    }
+  }
+
+  Future<void> addCourier({
+    required String courierCode,
+    required String courierService,
+    required String courierName,
+    required String courierDesc,
+    required String costValue,
+    required String costNote,
+    required String costEtd,
+    required String storeId
+  }) async {
+    try { 
+      Dio dio = await DioManager.shared.getClient();
+
+      final data = {
+        "courier_code": courierCode,
+        "courier_service": courierService,
+        "courier_name": courierName,
+        "courier_description": courierDesc,
+        "cost_value": costValue,
+        "cost_note": costNote,
+        "cost_etd": costEtd,
+        "user_id": sp.getString("userId"),
+        "store_id": storeId
+      };
+
+      await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/couriers/add",
+        data: data
+      );
+
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed to load add courier');
+    }
+  } 
 
   Future<ShippingAddressModel> getShippingAddressList() async {
     try {

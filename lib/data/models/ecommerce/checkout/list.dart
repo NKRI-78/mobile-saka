@@ -86,24 +86,27 @@ class CheckoutStore {
     id: json["id"],
     name: json["name"],
     address: json["address"],
-    courier: Courier.fromJson(json["courier"]),
+    courier: json["courier"] == null 
+    ? Courier(name: "-")
+    : Courier.fromJson(json["courier"]),
+
     products: List<CheckoutProduct>.from(json["products"].map((x) => CheckoutProduct.fromJson(x))),
   );
 }
 
 class Courier {
-  String code;
-  String name;
-  String description;
-  String service;
-  Cost cost;
+  String? code;
+  String? name;
+  String? description;
+  String? service;
+  Cost? cost;
 
   Courier({
-    required this.code,
-    required this.name,
-    required this.description,
-    required this.service,
-    required this.cost,
+    this.code,
+    this.name,
+    this.description,
+    this.service,
+    this.cost,
   });
 
   factory Courier.fromJson(Map<String, dynamic> json) => Courier(

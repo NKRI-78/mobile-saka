@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 
 import 'package:saka/data/models/ecommerce/cart/cart.dart';
 import 'package:saka/data/models/ecommerce/checkout/list.dart';
+import 'package:saka/data/models/ecommerce/courier/courier.dart';
 import 'package:saka/data/models/ecommerce/googlemaps/googlemaps.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
 import 'package:saka/data/models/ecommerce/product/detail.dart';
@@ -16,10 +17,18 @@ import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_def
 import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_detail.dart';
 
 import 'package:saka/data/repository/ecommerce/ecommerce.dart';
+import 'package:saka/services/navigation.dart';
+import 'package:saka/utils/color_resources.dart';
+import 'package:saka/utils/custom_themes.dart';
+import 'package:saka/utils/dimensions.dart';
+import 'package:saka/utils/helper.dart';
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
 enum GetCartStatus { idle, loading, loaded, empty, error }
+
+enum GetCourierStatus { idle, loading, loaded, empty, error }
+enum AddCourierStatus { idle, loading, loaded, empty, error }
 
 enum GetShippingAddressListStatus { idle, loading, loaded, empty, error }
 enum GetShippingAddressSingleStatus { idle, loading, loaded, empty, error }
@@ -47,6 +56,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   GetCartStatus _getCartStatus = GetCartStatus.loading; 
   GetCartStatus get getCartStatus => _getCartStatus;
+
+  GetCourierStatus _getCourierStatus = GetCourierStatus.loading;
+  GetCourierStatus get getCourierStatus => _getCourierStatus;
+
+  AddCourierStatus _addCourierStatus = AddCourierStatus.loading;
+  AddCourierStatus get addCourierStatus => _addCourierStatus;
 
   GetCheckoutStatus _getCheckoutStatus = GetCheckoutStatus.loading;
   GetCheckoutStatus get getCheckoutStatus => _getCheckoutStatus;
@@ -119,6 +134,18 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateGetCartStatus(GetCartStatus param) {
     _getCartStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateGetCourierStatus(GetCourierStatus param) {
+    _getCourierStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateAddCourierStatus(AddCourierStatus param) {
+    _addCourierStatus = param;
 
     notifyListeners();
   }
@@ -234,8 +261,12 @@ class EcommerceProvider extends ChangeNotifier {
 
       ShippingAddressModelDefault shippingAddressModelDefault = await er.getShippingAddressDefault();
       _shippingAddressDataDefault = shippingAddressModelDefault.data[0];
-
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loaded);
+
+      if(shippingAddressModelDefault.data.isEmpty) {
+        setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.empty);
+      }
+
     } catch(e) {
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.error);
     }
@@ -256,14 +287,182 @@ class EcommerceProvider extends ChangeNotifier {
 
   }
 
+  Future<void> getCourierList({
+    required BuildContext context,
+    required String storeId
+  }) async {
+    setStateGetCourierStatus(GetCourierStatus.loading);
+    try {
+
+      CourierListModel courierListModel = await er.getCourier(
+        storeId: storeId
+      );
+
+      showModalBottomSheet(
+        context: context, 
+        isDismissible: true,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10.0),
+            topRight: Radius.circular(10.0)
+          )
+        ),
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.all(15.0),
+                    child: Text("Pilih Pengiriman",
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.black,
+                        fontSize: Dimensions.fontSizeLarge,
+                        fontWeight: FontWeight.w600
+                      ),
+                    )
+                  ),
+                ],
+              ),
+                                        
+              ListView.separated(
+                separatorBuilder: (BuildContext context, int i) {
+                  return const Divider(
+                    thickness: 2.0,
+                    color: Color(0xffF0F0F0),
+                  );
+                },
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: courierListModel.data.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    itemCount: courierListModel.data[i].costs.length,
+                    itemBuilder: (BuildContext context, int z) {
+                      final courierData = courierListModel.data[i].costs[z];
+
+                      return InkWell(
+                        onTap: () async {
+                          String courierCode = courierListModel.data[i].code.toString();
+                          String courierService = courierListModel.data[i].costs[z].service.toString();
+                          String courierName = courierListModel.data[i].name.toString();
+                          String courierDesc = courierListModel.data[i].costs[z].description.toString();
+                          String costValue = courierListModel.data[i].costs[z].cost[0].value.toString();
+                          String costNote =  courierListModel.data[i].costs[z].cost[0].note.toString();
+                          String costEtd = courierListModel.data[i].costs[z].cost[0].etd.toString();
+
+                          await er.addCourier(
+                            courierCode: courierCode, 
+                            courierService: courierService,
+                            courierName: courierName, courierDesc: courierDesc, 
+                            costValue: costValue, costNote: costNote, 
+                            costEtd: costEtd, storeId: storeId
+                          );
+
+                          Future.delayed(Duration.zero, () {
+                            getCheckoutList();
+                          });
+
+                          NS.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                              left: 10.0, 
+                              right: 10.0
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("${courierData.service} (${Helper.formatCurrency(double.parse(courierListModel.data[i].costs[z].cost[0].value.toString()))})",
+                                      style: TextStyle(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        fontWeight: FontWeight.w600,
+                                        color: ColorResources.black
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 60.0,
+                                      height: 30.0,
+                                      decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                          fit: BoxFit.fitHeight,
+                                          image: AssetImage('assets/images/logo/jne.png')
+                                        )
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Text("${courierListModel.data[i].costs[z].cost[0].etd} hari",
+                                  style: TextStyle(
+                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    color: ColorResources.black
+                                  ),
+                                ),
+                              ],
+                            )
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              )
+            ],
+          );
+        },
+      );
+
+      setStateGetCourierStatus(GetCourierStatus.loaded);
+
+    } catch(e) {
+      setStateGetCourierStatus(GetCourierStatus.error);
+    }
+  }
+
+  Future<void> addCourier({
+    required String courierCode, 
+    required String courierService, 
+    required String courierName, 
+    required String courierDesc,
+    required String costValue, 
+    required String costNote,
+    required String costEtd, 
+    required String storeId
+  }) async {
+    setStateAddCourierStatus(AddCourierStatus.loading);
+    try {
+
+
+
+      setStateAddCourierStatus(AddCourierStatus.loaded);
+    } catch(e) {
+      setStateAddCourierStatus(AddCourierStatus.error);
+    }
+  }
+
   Future<void> getCheckoutList() async {
     setStateCheckoutStatus(GetCheckoutStatus.loading);
     try {
 
       CheckoutListModel checkoutListModel = await er.getCheckoutList();
       _checkoutListData = checkoutListModel.data;
-
       setStateCheckoutStatus(GetCheckoutStatus.loaded);
+
     } catch(e) {
       setStateCheckoutStatus(GetCheckoutStatus.error);
     }
