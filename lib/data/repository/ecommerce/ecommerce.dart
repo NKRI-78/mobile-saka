@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
+import 'package:saka/data/models/ecommerce/region/subdistrict.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:saka/data/models/ecommerce/region/district.dart';
+import 'package:saka/data/models/ecommerce/region/city.dart';
+import 'package:saka/data/models/ecommerce/region/province.dart';import 'package:saka/data/models/ecommerce/shipping_address/shipping_address.dart';
 
 import 'package:saka/data/models/ecommerce/cart/cart.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
@@ -57,6 +62,77 @@ class EcommerceRepo {
     } catch(e) {
       debugPrint(e.toString());
       throw Exception('Failed to load carts');
+    }
+  }
+
+
+  Future<ShippingAddressModel> getShippingAddressList() async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/shipping/address",
+        data: {
+          "user_id": sp.getString("userId"),
+          "default_location": false
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      ShippingAddressModel shippingAddressModel = ShippingAddressModel.fromJson(data);
+      return shippingAddressModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed to load shipping address');
+    }
+  }
+  
+  Future<ProvinceModel> getProvince() async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/province");
+      Map<String, dynamic> data = response.data;
+      ProvinceModel provinceModel = ProvinceModel.fromJson(data);
+      return provinceModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed to load province");
+    }
+  }
+
+  Future<CityModel> getCity({required String provinceName}) async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/city/${provinceName}");
+      Map<String, dynamic> data = response.data;
+      CityModel cityModel = CityModel.fromJson(data);
+      return cityModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed to load city");
+    }
+  }
+
+  Future<DistrictModel> getDistrict({required String cityName}) async {
+    try { 
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/district/$cityName");
+      Map<String, dynamic> data = response.data;
+      DistrictModel districtModel = DistrictModel.fromJson(data);
+      return districtModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed to load district");
+    }
+  }  
+
+  Future<SubdistrictModel> getSubdistrict({required String districtName}) async {
+    try {
+      Dio dio = await DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/subdistrict/$districtName");
+      Map<String, dynamic> data = response.data;
+      SubdistrictModel subdistrictModel = SubdistrictModel.fromJson(data);
+      return subdistrictModel;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed to load subdistrict");
     }
   }
 
