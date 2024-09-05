@@ -98,4 +98,47 @@ class EcommerceProvider extends ChangeNotifier {
 
   }
 
+  Future<void> decrementQty({required int i, required int z, required int qty}) async {
+    _cartData.stores![i].selected = true;
+    _cartData.stores![i].items[z].cart.selected = true;
+    _cartData.stores![i].items[z].cart.qty = qty;
+
+    int totalPriceQty = 0;
+
+    for (StoreItem stores in cartData.stores!.where((el) => el.selected == true)) {
+      for (StoreData cii in stores.items.where((el) => el.cart.selected == true)) {
+        totalPriceQty += cii.price * cii.cart.qty; 
+      }
+    }
+
+    _cartData.totalPrice = totalPriceQty;
+    
+    // await Future.wait([
+    //   updateQty(cartId: cartId, qty: cartInfoData.stores![i].items[z].cart.quantity.toString()),
+    //   pr.updateCartSelected(selected: true, cartId: cartId)
+    // ]);
+
+    Future.delayed(Duration.zero, () => notifyListeners());
+
+    notifyListeners();
+  }
+
+  Future<void> incrementQty({required int i, required int z, required int qty}) async {
+    _cartData.stores![i].selected = true;
+    _cartData.stores![i].items[z].cart.selected = true;
+    _cartData.stores![i].items[z].cart.qty = qty;
+
+    int totalPriceQty = 0;
+
+    for (StoreItem stores in cartData.stores!.where((el) => el.selected == true)) {
+      for (StoreData cii in stores.items.where((el) => el.cart.selected == true)) {
+        totalPriceQty += cii.price * cii.cart.qty; 
+      }
+    }
+
+    _cartData.totalPrice = totalPriceQty;
+
+    notifyListeners();
+  }
+
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -28,7 +27,7 @@ class ProductItem extends StatelessWidget {
       width: width,
       child: GestureBounce(
         onPress: () {
-          NS.push(context, ProductDetail(productId: product.id));
+          NS.push(context, ProductDetailScreen(productId: product.id));
         },  
         child: Card(
           elevation: 0.80,

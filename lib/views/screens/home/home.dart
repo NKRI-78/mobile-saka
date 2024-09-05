@@ -582,7 +582,7 @@ Widget ourService(BuildContext context) {
       "id": 1,
       "name": "Toko Saka",
       "asset": "shop.png",
-      "link": EcommerceScreen()
+      "link": ProductScreen()
     },
 
     {

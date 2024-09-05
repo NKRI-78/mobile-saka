@@ -21,18 +21,18 @@ import 'package:saka/views/basewidgets/button/bounce.dart';
 
 import 'package:saka/views/screens/ecommerce/cart.dart';
 
-class ProductDetail extends StatefulWidget {
+class ProductDetailScreen extends StatefulWidget {
   final String productId;
-  const ProductDetail({
+  const ProductDetailScreen({
     required this.productId,
     super.key
   });
 
   @override
-  State<ProductDetail> createState() => ProductDetailState();
+  State<ProductDetailScreen> createState() => ProductDetailScreenState();
 }
 
-class ProductDetailState extends State<ProductDetail> {
+class ProductDetailScreenState extends State<ProductDetailScreen> {
 
   late EcommerceProvider ep;
 
@@ -618,7 +618,7 @@ class ProductDetailState extends State<ProductDetail> {
                           color: ColorResources.transparent,
                           child: Bouncing(
                             onPress: () {
-          
+                             
                             },
                             child: Container(
                               decoration: BoxDecoration(

@@ -13,9 +13,11 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
-import 'package:saka/views/basewidgets/button/bounce.dart';
 
+import 'package:saka/views/basewidgets/button/bounce.dart';
 import 'package:saka/views/basewidgets/button/custom.dart';
+
+import 'package:saka/views/screens/ecommerce/delivery.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -230,7 +232,88 @@ class CartScreenState extends State<CartScreen> {
                                                           flex: 25,
                                                           child: Bouncing(
                                                           onPress: () {
-                                      
+                                                            showModalBottomSheet(
+                                                              shape: const RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.only(
+                                                                  topLeft: Radius.circular(30.0),
+                                                                  topRight: Radius.circular(30.0)
+                                                                )
+                                                              ),
+                                                              context: context,
+                                                              isScrollControlled: true,
+                                                              builder: (BuildContext context) {
+                                                                return Padding(
+                                                                  padding: EdgeInsets.only(
+                                                                    bottom: MediaQuery.of(context).viewInsets.bottom
+                                                                  ),
+                                                                  child: Column(
+                                                                    mainAxisSize: MainAxisSize.min,
+                                                                    children: [
+                                                                      Container(
+                                                                        margin: const EdgeInsets.only(top: 35.0),
+                                                                        child: Column(
+                                                                          mainAxisSize: MainAxisSize.min,
+                                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                                          children: [
+                                                                            Container(
+                                                                              margin: const EdgeInsets.only(
+                                                                                top: 5.0,
+                                                                                left: 10.0,
+                                                                                right: 10.0,
+                                                                                bottom: 5.0
+                                                                              ),
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  Text("Catatan",
+                                                                                    style: robotoRegular.copyWith(
+                                                                                      fontSize: Dimensions.fontSizeLarge,
+                                                                                      fontWeight: FontWeight.w600
+                                                                                    ),
+                                                                                  ),
+                                                                                  InkWell(
+                                                                                    onTap: () {
+                                                                                      NS.pop(context);
+                                                                                    },
+                                                                                    child: const Padding(
+                                                                                      padding: EdgeInsets.all(5.0),
+                                                                                      child: Icon(
+                                                                                        Icons.close,
+                                                                                        size: 30.0,
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ) 
+                                                                            ),
+                                                                            const Divider(
+                                                                              height: 10.0,
+                                                                              thickness: 1.5,
+                                                                              color: ColorResources.greyBottomNavbar,
+                                                                            ),
+                                                                            Container(
+                                                                              margin: const EdgeInsets.all(10.0),
+                                                                              child: TextField(
+                                                                                controller: notifier.cartData.stores![i].items[z].cart.noteC,
+                                                                                maxLines: 8,
+                                                                                decoration: const InputDecoration(
+                                                                                  border: OutlineInputBorder(),
+                                                                                  focusedBorder: OutlineInputBorder(),
+                                                                                  enabledBorder: OutlineInputBorder()
+                                                                                ),
+                                                                                cursorColor: ColorResources.black,
+                                                                              )
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ).whenComplete(() async {
+                                                              
+                                                            });
                                                           },
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(5.0),
@@ -259,6 +342,7 @@ class CartScreenState extends State<CartScreen> {
                                                                   )
                                                                 ),
                                                                 child: TextField(
+                                                                  readOnly: true,
                                                                   textAlign: TextAlign.center,
                                                                   controller: ep.cartData.stores![i].items[z].cart.totalCartC,
                                                                   style: robotoRegular.copyWith(
@@ -297,6 +381,8 @@ class CartScreenState extends State<CartScreen> {
                                                                           currval = currval + 1;
                                                                           ep.cartData.stores![i].items[z].cart.totalCartC.text = (currval).toString();
                                                                         });
+
+                                                                        ep.incrementQty(i: i, z: z, qty: currval);
                                                                       }, 
                                                                       child: Icon(
                                                                         Icons.add,
@@ -312,6 +398,8 @@ class CartScreenState extends State<CartScreen> {
                                                                             currval = currval - 1;
                                                                             ep.cartData.stores![i].items[z].cart.totalCartC.text = (currval).toString();
                                                                           });
+
+                                                                          ep.decrementQty(i: i, z: z, qty: currval);
                                                                         }
                                                                       }, 
                                                                       child: const Icon(
@@ -492,71 +580,81 @@ class CartScreenState extends State<CartScreen> {
               ) 
             ),
 
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 56.0,
-                decoration: BoxDecoration(
-                  color: ColorResources.white,
-                  boxShadow: kElevationToShadow[4]
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-
-                    Container(
-                      margin: const EdgeInsets.only(
-                        left: 10.0
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("Total Pembayaran",
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              color: ColorResources.hintColor
-                            ),
-                          ),
-                          const SizedBox(height: 2.0),
-                          Text(Helper.formatCurrency(double.parse("100000".toString())),
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              fontWeight: FontWeight.w600,
-                              color: ColorResources.black
-                            ),
-                          )
-                        ],
-                      ),
+            Consumer<EcommerceProvider>(
+              builder: (_, notifier, __) {
+                if(notifier.getCartStatus == GetCartStatus.loading) {
+                  return const SizedBox();
+                }
+                if(notifier.getCartStatus == GetCartStatus.error) {
+                  return const SizedBox();
+                }
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 56.0,
+                    decoration: BoxDecoration(
+                      color: ColorResources.white,
+                      boxShadow: kElevationToShadow[4]
                     ),
-                    
-                    Container(
-                      margin: const EdgeInsets.only(
-                        right: 10.0
-                      ),
-                      width: 90.0,
-                      height: 40.0,
-                      child: CustomButton(
-                        onTap: () {
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
 
-                        },
-                        isBorder: false,
-                        isBorderRadius: true,
-                        sizeBorderRadius: 5.0,
-                        isBoxShadow: false,
-                        fontSize: Dimensions.fontSizeSmall,
-                        isLoading: false,
-                        btnColor: const Color(0xFF0F903B),
-                        btnTxt: "Selanjutnya",
-                      ),
-                    )
+                        Container(
+                          margin: const EdgeInsets.only(
+                            left: 10.0
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Total Pembayaran",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.hintColor
+                                ),
+                              ),
+                              const SizedBox(height: 2.0),
+                              Text(Helper.formatCurrency(double.parse(notifier.cartData.totalPrice.toString())),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorResources.black
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        
+                        Container(
+                          margin: const EdgeInsets.only(
+                            right: 10.0
+                          ),
+                          width: 90.0,
+                          height: 40.0,
+                          child: CustomButton(
+                            onTap: () {
+                               NS.push(context, DeliveryScreen());
+                            },
+                            isBorder: false,
+                            isBorderRadius: true,
+                            sizeBorderRadius: 5.0,
+                            isBoxShadow: false,
+                            fontSize: Dimensions.fontSizeSmall,
+                            isLoading: false,
+                            btnColor: ColorResources.purple,
+                            btnTxt: "Selanjutnya",
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
 
-                ],
-              ),
-            ),
-          )
+              },
+            )
 
         ]
       )

@@ -17,14 +17,14 @@ import 'package:saka/views/screens/ecommerce/cart.dart';
 
 import 'package:saka/views/screens/ecommerce/widget/product_item.dart';
 
-class EcommerceScreen extends StatefulWidget {
-  const EcommerceScreen({super.key});
+class ProductScreen extends StatefulWidget {
+  const ProductScreen({super.key});
 
   @override
-  State<EcommerceScreen> createState() => EcommerceScreenState();
+  State<ProductScreen> createState() => ProductScreenState();
 }
 
-class EcommerceScreenState extends State<EcommerceScreen> {
+class ProductScreenState extends State<ProductScreen> {
 
   Timer? debounce;
 
