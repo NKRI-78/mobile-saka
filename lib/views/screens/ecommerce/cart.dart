@@ -101,15 +101,15 @@ class CartScreenState extends State<CartScreen> {
 
                         if(notifier.getCartStatus == GetCartStatus.empty)
                           SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Center(
-                                child: Text("Belum ada barang",
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault
-                                  ),
-                                )
+                            hasScrollBody: false,
+                            child: Center(
+                              child: Text("Belum ada barang",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault
+                                ),
                               )
-                            ),
+                            )
+                          ),
 
                         if(notifier.getCartStatus == GetCartStatus.error)
                           SliverFillRemaining(

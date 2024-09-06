@@ -97,6 +97,18 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                         )
                       ),
 
+                    if(notifier.getShippingAddressListStatus == GetShippingAddressListStatus.empty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Text("Belum ada alamat",
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault
+                            ),
+                          )
+                        )
+                      ),
+
                     if(notifier.getShippingAddressListStatus == GetShippingAddressListStatus.error) 
                       SliverFillRemaining(
                         hasScrollBody: false,
@@ -129,6 +141,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                 borderRadius: BorderRadius.circular(10),
                                 onTap: () async {
                                   await ep.selectPrimaryShippingAddress(id: notifier.shippingAddress[i].id!);
+                                  NS.pop(context);
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),

@@ -62,7 +62,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
       body: RefreshIndicator.adaptive(
         onRefresh: () {
           return Future.sync(() {
-            
+            getData();
           });
         },
         child: Consumer<EcommerceProvider>(
@@ -188,7 +188,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                 left: 16.0,
                                 right: 16.0
                               ),
-                              child: context.watch<EcommerceProvider>().getShippingAddressDefaultStatus == GetShippingAddressDefaultStatus.empty 
+                              child: notifier.shippingAddressDataDefault.address == null
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -323,7 +323,9 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                     ClipRRect(
                                                       borderRadius: BorderRadius.circular(10.0),
                                                       child: CachedNetworkImage(
-                                                        imageUrl: notifier.checkoutListData.stores![i].products[z].picture.toString(),
+                                                        imageUrl: notifier.checkoutListData.stores![i].products[z].picture.toString() == "-" 
+                                                        ? "https://dummyimage.com/300x300/000/fff" 
+                                                        : notifier.checkoutListData.stores![i].products[z].picture.toString(),
                                                         imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                                           return Container(
                                                             width: 62.0,
@@ -413,125 +415,6 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         );
                                       },
                                     ),
-                                      
-                                    // cpw.getCheckoutCourierStatus == GetCheckoutCourierStatus.loading 
-                                    // ? const SizedBox() 
-                                    // : cpw.getCheckoutCourierStatus == GetCheckoutCourierStatus.error 
-                                    // ? const SizedBox() 
-                                    // : cp.checkoutCourierData.stores![i].courier.name != "-"
-                                    // ? loadingListCourier == i 
-                                    //   ? Container(
-                                    //       height: 120.0,
-                                    //       margin: const EdgeInsets.only(top: 16.0),
-                                    //       decoration: BoxDecoration(
-                                    //         borderRadius: BorderRadius.circular(5.0),
-                                    //         border: Border.all(
-                                    //           width: 3.0,
-                                    //           style: BorderStyle.solid,
-                                    //           color: const Color(0xFFD9D9D9)
-                                    //         )
-                                    //       ),
-                                    //       child: const Column(
-                                    //         crossAxisAlignment: CrossAxisAlignment.center,
-                                    //         mainAxisAlignment: MainAxisAlignment.center,
-                                    //         children: [
-                                    //           Center(
-                                    //             child: SpinKitChasingDots(
-                                    //               color: Color(0xff0F903B),
-                                    //               size: 20.0,
-                                    //             ),
-                                    //           )
-                                    //         ],
-                                    //       )
-                                    //     )
-                                    //   : InkWell(
-                                    //       borderRadius: BorderRadius.circular(5.0),
-                                    //       onTap: () async {
-                                    //         setState(() {
-                                    //           loadingListCourier = i;
-                                    //         });
-                                        
-                                    //         await cp.getCheckoutCourierCost(context, 
-                                    //           storeId: cp.checkoutCourierData.stores![i].id,
-                                    //           i: i,
-                                    //         );
-                                            
-                                    //         setState(() {
-                                    //           loadingListCourier = -1;
-                                    //         });
-                                    //       },
-                                    //       child: Container(
-                                    //         margin: const EdgeInsets.only(top: 16.0),
-                                    //         decoration: BoxDecoration(
-                                    //           borderRadius: BorderRadius.circular(5.0),
-                                    //           border: Border.all(
-                                    //             width: 3.0,
-                                    //             style: BorderStyle.solid,
-                                    //             color: const Color(0xFFD9D9D9)
-                                    //           )
-                                    //         ),
-                                    //         child: Padding(
-                                    //           padding: const EdgeInsets.all(8.0),
-                                    //           child: Row(
-                                    //             children: [
-                                    //               Expanded(
-                                    //                 child: Column(
-                                    //                   crossAxisAlignment: CrossAxisAlignment.start,
-                                    //                   children: [
-                                    //                     Text(cp.checkoutCourierData.stores![i].courier.name!,
-                                    //                       style: const robotoRegular.copyWith(
-                                    //                         fontSize: Dimensions.fontSizeDefault,
-                                    //                         fontWeight: FontWeight.w600,
-                                    //                       )
-                                    //                     ),
-                                    //                     Text(cp.checkoutCourierData.stores![i].courier.service!,
-                                    //                       style: const robotoRegular.copyWith(
-                                    //                         fontSize: Dimensions.fontSizeDefault,
-                                    //                         fontWeight: FontWeight.w600,
-                                    //                       )
-                                    //                     ),
-                                    //                     Row(
-                                    //                       mainAxisAlignment: MainAxisAlignment.start,
-                                    //                       crossAxisAlignment: CrossAxisAlignment.center,
-                                    //                       children: [
-                                    //                         Expanded(
-                                    //                           child: Column(
-                                    //                           crossAxisAlignment: CrossAxisAlignment.start,
-                                    //                             children: [
-                                    //                               Text(Helper.formatCurrency(double.parse(cp.checkoutCourierData.stores![i].courier.cost!.value.toString())),
-                                    //                                 style: const robotoRegular.copyWith(
-                                    //                                   fontSize: 15.0,
-                                    //                                   fontWeight: FontWeight.w600,
-                                    //                                   color: ColorResources.bluePrimary
-                                    //                                 )
-                                    //                               ),
-                                    //                               const SizedBox(
-                                    //                                 height: 5.0,
-                                    //                               ),
-                                    //                               Text("Estimasi tiba ${cp.checkoutCourierData.stores![i].courier.cost!.etd} Hari",
-                                    //                               style: const robotoRegular.copyWith(
-                                    //                                 fontSize: Dimensions.fontSizeDefault,
-                                    //                                 color: ColorResources.bluePrimary
-                                    //                                 )
-                                    //                               ),
-                                    //                             ]
-                                    //                           )
-                                    //                         ),
-                                    //                       ],
-                                    //                     ),
-                                    //                   ],
-                                    //                 ),
-                                    //               ),
-                                    //               const Icon(
-                                    //                 Icons.keyboard_arrow_right,
-                                    //                 color: Color(0xffC5C3C3),
-                                    //               )
-                                    //             ],
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     )
-                                    // : 
 
                                     notifier.checkoutListData.stores![i].courier.name != '-'
                                     ? loadingListCourier == i 

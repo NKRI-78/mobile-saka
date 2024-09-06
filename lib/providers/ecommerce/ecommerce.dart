@@ -141,8 +141,8 @@ class EcommerceProvider extends ChangeNotifier {
   List<SubdistrictData> _subdistrict = [];
   List<SubdistrictData> get subdistrict => [..._subdistrict];
 
-  List<ShippingAddressData> _shippingAddressList = [];
-  List<ShippingAddressData> get shippingAddress => [..._shippingAddressList];
+  List<ShippingAddressData> _shippingAddress = [];
+  List<ShippingAddressData> get shippingAddress => [..._shippingAddress];
 
   ShippingAddressDetailData _shippingAddressDetailData = ShippingAddressDetailData();
   ShippingAddressDetailData get shippingAddressDetailData => _shippingAddressDetailData;
@@ -302,10 +302,14 @@ class EcommerceProvider extends ChangeNotifier {
     try { 
       
       ShippingAddressModel shippingAddressModel = await er.getShippingAddressList();
-      _shippingAddressList = [];
-      _shippingAddressList.addAll(shippingAddressModel.data);
-
+      _shippingAddress = [];
+      _shippingAddress.addAll(shippingAddressModel.data);
       setStateGetShippingAddressList(GetShippingAddressListStatus.loaded);
+
+      if(shippingAddress.isEmpty) {
+        setStateGetShippingAddressList(GetShippingAddressListStatus.empty);
+      }
+
     } catch(e) {
       setStateGetShippingAddressList(GetShippingAddressListStatus.error);
     }
@@ -326,6 +330,7 @@ class EcommerceProvider extends ChangeNotifier {
 
   Future<void> getShippingAddressDefault() async {
     setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loading);
+    
     try {
 
       ShippingAddressModelDefault shippingAddressModelDefault = await er.getShippingAddressDefault();
@@ -333,7 +338,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loaded);
 
-      if(shippingAddressModelDefault.data.isEmpty) {
+      if(shippingAddressDataDefault.name == null) {
         setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.empty);
       }
 
@@ -407,6 +412,12 @@ class EcommerceProvider extends ChangeNotifier {
     try {
 
       await er.selectPrimaryAddress(id: id);
+
+      Future.delayed(Duration.zero, () {
+        getShippingAddressList();
+        getShippingAddressDefault();
+        getCheckoutList();
+      });
 
       setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.loaded);
     } catch(e) {
