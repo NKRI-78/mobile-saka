@@ -151,8 +151,8 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       CheckoutListModel checkoutListModel = CheckoutListModel.fromJson(data);
       return checkoutListModel;
-    } catch(e) {
-      debugPrint(e.toString());
+    } catch(stacktrace) {
+      debugPrint(stacktrace.toString());
       throw Exception('Failed to load checkout list');
     }
   }

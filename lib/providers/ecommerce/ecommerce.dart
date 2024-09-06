@@ -19,11 +19,13 @@ import 'package:saka/data/models/ecommerce/shipping_address/shipping_address_det
 
 import 'package:saka/data/repository/ecommerce/ecommerce.dart';
 import 'package:saka/services/navigation.dart';
+import 'package:saka/services/services.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
 import 'package:saka/views/basewidgets/button/bounce.dart';
+import 'package:saka/views/screens/ecommerce/payment/receipt_va.dart';
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
@@ -902,6 +904,11 @@ class EcommerceProvider extends ChangeNotifier {
       debugPrint(amount.toString());
       debugPrint(channelId.toString());
       debugPrint(paymentCode.toString());
+
+      NS.pushReplacement(
+        navigatorKey.currentContext!, 
+        PaymentReceiptVaScreen()
+      );
 
       setStatePayStatus(PayStatus.loaded);
     } catch(e) {
