@@ -128,9 +128,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(10),
                                 onTap: () async {
-                                  // await context.read<RegionProvider>().selectPrimaryAddress(
-                                  //   uid: regionProvider.shippingAddressData[i].shippingAddressId!
-                                  // );
+                                  await ep.selectPrimaryShippingAddress(id: notifier.shippingAddress[i].id!);
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),

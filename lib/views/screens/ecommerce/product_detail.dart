@@ -95,52 +95,6 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         },
                       ),
                       actions: [
-                        // Center(
-                        //   child: Container(
-                        //     margin: const EdgeInsets.only(right: 5.0),
-                        //     child: InkWell(
-                        //       borderRadius: BorderRadius.circular(50.0),
-                        //       onTap: () {
-                        
-                        //       },
-                        //       child: Padding(
-                        //         padding: const EdgeInsets.all(8.0),
-                        //         child: Image.asset("assets/images/dashboard/notification.png",
-                        //           width: 25.0,
-                        //           height: 25.0,
-                        //         ),
-                        //       )
-                        //     ),
-                        //   ),
-                        // ),
-                        // Center(
-                        //   child: 
-                          
-                          // Container(
-                          //   margin: EdgeInsets.only(
-                          //     right: 5.0
-                          //   ),
-                          //   child: InkWell(
-                          //     borderRadius: BorderRadius.circular(50.0),
-                          //     onTap: () {
-                                
-                          //     },  
-                          //     child: Padding(
-                          //       padding: const EdgeInsets.all(8.0),
-                          //       child: Badge(
-                          //         label: Text("0",
-                          //           style: robotoRegular.copyWith(
-                          //             fontSize: Dimensions.fontSizeSmall
-                          //           ),
-                          //         ),
-                          //         child: Icon(Icons.shopping_cart,
-                          //           color: ColorResources.black,
-                          //         )
-                          //       ),
-                          //     )
-                          //   ),
-                          // ),
-                        // ),
 
                       if(notifier.getCartStatus == GetCartStatus.loading)
                         Container(
@@ -148,15 +102,20 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                             right: 16.0,
                             left: 16.0
                           ),
-                          child: Badge(
-                            label: Text("0",
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
+                          child: Bouncing(
+                            onPress: () {
+                              NS.push(context, CartScreen());
+                            },
+                            child: Badge(
+                              label: Text("0",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall
+                                ),
                               ),
-                            ),
-                            child: Icon(
-                              Icons.shopping_cart,
-                              size: 20.0
+                              child: Icon(
+                                Icons.shopping_cart,
+                                size: 20.0
+                              ),
                             ),
                           ),
                         ),
@@ -167,15 +126,44 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                             right: 16.0,
                             left: 16.0
                           ),
-                          child: Badge(
-                            label: Text("0",
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
+                          child: Bouncing(
+                            onPress: () {
+                              NS.push(context, CartScreen());
+                            },
+                            child: Badge(
+                              label: Text("0",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                size: 20.0
                               ),
                             ),
-                            child: Icon(
-                              Icons.shopping_cart,
-                              size: 20.0
+                          ),
+                        ),
+
+                      if(notifier.getCartStatus == GetCartStatus.empty)
+                        Container(
+                          margin: EdgeInsets.only(
+                            right: 16.0,
+                            left: 16.0
+                          ),
+                          child: Bouncing(
+                            onPress: () {
+                              NS.push(context, CartScreen());
+                            },
+                            child: Badge(
+                              label: Text("0",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                size: 20.0
+                              ),
                             ),
                           ),
                         ),
@@ -617,8 +605,12 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         child: Material(
                           color: ColorResources.transparent,
                           child: Bouncing(
-                            onPress: () {
-                             
+                            onPress: () async {
+                              await ep.addToCart(
+                                productId: widget.productId, 
+                                qty: 1, 
+                                note: ""
+                              );
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -627,27 +619,33 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
+                                child: Consumer<EcommerceProvider>(
+                                  builder: (_, notifier, __) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        
+                                        Icon(
+                                          Icons.add_shopping_cart,
+                                          color: ColorResources.white,  
+                                        ),
                                     
-                                    Icon(
-                                      Icons.add_shopping_cart,
-                                      color: ColorResources.white,  
-                                    ),
-                                
-                                    const SizedBox(width: 8.0),
-                                    
-                                    Text("Tambah Keranjang",
-                                      style: TextStyle(
-                                        fontSize: Dimensions.fontSizeSmall,
-                                        fontWeight: FontWeight.bold,
-                                        color: ColorResources.white
-                                      ),
-                                    )
-                                                  
-                                  ],
-                                ),
+                                        const SizedBox(width: 8.0),
+                                        
+                                        Text(notifier.addCartStatus == AddCartStatus.loading 
+                                        ? "Mohon tunggu..." 
+                                        : "Tambah Keranjang",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.fontSizeSmall,
+                                            fontWeight: FontWeight.bold,
+                                            color: ColorResources.white
+                                          ),
+                                        )
+                                                      
+                                      ],
+                                    );
+                                  },
+                                ) 
                               ),
                             )
                           ))

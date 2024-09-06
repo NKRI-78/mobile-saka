@@ -6,6 +6,7 @@ import 'package:saka/data/models/ecommerce/cart/cart.dart';
 import 'package:saka/data/models/ecommerce/checkout/list.dart';
 import 'package:saka/data/models/ecommerce/courier/courier.dart';
 import 'package:saka/data/models/ecommerce/googlemaps/googlemaps.dart';
+import 'package:saka/data/models/ecommerce/payment/payment.dart';
 import 'package:saka/data/models/ecommerce/product/all.dart';
 import 'package:saka/data/models/ecommerce/product/detail.dart';
 import 'package:saka/data/models/ecommerce/region/city.dart';
@@ -22,10 +23,14 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
+import 'package:saka/views/basewidgets/button/bounce.dart';
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
+
+enum AddCartStatus { idle, loading, loaded, empty, error }
 enum GetCartStatus { idle, loading, loaded, empty, error }
+enum DeleteCartStatus { idle, loading, loaded ,empty, error }
 
 enum GetCourierStatus { idle, loading, loaded, empty, error }
 enum AddCourierStatus { idle, loading, loaded, empty, error }
@@ -33,6 +38,9 @@ enum AddCourierStatus { idle, loading, loaded, empty, error }
 enum GetShippingAddressListStatus { idle, loading, loaded, empty, error }
 enum GetShippingAddressSingleStatus { idle, loading, loaded, empty, error }
 enum GetShippingAddressDefaultStatus { idle, loading, loaded, empty, error }
+enum CreateShippingAddressStatus { idle, loading, loaded, empty, error }
+enum UpdateShippingAddressStatus { idle, loading, loaded, empty, error }
+enum SelectPrimaryShippingAddressStatus { idle, loading, loaded, empty, error }
 
 enum GetCheckoutStatus { idle, loading, loaded ,empty, error }
 
@@ -41,6 +49,8 @@ enum GetCityStatus { idle, loading, loaded, empty, error }
 enum GetDistrictStatus { idle, loading, loaded, empty, error }
 enum GetSubdistrictStatus { idle, loading, loaded, empty, error }
 
+enum PayStatus { idle, loading, loaded, empty, error }
+
 class EcommerceProvider extends ChangeNotifier {
   final EcommerceRepo er;
 
@@ -48,14 +58,28 @@ class EcommerceProvider extends ChangeNotifier {
     required this.er
   });
 
+  int channelId = -1;
+  int amount = -1;
+  String paymentName = "";
+  String paymentCode = "";
+
   ListProductStatus _listProductStatus = ListProductStatus.loading;
   ListProductStatus get listProductStatus => _listProductStatus;
 
   DetailProductStatus _detailProductStatus = DetailProductStatus.loading;
   DetailProductStatus get detailProductStatus => _detailProductStatus;
 
+  PayStatus _payStatus = PayStatus.idle;
+  PayStatus get payStatus => _payStatus;
+
   GetCartStatus _getCartStatus = GetCartStatus.loading; 
   GetCartStatus get getCartStatus => _getCartStatus;
+
+  AddCartStatus _addCartStatus = AddCartStatus.idle;
+  AddCartStatus get addCartStatus => _addCartStatus;
+
+  DeleteCartStatus _deleteCartStatus = DeleteCartStatus.idle;
+  DeleteCartStatus get deleteCartStatus => _deleteCartStatus;
 
   GetCourierStatus _getCourierStatus = GetCourierStatus.loading;
   GetCourierStatus get getCourierStatus => _getCourierStatus;
@@ -74,6 +98,15 @@ class EcommerceProvider extends ChangeNotifier {
 
   GetShippingAddressDefaultStatus _getShippingAddressDefaultStatus = GetShippingAddressDefaultStatus.loading;
   GetShippingAddressDefaultStatus get getShippingAddressDefaultStatus => _getShippingAddressDefaultStatus;
+
+  CreateShippingAddressStatus _createShippingAddressStatus = CreateShippingAddressStatus.idle; 
+  CreateShippingAddressStatus get createShippingAddressStatus => _createShippingAddressStatus;
+
+  UpdateShippingAddressStatus _updateShippingAddressStatus = UpdateShippingAddressStatus.idle; 
+  UpdateShippingAddressStatus get updateShippingAddressStatus => _updateShippingAddressStatus;
+
+  SelectPrimaryShippingAddressStatus _selectPrimaryShippingAddressStatus = SelectPrimaryShippingAddressStatus.idle;
+  SelectPrimaryShippingAddressStatus get  selectPrimaryShippingAddressStatus => _selectPrimaryShippingAddressStatus;
 
   GetProvinceStatus _getProvinceStatus = GetProvinceStatus.loading;
   GetProvinceStatus get getProvinceStatus => _getProvinceStatus;
@@ -138,6 +171,36 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setStateAddCartStatus(AddCartStatus param) {
+    _addCartStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus param) {
+    _selectPrimaryShippingAddressStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateCreateShippingAddress(CreateShippingAddressStatus param) {
+    _createShippingAddressStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateUpdateShippingAddress(UpdateShippingAddressStatus param) {
+    _updateShippingAddressStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateDeleteCartStatus(DeleteCartStatus param) {
+    _deleteCartStatus = param;
+
+    notifyListeners();
+  }
+
   void setStateGetCourierStatus(GetCourierStatus param) {
     _getCourierStatus = param;
 
@@ -198,7 +261,13 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchAllProducts({required String search}) async {
+  void setStatePayStatus(PayStatus param) {
+    _payStatus = param;
+
+    notifyListeners();
+  }
+
+  Future<void> fetchAllProduct({required String search}) async {
     setStateListProductStatus(ListProductStatus.loading);
 
     try {
@@ -261,6 +330,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       ShippingAddressModelDefault shippingAddressModelDefault = await er.getShippingAddressDefault();
       _shippingAddressDataDefault = shippingAddressModelDefault.data[0];
+
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.loaded);
 
       if(shippingAddressModelDefault.data.isEmpty) {
@@ -272,6 +342,78 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> createShippingAddress({
+    required String label,
+    required String address,
+    required String province,
+    required String city,
+    required String district,
+    required String postalCode,
+    required String subdistrict
+  }) async {
+    setStateCreateShippingAddress(CreateShippingAddressStatus.loading);
+    try {
+
+      await er.createShippingAddress(
+        label: label,
+        address: address,
+        province: province,
+        city: city,
+        district: district,
+        postalCode: postalCode,
+        subdistrict: subdistrict
+      );
+
+      setStateCreateShippingAddress(CreateShippingAddressStatus.loaded);
+    } catch(e) {
+      setStateCreateShippingAddress(CreateShippingAddressStatus.error);
+    }
+  }
+
+  Future<void> updateShippingAddress({
+    required String id,
+    required String label,
+    required String address,
+    required String province,
+    required String city,
+    required String district,
+    required String postalCode,
+    required String subdistrict
+  }) async {
+    setStateUpdateShippingAddress(UpdateShippingAddressStatus.loading);
+    try {
+
+      await er.updateShippingAddress(
+        id: id,
+        label: label,
+        address: address,
+        province: province,
+        city: city,
+        district: district,
+        postalCode: postalCode,
+        subdistrict: subdistrict
+      );
+
+      setStateUpdateShippingAddress(UpdateShippingAddressStatus.loaded);
+    } catch(e) {
+      setStateUpdateShippingAddress(UpdateShippingAddressStatus.error);
+    }
+  }
+
+  Future<void> selectPrimaryShippingAddress({
+    required String id
+  }) async {  
+    setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.loading);
+    try {
+
+      await er.selectPrimaryAddress(id: id);
+
+      setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.loaded);
+    } catch(e) {
+      setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.error);
+    }
+  }
+
   Future<void> getCart() async {
     setStateGetCartStatus(GetCartStatus.loading);
 
@@ -280,11 +422,47 @@ class EcommerceProvider extends ChangeNotifier {
       CartModel cartModel = await er.getCart();
       _cartData = cartModel.data;
       setStateGetCartStatus(GetCartStatus.loaded);
+
+      if(cartData.stores!.isEmpty) {
+           setStateGetCartStatus(GetCartStatus.empty);
+      }
        
     } catch(e) {
       setStateGetCartStatus(GetCartStatus.error);
     } 
+  }
 
+  Future<void> addToCart({
+    required String productId,
+    required int qty,
+    required String note
+  }) async {
+    setStateAddCartStatus(AddCartStatus.loading);
+    try {
+      await er.addToCart(note: note, qty: qty, productId: productId);
+      setStateAddCartStatus(AddCartStatus.loaded);
+
+      Future.delayed(Duration.zero,() {
+        getCart();
+      });
+    } catch(e) {
+      setStateAddCartStatus(AddCartStatus.error);
+    }
+  }
+
+
+  Future<void> deleteCart({required String cartId}) async {
+    setStateDeleteCartStatus(DeleteCartStatus.loading);
+    try {
+      await er.deleteCart(cartId: cartId);  
+      setStateDeleteCartStatus(DeleteCartStatus.loaded);
+
+      Future.delayed(Duration.zero,() {
+        getCart();
+      });
+    } catch(e) {
+      setStateDeleteCartStatus(DeleteCartStatus.error);
+    }
   }
 
   Future<void> getCourierList({
@@ -434,27 +612,6 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addCourier({
-    required String courierCode, 
-    required String courierService, 
-    required String courierName, 
-    required String courierDesc,
-    required String costValue, 
-    required String costNote,
-    required String costEtd, 
-    required String storeId
-  }) async {
-    setStateAddCourierStatus(AddCourierStatus.loading);
-    try {
-
-
-
-      setStateAddCourierStatus(AddCourierStatus.loaded);
-    } catch(e) {
-      setStateAddCourierStatus(AddCourierStatus.error);
-    }
-  }
-
   Future<void> getCheckoutList() async {
     setStateCheckoutStatus(GetCheckoutStatus.loading);
     try {
@@ -482,13 +639,12 @@ class EcommerceProvider extends ChangeNotifier {
     }
 
     _cartData.totalPrice = totalPriceQty;
-    
-    // await Future.wait([
-    //   updateQty(cartId: cartId, qty: cartInfoData.stores![i].items[z].cart.quantity.toString()),
-    //   pr.updateCartSelected(selected: true, cartId: cartId)
-    // ]);
 
-    Future.delayed(Duration.zero, () => notifyListeners());
+    await er.updateQty(cartId:  _cartData.stores![i].items[z].cart.id, qty: cartData.stores![i].items[z].cart.qty);
+  
+    Future.delayed(Duration.zero, () {
+      getCart();
+    });
 
     notifyListeners();
   }
@@ -507,6 +663,12 @@ class EcommerceProvider extends ChangeNotifier {
     }
 
     _cartData.totalPrice = totalPriceQty;
+
+    await er.updateQty(cartId:  _cartData.stores![i].items[z].cart.id, qty: cartData.stores![i].items[z].cart.qty);
+
+    Future.delayed(Duration.zero, () {
+      getCart();
+    });
 
     notifyListeners();
   }
@@ -592,5 +754,138 @@ class EcommerceProvider extends ChangeNotifier {
     return [];
   }
 
+  Future<void> getPaymentChannel({
+    required BuildContext context,
+    required int totalPrice
+  }) async {
+    try {
+
+      PaymentChannelModel paymentChannelModel = await er.getPaymentChannel();
+      
+      showModalBottomSheet(
+        context: context, 
+        isDismissible: true,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10.0),
+            topRight: Radius.circular(10.0)
+          )
+        ),
+        builder: (BuildContext context) {
+          return Container(
+            height: 280.0,
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+            
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+            
+                    Container(
+                      margin: const EdgeInsets.all(15.0),
+                      child: Text("Pilih Pembayaran",
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.black,
+                          fontSize: Dimensions.fontSizeLarge,
+                          fontWeight: FontWeight.w600
+                        ),
+                      )
+                    ),
+            
+                  ],
+                ),
+                                        
+                ListView.separated(
+                  separatorBuilder: (BuildContext context, int i) {
+                    return const Divider(
+                      thickness: 2.0,
+                    );
+                  },
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  itemCount: paymentChannelModel.data.data.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    PaymentChannelItem payment = paymentChannelModel.data.data[i];
+            
+                    return Bouncing(
+                      onPress: () async {
+                        channelId = payment.id;
+                        paymentName = payment.name;
+                        paymentCode = payment.nameCode;
+                        amount = totalPrice;
+
+                        notifyListeners();
+
+                        NS.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                            left: 10.0, 
+                            right: 10.0
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(payment.name,
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  color: ColorResources.black
+                                ),
+                              ),
+                              Text("Pilih",
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorResources.black
+                                ),
+                              )
+                            ],
+                          )
+                        ),
+                      ),
+                    );
+                    
+                  },
+                )
+            
+              ],
+            ),
+          );
+        }
+      );
+
+    } catch(e) {
+
+    }
+  }
+
+  Future<void> pay() async {
+    setStatePayStatus(PayStatus.loading);
+    try {
+
+      // await er.pay(
+      //   amount: amount, 
+      //   app: "saka", 
+      //   channelId: channelId, 
+      //   paymentCode: paymentCode
+      // );
+
+      debugPrint(amount.toString());
+      debugPrint(channelId.toString());
+      debugPrint(paymentCode.toString());
+
+      setStatePayStatus(PayStatus.loaded);
+    } catch(e) {
+      setStatePayStatus(PayStatus.error);
+    }
+  }
 
 }

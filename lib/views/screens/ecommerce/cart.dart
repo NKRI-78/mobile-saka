@@ -99,6 +99,18 @@ class CartScreenState extends State<CartScreen> {
                             )
                           ),
 
+                        if(notifier.getCartStatus == GetCartStatus.empty)
+                          SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Center(
+                                child: Text("Belum ada barang",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault
+                                  ),
+                                )
+                              )
+                            ),
+
                         if(notifier.getCartStatus == GetCartStatus.error)
                           SliverFillRemaining(
                             hasScrollBody: false,
@@ -163,7 +175,7 @@ class CartScreenState extends State<CartScreen> {
                                               children: [
                                       
                                               CachedNetworkImage(
-                                                imageUrl: "https://dummyimage.com/300x300/000/fff",
+                                                imageUrl: notifier.cartData.stores![i].items[z].picture,
                                                 imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                                   return Container(
                                                     width: 45.0,
@@ -428,46 +440,16 @@ class CartScreenState extends State<CartScreen> {
                                                                   child: Material(
                                                                     color: ColorResources.transparent,
                                                                     child: Container(
-                                                                      margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                                                                      height: 280.0,
+                                                                      margin: const EdgeInsets.all(20.0),
+                                                                      height: 250.0,
                                                                       decoration: BoxDecoration(
-                                                                        color: const Color(0xff0F903B), 
+                                                                        color: ColorResources.purple, 
                                                                         borderRadius: BorderRadius.circular(20.0)
                                                                       ),
                                                                       child: Stack(
                                                                         clipBehavior: Clip.none,
                                                                         children: [
                                                                                                           
-                                                                          Align(
-                                                                            alignment: Alignment.topLeft,
-                                                                            child: Container(
-                                                                              margin: const EdgeInsets.only(top: 0.0, left: 0.0),
-                                                                              child: ClipRRect(
-                                                                              borderRadius: BorderRadius.circular(20.0),
-                                                                                child: Image.asset("assets/images/background/shading-top-left.png")
-                                                                              )
-                                                                            )
-                                                                          ),
-                                                                                                          
-                                                                          Align(
-                                                                            alignment: Alignment.topRight,
-                                                                            child: Container(
-                                                                              margin: const EdgeInsets.only(top: 0.0, right: 0.0),
-                                                                              child: ClipRRect(
-                                                                                borderRadius: BorderRadius.circular(20.0),
-                                                                                child: Image.asset("assets/images/background/shading-right.png")
-                                                                              )
-                                                                            )
-                                                                          ),
-                                                                                                          
-                                                                          Align(
-                                                                            alignment: Alignment.bottomRight,
-                                                                            child: Container(
-                                                                              margin: const EdgeInsets.only(top: 200.0, right: 0.0),
-                                                                              child: Image.asset("assets/images/background/shading-right-bottom.png")
-                                                                            )
-                                                                          ),
-                                                                          
                                                                           Align(
                                                                             alignment: Alignment.center,
                                                                             child: Text("Apakah kamu yakin ingin hapus dari keranjang",
@@ -486,15 +468,19 @@ class CartScreenState extends State<CartScreen> {
                                                                               mainAxisAlignment: MainAxisAlignment.end,
                                                                               children: [
                                                                                 Container(
-                                                                                  margin: const EdgeInsets.only(bottom: 30.0),
+                                                                                  margin: const EdgeInsets.only(
+                                                                                    top: 20.0,
+                                                                                    bottom: 20.0
+                                                                                  ),
                                                                                   child: Row(
                                                                                     mainAxisSize: MainAxisSize.max,
                                                                                     children: [
-                                                                                      Expanded(child: Container()),
+                                                                                      Expanded(child: SizedBox()),
                                                                                       Expanded(
                                                                                         flex: 5,
                                                                                         child: CustomButton(
                                                                                           isBorderRadius: true,
+                                                                                          isBoxShadow: false,
                                                                                           btnColor: ColorResources.white,
                                                                                           btnTextColor: ColorResources.black,
                                                                                           onTap: () {
@@ -503,21 +489,29 @@ class CartScreenState extends State<CartScreen> {
                                                                                           btnTxt: "Batal"
                                                                                         ),
                                                                                       ),
-                                                                                      Expanded(child: Container()),
+                                                                                      Expanded(child: SizedBox()),
                                                                                       Expanded(
                                                                                         flex: 5,
-                                                                                        child: CustomButton(
-                                                                                          isBorderRadius: true,
-                                                                                          isLoading: false,
-                                                                                          btnColor: ColorResources.error ,
-                                                                                          btnTextColor: ColorResources.white,
-                                                                                          onTap: () async {
-                                                                                            
-                                                                                          }, 
-                                                                                          btnTxt: "OK"
-                                                                                        ),
+                                                                                        child: Consumer<EcommerceProvider>(
+                                                                                          builder: (_, notifier, __) {
+                                                                                            return CustomButton(
+                                                                                              isBorderRadius: true,
+                                                                                              isBoxShadow: false,
+                                                                                              isLoading: notifier.deleteCartStatus == DeleteCartStatus.loading 
+                                                                                              ? true 
+                                                                                              : false,
+                                                                                              btnColor: ColorResources.error ,
+                                                                                              btnTextColor: ColorResources.white,
+                                                                                              onTap: () async {
+                                                                                                await ep.deleteCart(cartId: ep.cartData.stores![i].items[z].cart.id);
+                                                                                                NS.pop(context);
+                                                                                              }, 
+                                                                                              btnTxt: "OK"
+                                                                                            );
+                                                                                          },
+                                                                                        )
                                                                                       ),
-                                                                                      Expanded(child: Container()),
+                                                                                      Expanded(child: SizedBox()),
                                                                                     ],
                                                                                   ),
                                                                                 )
@@ -583,6 +577,9 @@ class CartScreenState extends State<CartScreen> {
             Consumer<EcommerceProvider>(
               builder: (_, notifier, __) {
                 if(notifier.getCartStatus == GetCartStatus.loading) {
+                  return const SizedBox();
+                }
+                if(notifier.getCartStatus == GetCartStatus.empty) {
                   return const SizedBox();
                 }
                 if(notifier.getCartStatus == GetCartStatus.error) {

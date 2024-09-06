@@ -36,7 +36,7 @@ class ProductScreenState extends State<ProductScreen> {
   Future<void> getData() async {
     
     if(!mounted) return; 
-      await ep.fetchAllProducts(search: "");
+      await ep.fetchAllProduct(search: "");
 
     if(!mounted) return;
       await ep.getCart();
@@ -57,7 +57,7 @@ class ProductScreenState extends State<ProductScreen> {
       if(searchC.text.isNotEmpty) {
         if (debounce?.isActive ?? false) debounce?.cancel();
           debounce = Timer(const Duration(milliseconds: 500), () {
-            ep.fetchAllProducts(search: searchC.text);
+            ep.fetchAllProduct(search: searchC.text);
           });
       }
 
@@ -82,7 +82,7 @@ class ProductScreenState extends State<ProductScreen> {
       body: RefreshIndicator.adaptive(
         onRefresh: () {
           return Future.sync(() {
-            ep.fetchAllProducts(search: "");
+            ep.fetchAllProduct(search: "");
           });
         },
         child: Consumer<EcommerceProvider>(
@@ -151,28 +151,56 @@ class ProductScreenState extends State<ProductScreen> {
                           const SizedBox(width: 15.0),
 
                           if(notifier.getCartStatus == GetCartStatus.loading)
-                            Badge(
-                              label: Text("0",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall
+                            Bouncing(
+                              onPress: () {
+                                NS.push(context, CartScreen());
+                              },
+                              child: Badge(
+                                label: Text("0",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall
+                                  ),
                                 ),
-                              ),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                size: 20.0
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  size: 20.0
+                                ),
                               ),
                             ),
 
                           if(notifier.getCartStatus == GetCartStatus.error)
-                            Badge(
-                              label: Text("0",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall
+                            Bouncing(
+                              onPress: () {
+                                NS.push(context, CartScreen());
+                              },
+                              child: Badge(
+                                label: Text("0",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  size: 20.0
                                 ),
                               ),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                size: 20.0
+                            ),
+
+                          if(notifier.getCartStatus == GetCartStatus.empty)
+                            Bouncing(
+                              onPress: () {
+                                NS.push(context, CartScreen());
+                              },
+                              child: Badge(
+                                label: Text("0",
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  size: 20.0
+                                ),
                               ),
                             ),
                         

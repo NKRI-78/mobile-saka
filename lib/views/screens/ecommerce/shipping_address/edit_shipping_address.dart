@@ -74,39 +74,39 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
     String postalCode = postalCodeC.text;
 
     if(detailAddress.trim().isEmpty) { 
-      ShowSnackbar.snackbar("Detail Alamat tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field address detail is required", "", ColorResources.error);
       return;
     }
     if(typeAddress.trim().isEmpty) {
-      ShowSnackbar.snackbar("Lokasi Alamat tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field location is required", "", ColorResources.error);
       return;
     }
     if(province.trim().isEmpty) {
-      ShowSnackbar.snackbar("Provinsi tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field province is required", "", ColorResources.error);
       return;
     }
     if(city.trim().isEmpty){
-      ShowSnackbar.snackbar("Kota tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field city is required", "", ColorResources.error);
       return;
     }
     if(postalCodeC.text.trim().isEmpty) {
-      ShowSnackbar.snackbar("Kode Pos tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field postal code is required", "", ColorResources.error);
       return;
     }
     if(district.trim().isEmpty) {
-      ShowSnackbar.snackbar("Daerah tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field district is required", "", ColorResources.error);
       return;
     }
     if(subdistrict.trim().isEmpty) {
-      ShowSnackbar.snackbar("Kecamatan tidak boleh kosong", "", ColorResources.error);
+      ShowSnackbar.snackbar("Field subdistrict is required", "", ColorResources.error);
       return;
     }
     
-    // await context.read<RegionProvider>().createAddress(
-    //   context, uid: widget.id, name: typeAddress, address: detailAddress, 
-    //   city: city, lat: "0", lng: "0", postalCode: postalCode, 
-    //   province: province, district: district, subdistrict: subdistrict, defaultLocation: false
-    // );
+    await ep.updateShippingAddress(
+      id: widget.id, label: typeAddress, address: detailAddress, 
+      city: city, postalCode: postalCode, 
+      province: province, district: district, subdistrict: subdistrict
+    );
   }
 
   @override
@@ -244,13 +244,21 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                   
                   const SizedBox(height: 15.0),
 
-                  CustomButton(
-                    onTap: submit,
-                    isLoading: false,
-                    isBorderRadius: true,
-                    btnColor: ColorResources.purple,
-                    btnTxt: "Simpan",
-                  ),
+                  Consumer<EcommerceProvider>(
+                    builder: (_, notifier, __) {
+                      return  CustomButton(
+                        onTap: submit,
+                        isLoading: notifier.updateShippingAddressStatus == UpdateShippingAddressStatus.loading 
+                        ? true 
+                        : false,
+                        isBorderRadius: true,
+                        btnColor: ColorResources.purple,
+                        btnTxt: "Simpan",
+                      );
+                    },
+                  )
+
+                 
                   
                 ],
               ),

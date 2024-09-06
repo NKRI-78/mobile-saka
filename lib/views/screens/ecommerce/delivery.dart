@@ -12,6 +12,7 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/helper.dart';
+import 'package:saka/views/basewidgets/button/bounce.dart';
 
 import 'package:saka/views/basewidgets/button/custom.dart';
 
@@ -100,17 +101,17 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                     )
                   ),
 
-                // if(notifier.getShippingAddressDefaultStatus == GetShippingAddressDefaultStatus.loading) 
-                //   SliverFillRemaining(
-                //     hasScrollBody: false,
-                //     child: Center(
-                //       child: SizedBox(
-                //         width: 32.0,
-                //         height: 32.0,
-                //         child: CircularProgressIndicator.adaptive()
-                //       )
-                //     )
-                //   ),
+                if(notifier.getShippingAddressDefaultStatus == GetShippingAddressDefaultStatus.loading) 
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: SizedBox(
+                        width: 32.0,
+                        height: 32.0,
+                        child: CircularProgressIndicator.adaptive()
+                      )
+                    )
+                  ),
 
                 if(notifier.getCheckoutStatus == GetCheckoutStatus.error)
                   SliverFillRemaining(
@@ -123,18 +124,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                       )
                     )
                   ),
-                
-                // if(notifier.getShippingAddressDefaultStatus == GetShippingAddressDefaultStatus.empty) 
-                //   SliverFillRemaining(
-                //     hasScrollBody: false,
-                //     child: Center(
-                //       child: Text("Hmm... Mohon tunggu yaa",
-                //         style: robotoRegular.copyWith(
-                //           fontSize: Dimensions.fontSizeDefault
-                //         ),
-                //       )
-                //     )
-                //   ),
+
                 if(notifier.getCheckoutStatus == GetCheckoutStatus.loaded)
                   SliverPadding(
                     padding: const EdgeInsets.only(
@@ -668,18 +658,18 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             setState(() => loading = -1);
                                           },
                                           child: Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5.0),
-                                              border: Border.all(
-                                              width: 3.0,
-                                              style: BorderStyle.solid,
-                                              color: const Color(0xFFD9D9D9)
-                                            )
-                                          ),
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5.0),
+                                                border: Border.all(
+                                                width: 3.0,
+                                                style: BorderStyle.solid,
+                                                color: const Color(0xFFD9D9D9)
+                                              )
+                                            ),
                                           child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
@@ -700,7 +690,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                   ? "Mohon tunggu..." 
                                                   : "Pilih Pengiriman",
                                                   style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions.fontSizeLarge,
+                                                    fontSize: Dimensions.fontSizeDefault,
                                                     fontWeight: FontWeight.w600,
                                                     color: ColorResources.purple
                                                   ),
@@ -719,9 +709,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                           ),
                                         )
                                       ),
-                                      )),
-
-
+                                    )),
 
                                                                                         
                                   ],
@@ -978,9 +966,11 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                               mainAxisSize: MainAxisSize.max,
                                                               mainAxisAlignment: MainAxisAlignment.start,
                                                               children: [
+
                                                                 Expanded(
-                                                                  child: Container()
+                                                                  child: SizedBox()
                                                                 ),
+
                                                                 Expanded(
                                                                   child: Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -993,7 +983,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                         ),
                                                                       ),
                                                                       const SizedBox(height: 5.0),
-                                                                      Text(Helper.formatCurrency(double.parse("10000".toString())),
+                                                                      Text(Helper.formatCurrency(double.parse(ep.checkoutListData.totalCostValue.toString())),
                                                                         style: robotoRegular.copyWith(
                                                                           fontSize: Dimensions.fontSizeSmall,
                                                                           color: ColorResources.black
@@ -1002,6 +992,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                     ],
                                                                   ) 
                                                                 ),
+
                                                                 Expanded(
                                                                   child: Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1014,7 +1005,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                         ),
                                                                       ),
                                                                       const SizedBox(height: 5.0),
-                                                                      Text(Helper.formatCurrency(double.parse("100000".toString())),
+                                                                      Text(Helper.formatCurrency(double.parse(ep.checkoutListData.totalPrice.toString())),
                                                                         style: robotoRegular.copyWith(
                                                                           fontSize: Dimensions.fontSizeSmall,
                                                                           color: ColorResources.black
@@ -1023,6 +1014,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                     ],
                                                                   ) 
                                                                 ),
+
                                                               ],
                                                             )
                                                           ],
@@ -1033,8 +1025,8 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                   ]);
                                                 },
                                               );
-                                            });
-
+                                            }
+                                          );
                                         },
                                         child: const Icon(
                                           Icons.info, 
@@ -1055,7 +1047,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                           fontWeight: FontWeight.w300
                                         ),
                                       ),
-                                      Text(Helper.formatCurrency(double.parse("100000".toString())),
+                                      Text(Helper.formatCurrency(double.parse(ep.checkoutListData.totalPrice.toString())),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall,
                                           fontWeight: FontWeight.w300
@@ -1068,10 +1060,141 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                             ],
                           ),
                         ),
-                          
+
+                        Consumer<EcommerceProvider>(
+                          builder: (_, notifier, __) {
+                            return notifier.channelId != -1 
+                            ? Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  left: 16.0, 
+                                  right: 16.0,
+                                  bottom: 10.0
+                                ),
+                                child: Bouncing(
+                                onPress: () async {
+                                  await notifier.getPaymentChannel(
+                                    context: context,
+                                    totalPrice: notifier.checkoutListData.totalPrice!
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                      border: Border.all(
+                                      width: 3.0,
+                                      style: BorderStyle.solid,
+                                      color: const Color(0xFFD9D9D9)
+                                    )
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                    
+                                        Expanded(
+                                          flex: 4,
+                                          child: Icon(
+                                            Icons.payment,
+                                            color: ColorResources.black,
+                                          )
+                                        ),
+                                    
+                                        Expanded(
+                                          flex: 12,
+                                          child: Text(notifier.paymentName,
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.bold,
+                                              color: ColorResources.black
+                                            ),
+                                          ),
+                                        ),
+
+                                        Expanded(
+                                          flex: 2,
+                                          child: Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: Color(0xffC5C3C3)
+                                          )
+                                        )
+                                    
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            )
+                            : Container(
+                                margin: const EdgeInsets.only(
+                                  top: 10.0,
+                                  left: 16.0, 
+                                  right: 16.0,
+                                  bottom: 10.0
+                                ),
+                                child: Bouncing(
+                                onPress: () async {
+                                  await ep.getPaymentChannel(
+                                    context: context,
+                                    totalPrice: ep.checkoutListData.totalPrice!
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                      border: Border.all(
+                                      width: 3.0,
+                                      style: BorderStyle.solid,
+                                      color: const Color(0xFFD9D9D9)
+                                    )
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                    
+                                        Expanded(
+                                          flex: 4,
+                                          child: Icon(
+                                            Icons.payment,
+                                            color: ColorResources.purple,
+                                          )
+                                        ),
+                                    
+                                        Expanded(
+                                          flex: 12,
+                                          child: Text("Pilih Pembayaran",
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.bold,
+                                              color: ColorResources.purple
+                                            ),
+                                          ),
+                                        ),
+
+                                        Expanded(
+                                          flex: 2,
+                                          child: Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: ColorResources.purple
+                                          )
+                                        )
+                                    
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            );
+                          },
+                        ),
+
                         Container(
                           margin: const EdgeInsets.only(
-                            top: 10.0,
+                            top: 16.0,
+                            bottom: 16.0,
                             left: 16.0,
                             right: 16.0
                           ),
@@ -1085,16 +1208,24 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                               ),
                               Expanded(
                                 flex: 4,
-                                child: CustomButton(
-                                  onTap: () {},
-                                  isBorder: false,
-                                  isBoxShadow: false,
-                                  isBorderRadius: true,
-                                  sizeBorderRadius: 30.0,
-                                  isLoading: false,
-                                  btnColor: ColorResources.purple,
-                                  btnTxt: "Pilih Pembayaran",
-                                ),
+                                child: Consumer<EcommerceProvider>(
+                                  builder: (_, notifier, __) {
+                                    return CustomButton(
+                                      onTap: () async {
+                                        await ep.pay();
+                                      },
+                                      isBorder: false,
+                                      isBoxShadow: false,
+                                      isBorderRadius: true,
+                                      sizeBorderRadius: 30.0,
+                                      isLoading: notifier.payStatus == PayStatus.loading 
+                                      ? true 
+                                      : false,
+                                      btnColor: ColorResources.purple,
+                                      btnTxt: "Bayar",
+                                    );
+                                  },
+                                )
                               )
                             ],
                           ),
