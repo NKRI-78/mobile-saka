@@ -91,6 +91,8 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
       province: province, district: district,
       subdistrict: subdistrict,
     );
+
+    NS.pop(context);
   }
 
   @override
@@ -225,7 +227,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                         ? true 
                         : false,
                         isBorderRadius: true,
-                        btnColor: const Color(0xFF0F903B),
+                        btnColor: ColorResources.purple,
                         btnTextColor: ColorResources.white,
                         btnTxt: "Simpan",
                       );

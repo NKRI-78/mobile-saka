@@ -369,6 +369,11 @@ class EcommerceProvider extends ChangeNotifier {
         subdistrict: subdistrict
       );
 
+      Future.delayed(Duration.zero, () {
+        getShippingAddressList();
+        getShippingAddressDefault();
+      });
+
       setStateCreateShippingAddress(CreateShippingAddressStatus.loaded);
     } catch(e) {
       setStateCreateShippingAddress(CreateShippingAddressStatus.error);
@@ -398,6 +403,11 @@ class EcommerceProvider extends ChangeNotifier {
         postalCode: postalCode,
         subdistrict: subdistrict
       );
+
+      Future.delayed(Duration.zero, () {
+        getShippingAddressList();
+        getShippingAddressDefault();
+      });
 
       setStateUpdateShippingAddress(UpdateShippingAddressStatus.loaded);
     } catch(e) {

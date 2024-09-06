@@ -107,6 +107,8 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
       city: city, postalCode: postalCode, 
       province: province, district: district, subdistrict: subdistrict
     );
+
+    NS.pop(context);
   }
 
   @override
@@ -258,8 +260,6 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                     },
                   )
 
-                 
-                  
                 ],
               ),
             ),
