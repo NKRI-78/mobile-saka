@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "94689171996",
+    "project_id": "communityapp-67cba",
+    "storage_bucket": "communityapp-67cba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94689171996:android:394db4020f05ca1fec5dd9",
+        "android_client_info": {
+          "package_name": "com.inovasi78.fasi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94689171996:android:7b33653ef3481bfdec5dd9",
+        "android_client_info": {
+          "package_name": "com.inovasi78.saka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
