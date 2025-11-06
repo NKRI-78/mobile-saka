@@ -3,7 +3,7 @@ description: "Community App."
 
 publish_to: 'none' 
 
-version: 1.0.0+1
+version: 2.1.1+49
 
 environment:
   sdk: ^3.9.2
