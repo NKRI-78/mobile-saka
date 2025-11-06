@@ -4,7 +4,7 @@ import 'package:timeago/src/messages/lookupmessages.dart';
 import 'package:saka/data/models/language/language.dart';
 
 class AppConstants {
-  static const String baseUrl = 'https://api-saka.inovatiftujuh8.com';
+  static String baseUrl = 'https://api-saka.inovatiftujuh8.com';
   static const String baseUrlDisbursementDenom = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/denom';
   static const String baseUrlEcommerceDeliveryTimeslots = '$switchToBaseUrl/commerce-saka/pub/v1/ninja/deliveryTimeSlots';
   static const String baseUrlDisbursementBank = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/bank';
@@ -12,6 +12,7 @@ class AppConstants {
   static const String baseUrlDisbursement = 'https://pg-$switchTo.connexist.id/disbursement/api/v1';
   static const String baseUrlFeed = '$switchToBaseUrlFeed';
   static const String baseUrlFeedV2 = 'https://api-forum-general.inovatiftujuh8.com';
+  static const String baseUrlMedia = 'https://api-media.inovatiftujuh8.com/api/v1/media/upload';
   static const String baseUrlSocketFeed = 'https://feedapi.connexist.id:5091'; 
   static const String baseUrlEcommerce = '$switchToBaseUrl/commerce-saka/api/v1';
   static const String baseUrlPpob = '$switchToBaseUrl/ppob/api/v1';

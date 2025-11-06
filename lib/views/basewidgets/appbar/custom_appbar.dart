@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -40,7 +41,7 @@ class CustomAppBar extends StatelessWidget {
         ? Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(left: 15.0),
-            child: CupertinoNavigationBarBackButton(
+            child: BackButton(
             onPressed: () { 
               Navigator.of(context).pop(); 
             },

@@ -123,27 +123,30 @@ class FeedRepoV2 {
   }
 
   Future<Map<String, dynamic>?> uploadMedia({
-    required String folder, 
-    required File media
+    required String folder,
+    required File media,
   }) async {
     try {
       FormData formData = FormData.fromMap({
         "folder": folder,
-        "file": await MultipartFile.fromFile(media.path, filename: p.basename(media.path)),
+        "subfolder": "fasi",
+        "media": await MultipartFile.fromFile(
+          media.path,
+          filename: p.basename(media.path),
+        ),
       });
       Dio dio = DioManager.shared.getClient();
-      Response res = await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload", data: formData);
+      Response res = await dio.post(AppConstants.baseUrlMedia, data: formData);
       Map<String, dynamic> data = res.data;
       return data;
-    } on DioError catch(e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
-    } catch(e) {
+    } catch (e) {
       debugPrint(e.toString());
     }
-    
+
     return {};
   }
-
   Future<void> postMedia({
     required String forumId,
     required String path,

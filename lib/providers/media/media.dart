@@ -8,16 +8,16 @@ import 'package:saka/data/repository/media/media.dart';
 class MediaProvider extends ChangeNotifier {
   final MediaRepo mr;
   MediaProvider({
-    required this.mr });
+    required this.mr 
+  });
 
-  Future<Response?> postMedia(File file) async {
+  Future<Response?> postMedia(BuildContext context, File file) async {
     try {
-      Response res = await mr.postMedia(file);
+      Response res = await mr.postMedia(context, file);
       return res;
-    } catch(e) {
-      print(e);
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
     }
     return null;
   }
-
 }

@@ -86,8 +86,8 @@ class ProfileProvider extends ChangeNotifier {
     try {
       setStateUpdateProfileStatus(UpdateProfileStatus.loading);
       if(file != null) {
-        Response? res = await Provider.of<MediaProvider>(context, listen: false).postMedia(file);
-        Map map = json.decode(res!.data);
+        Response? res = await Provider.of<MediaProvider>(context, listen: false).postMedia(context, file);
+        Map map = res!.data;
         profileData.profilePic = map['data']['path'];
         ar.saveUserAvatar(profileData.profilePic!);
       }

@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flappy_search_bar_ns/flappy_search_bar_ns.dart';
@@ -59,10 +57,8 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   final Dio dio = Dio(
     BaseOptions(
       contentType: Headers.jsonContentType,
-      baseUrl: "${AppConstants.baseUrl}",
+      baseUrl: AppConstants.baseUrl,
       receiveDataWhenStatusError: true,
-      connectTimeout: 10 * 1000, // 10 seconds
-      receiveTimeout: 10 * 1000 // 10 seconds
     )
   );
   AuthProvider({
@@ -179,13 +175,13 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       _isShow = md.show!;
       setStateMascotStatus(MascotStatus.loaded);
     } on DioError catch(e) {
-      if(e.type == DioErrorType.connectTimeout) {
+      if(e.type == DioExceptionType.connectionTimeout) {
         ShowSnackbar.snackbar(getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
       } 
-      if(e.type == DioErrorType.other) {
+      if(e.type == DioExceptionType.unknown) {
         ShowSnackbar.snackbar(e.error.toString(), "", ColorResources.error);
       } 
-      if(e.type == DioErrorType.response) {
+      if(e.type == DioErrorType.badResponse) {
         if(e.response!.statusCode == 400 || e.response!.statusCode == 500) {
           ShowSnackbar.snackbar("${e.response!.data["error"]}", "", ColorResources.error);
         } 
@@ -257,10 +253,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       productId = "8b02a294-5245-4abd-973e-990a6c2095c0"; // 100 K
     }
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       Response res = await dio.post("${AppConstants.baseUrlPpob}/registration/inquiry", data: {
         "productId" : productId
       }, options: Options(
@@ -311,10 +303,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> login(BuildContext context, UserData userData) async {
     setStateLoginStatus(LoginStatus.loading);
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       Response res = await dio.post("${AppConstants.baseUrl}/user-service/login",
         data: {
           "phone_number": userData.phoneNumber, 
@@ -336,13 +324,13 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         NS.pushReplacement(context, OtpScreen(key: UniqueKey()));
       }
       setStateLoginStatus(LoginStatus.loaded);
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
-      if(e.type == DioErrorType.connectTimeout) {
+      if(e.type == DioExceptionType.connectionTimeout) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
         setStateLoginStatus(LoginStatus.error);
       }
-      if(e.type == DioErrorType.response) {
+      if(e.type == DioExceptionType.badResponse) {
         if(e.response?.statusCode == 500 || e.response?.statusCode == 400) {
           ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
           setStateLoginStatus(LoginStatus.error);
@@ -434,11 +422,11 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       Map<String, dynamic> data = json.decode(response.data);
       dataGoogleVerification = data;
       Future.delayed(Duration.zero, () => notifyListeners());
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       dataGoogleVerification = data;
       Future.delayed(Duration.zero, () => notifyListeners());
-      if(e.type == DioErrorType.connectTimeout) {
+      if(e.type == DioExceptionType.connectionTimeout) {
         ShowSnackbar.snackbar(getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
       }
       if(e.response!.statusCode == 401
@@ -496,13 +484,13 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         NS.pushReplacement(context, OtpScreen(key: UniqueKey())); 
       }
       setStateRegisterStatus(RegisterStatus.loaded);
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
-      if(e.type == DioErrorType.connectTimeout) {
-        ShowSnackbar.snackbar(getTranslated("CONNECTION_TIMEOUT", context), "", ColorResources.error);
-        setStateRegisterStatus(RegisterStatus.error);
+      if(e.type == DioExceptionType.connectionTimeout) {
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
+        setStateLoginStatus(LoginStatus.error);
       }
-      if(e.type == DioErrorType.response) {
+      if(e.type == DioExceptionType.badResponse) {
         if(e.response?.statusCode == 500 || e.response?.statusCode == 400) {
           ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
           setStateLoginStatus(LoginStatus.error);
@@ -522,10 +510,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> authDisbursement(BuildContext context, String password) async {
     setStateAuthDisbursement(AuthDisbursementStatus.loading);
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       await dio.post("${AppConstants.baseUrl}/user-service/authentication-disburse", data: {
         "password": password
       }, options: Options(
@@ -552,10 +536,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> changePassword(BuildContext context, UserData userData) async {
     setStateForgotPasswordStatus(ForgotPasswordStatus.loading);
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       await dio.post("${AppConstants.baseUrl}/user-service/change-password", data: {
         "old_password": userData.password,
         "new_password": userData.passwordNew,
@@ -583,10 +563,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> forgetPassword(BuildContext context, String email) async {
     setStateForgotPasswordStatus(ForgotPasswordStatus.loading);
     try { 
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       await dio.post("${AppConstants.baseUrl}/user-service/forgot-password",
         data: {
           "email": email   
@@ -626,10 +602,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
     setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.loading);
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       await dio.post("${AppConstants.baseUrl}/user-service/change-email", data: {
         "old_email": sp.getString("email_otp"),
         "new_email": changeEmailName,
@@ -665,10 +637,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
     setVerifyOtpStatus(VerifyOtpStatus.loading);
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       Response res = await dio.post("${AppConstants.baseUrl}/user-service/verify-otp",
         data: {
           "otp": otp,
@@ -700,10 +668,6 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> resendOtp(BuildContext context, String email) async {
     setResendOtpStatus(ResendOtpStatus.loading);
     try {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-        return null;
-      };
       await dio.post("${AppConstants.baseUrl}/user-service/resend-otp",
         data: {
           "email": email

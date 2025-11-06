@@ -39,7 +39,7 @@ dev_dependencies:
   clipboard: ^0.1.3
 
   # D
-  dio: ^4.0.0
+  dio: ^5.9.0
   detectable_text_field: ^3.0.2
   date_count_down: ^3.0.0
   dots_indicator: ^2.0.0

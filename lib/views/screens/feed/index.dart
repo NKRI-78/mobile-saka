@@ -1054,7 +1054,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
     
                 ],
               ),
-              leading: CupertinoNavigationBarBackButton(
+              leading: BackButton(
                 color: ColorResources.black,
                 onPressed: () {
                   setState(() {

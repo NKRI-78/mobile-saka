@@ -69,7 +69,7 @@ class SosScreenState extends State<SosScreen> {
               fontWeight: FontWeight.bold
             ),
           ),
-          leading: CupertinoNavigationBarBackButton(
+          leading: BackButton(
             color: ColorResources.white,
             onPressed: () {
               NS.push(context, DashboardScreen());
