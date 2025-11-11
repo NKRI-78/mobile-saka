@@ -37,7 +37,7 @@ class TrackingScreen extends StatelessWidget {
               color: ColorResources.black
             ),
           ),
-          leading: CupertinoNavigationBarBackButton(
+          leading: BackButton(
             color: ColorResources.brown,
             onPressed: () {
               NS.pop();

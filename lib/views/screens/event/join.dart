@@ -33,7 +33,7 @@ class EventJoinScreen extends StatelessWidget {
             fontSize: Dimensions.fontSizeDefault
           ),
         ),
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.white,
           onPressed: () {
             NS.pop();

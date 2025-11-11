@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:saka/firebase_options.dart';
 import 'localization/app_localization.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -28,12 +29,14 @@ import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:saka/views/screens/news/detail.dart';
 
-@pragma('vm:entry-point')
+// @pragma('vm:entry-point')
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Penting: tunggu init Firebase selesai
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform
+  // );
 
   // Locale untuk timeago
   timeago.setLocaleMessages('id', CustomLocalDate());

@@ -110,7 +110,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                       centerTitle: false,
                       titleSpacing: 0.0,
                       title: const SizedBox(),
-                      leading: CupertinoNavigationBarBackButton(
+                      leading: BackButton(
                         color: ColorResources.black,
                         onPressed: () {
                           NS.pop();

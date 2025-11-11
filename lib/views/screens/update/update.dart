@@ -49,7 +49,7 @@ class UpdateScreenState extends State<UpdateScreen> {
           appBar: AppBar(
             backgroundColor: ColorResources.backgroundColor,
             elevation: 0.0,
-            leading: CupertinoNavigationBarBackButton(
+            leading: BackButton(
               color: ColorResources.brown,
               onPressed: () {
                 NS.push(context, DashboardScreen());

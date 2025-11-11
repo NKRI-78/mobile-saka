@@ -66,7 +66,7 @@ class ComplaintScreenState extends State<ComplaintScreen> {
                 color: ColorResources.black
               ),
             ),
-            leading: CupertinoNavigationBarBackButton(
+            leading: BackButton(
               color: ColorResources.black,
               onPressed: () {
                 NS.pop();

@@ -36,7 +36,7 @@ class CustomExpandedAppBar extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  CupertinoNavigationBarBackButton(
+                  BackButton(
                     color: ColorResources.greyDarkPrimary, 
                     onPressed: () {
                       Navigator.pop(context);

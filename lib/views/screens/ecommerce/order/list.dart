@@ -102,7 +102,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
             color: ColorResources.black
           ),
         ),
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.brown,
           onPressed: () {
             NS.pop();

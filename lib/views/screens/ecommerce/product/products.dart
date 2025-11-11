@@ -118,7 +118,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                       ),
                     ),
                     centerTitle: true,
-                    leading: CupertinoNavigationBarBackButton(
+                    leading: BackButton(
                       color: ColorResources.brown,
                       onPressed: () {
                         NS.pop();

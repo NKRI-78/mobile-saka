@@ -153,9 +153,6 @@ class HomeScreenState extends State<HomeScreen> {
                     ip.getInbox(context, "sos");
                     ap.mascot(context);
                     ep.getBalance();
-                    // ppopP.getBalance(context);
-                    // sp.getDataStore(context);
-                    // sp.getDataCategoryProduct(context, "commerce");
                   });
                 },
                 child: CustomScrollView(
@@ -191,8 +188,8 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     SliverList(
                         delegate: SliverChildListDelegate([
-                      banner(context),
                       infoAccount(context),
+                      banner(context),
                       ourService(context),
                       Container(
                         margin: EdgeInsets.only(
@@ -380,94 +377,72 @@ Widget banner(BuildContext context) {
 
 Widget infoAccount(BuildContext context) {
   return Container(
-    height: 55.0,
-    margin:
-        EdgeInsets.only(top: 15.0, left: 40.0, right: 40.0, bottom: 20.0),
-    decoration: BoxDecoration(
-        color: ColorResources.white,
-        borderRadius: BorderRadius.circular(15.0),
-        boxShadow: kElevationToShadow[4],
-        gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              ColorResources.brown.withOpacity(0.8),
-              ColorResources.brown,
-            ])),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.only(
-              top: 10.0, left: 15.0, right: 15.0, bottom: 10.0),
-          decoration: BoxDecoration(
-              color: ColorResources.black,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0)),
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    ColorResources.black.withOpacity(0.8),
-                    ColorResources.brown,
-                  ]),
-              boxShadow: kElevationToShadow[4]),
-          child: Column(
+    height: 70.0,
+    margin: EdgeInsets.only(
+      top: 15.0, 
+      left: 16.0, right: 16.0, 
+    ),
+    child: Container(
+      padding: EdgeInsets.only(
+        top: 10.0, 
+        left: 15.0, right: 15.0,
+        bottom: 10.0
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15.0),
+          topRight: Radius.circular(15.0)
+        ),
+       ),
+      child: Consumer<ProfileProvider>(
+        builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
+          if (profileProvider.profileStatus == ProfileStatus.loading) {
+            return Text("...",
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeLarge,
+                color: ColorResources.white
+              ),
+            );
+          }
+          if (profileProvider.profileStatus == ProfileStatus.error) {
+            return Text(
+              "-",
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeLarge,
+                color: ColorResources.white
+              ),
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Consumer<ProfileProvider>(
-                    builder: (BuildContext context,
-                        ProfileProvider profileProvider, Widget? child) {
-                      if (profileProvider.profileStatus ==
-                          ProfileStatus.loading) {
-                        return Text(
-                          "...",
-                          style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeLarge,
-                              color: ColorResources.white),
-                        );
-                      }
-                      if (profileProvider.profileStatus ==
-                          ProfileStatus.error) {
-                        return Text(
-                          "-",
-                          style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeLarge,
-                              color: ColorResources.white),
-                        );
-                      }
-                      return SizedBox(
-                        width: 200.0,
-                        child: Text(
-                          profileProvider.userProfile.fullname!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: robotoRegular.copyWith(
-                              overflow: TextOverflow.fade,
-                              fontSize: Dimensions.fontSizeLarge,
-                              color: ColorResources.white),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 5.0),
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: 35.0,
-                    height: 35.0,
-                  ),
-                ],
-              )
+              Text( 
+                profileProvider.userProfile.fullname!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: robotoRegular.copyWith(
+                  overflow: TextOverflow.fade,
+                  color: ColorResources.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+              ),
+          
+              Text( 
+                profileProvider.userProfile.lanud!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: robotoRegular.copyWith(
+                  overflow: TextOverflow.fade,
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black
+                ),
+              ),
             ],
-          ),
-        ),
-      ],
+          );
+        },
+      ),
     ),
   );
 }

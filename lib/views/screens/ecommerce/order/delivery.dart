@@ -110,7 +110,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                         color: ColorResources.black
                       ),
                     ),
-                    leading: CupertinoNavigationBarBackButton(
+                    leading: BackButton(
                       color: ColorResources.black,
                       onPressed: () async {
                         if(widget.from == "live") {

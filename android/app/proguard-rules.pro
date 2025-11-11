@@ -16,3 +16,6 @@
 # Kotlin metadata & annotations
 -keep class kotlin.Metadata { *; }
 -keepattributes *Annotation*
+
+#keep ffmpeg-kit classes
+-keep class com.antonkarpenko.ffmpegkit.** { *; }

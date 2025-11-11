@@ -111,7 +111,7 @@ class DetailOrderState extends State<DetailOrder> {
             color: ColorResources.black
           ),
         ),
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.black,
           onPressed: () {
             NS.pop();

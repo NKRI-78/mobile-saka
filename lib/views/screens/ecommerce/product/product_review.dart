@@ -72,7 +72,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                   ),
                 ),
                 centerTitle: true,
-                leading: CupertinoNavigationBarBackButton(
+                leading: BackButton(
                   color: Colors.black,
                   onPressed: () {
                     NS.pop();

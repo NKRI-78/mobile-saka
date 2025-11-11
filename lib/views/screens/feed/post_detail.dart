@@ -513,7 +513,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                     fontSize: Dimensions.fontSizeLarge
                   )
                 ),
-                leading: CupertinoNavigationBarBackButton(
+                leading: BackButton(
                   color: ColorResources.black,
                   onPressed: () {
                     if(widget.from == "direct") {

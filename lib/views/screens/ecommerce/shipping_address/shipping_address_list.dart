@@ -81,7 +81,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                       elevation: 0,
                       backgroundColor: ColorResources.white,
                       iconTheme: const IconThemeData(color: ColorResources.black),
-                      leading: CupertinoNavigationBarBackButton(
+                      leading: BackButton(
                         color: ColorResources.black,
                         onPressed: () {
                           NS.pop();

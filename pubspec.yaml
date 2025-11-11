@@ -9,13 +9,15 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.0.4
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-
 dependency_overrides:
   intl: ^0.19.0
+  firebase_core_platform_interface: 5.3.0
 
 dev_dependencies:
   flutter_test:
@@ -51,17 +53,11 @@ dev_dependencies:
       ref: 2.1.1
   delayed_display: ^2.0.0
 
-  # Firebase
+  # F
   flappy_search_bar_ns: ^2.0.2
   floating_bottom_navigation_bar: ^1.5.2
   flutter_animated_dialog_updated: ^1.0.1
   flutter_animator: ^3.2.2
-
-  # Firebase
-  firebase_core: ^4.2.0
-  firebase_messaging: ^16.0.3
-
-  # F
   flutter_pdfview: ^1.2.1
   flutter_lints: ^5.0.0
   flutter_widget_from_html: ^0.15.1
@@ -128,7 +124,7 @@ dev_dependencies:
   # R
   readmore: ^2.1.0
   rxdart: ^0.27.5
-  shared_preferences: ^2.0.13
+  shared_preferences: ^2.3.2
 
   # S
   shimmer: ^2.0.0

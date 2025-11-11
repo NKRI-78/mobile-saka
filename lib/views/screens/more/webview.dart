@@ -202,7 +202,7 @@ class WebViewScreenState extends State<WebViewScreen> {
             color: ColorResources.white,
           ),
         ),
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.white,
           onPressed: () {
             NS.pop();

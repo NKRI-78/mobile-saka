@@ -88,7 +88,7 @@ class EventScannerJoinScreenState extends State<EventScannerJoinScreen> {
                       top: 15.0,
                       left: 15.0
                     ),
-                    child: CupertinoNavigationBarBackButton(
+                    child: BackButton(
                       color: ColorResources.black,
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -298,7 +298,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
             fontSize: Dimensions.fontSizeDefault
           )
         ),
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.black,
           onPressed: () {
             Navigator.of(context).pop();

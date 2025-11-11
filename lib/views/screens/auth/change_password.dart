@@ -67,13 +67,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Widget buildUI() {
-
     return Scaffold(
       key: globalKey,
       appBar: AppBar(
         elevation: 0.0,
         centerTitle: true,
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.white,
           onPressed: () {
             Navigator.of(context).pop();

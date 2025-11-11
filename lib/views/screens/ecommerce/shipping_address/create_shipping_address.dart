@@ -94,7 +94,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
         ),
         centerTitle: true,
         elevation: 0.0,
-        leading: CupertinoNavigationBarBackButton(
+        leading: BackButton(
           color: ColorResources.black,
           onPressed: () {
             NS.pop();

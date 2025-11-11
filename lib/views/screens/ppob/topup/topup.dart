@@ -320,7 +320,7 @@ class TopupScreenState extends State<TopupScreen> {
                     fontWeight: FontWeight.bold
                   ),
                 ),
-                leading: CupertinoNavigationBarBackButton(
+                leading: BackButton(
                   color: Colors.black,
                   onPressed: () {
                     NS.pop();

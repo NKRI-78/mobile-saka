@@ -8,7 +8,6 @@ import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
 
 import 'package:saka/services/navigation.dart';
-
 import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/providers/inbox/inbox.dart';
@@ -20,39 +19,42 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/images.dart';
 
 import 'package:saka/views/screens/inbox/detail.dart';
-
 import 'package:saka/views/basewidgets/loader/circular.dart';
 
 class InboxScreen extends StatefulWidget {
+  const InboxScreen({super.key});
+
   @override
   InboxScreenState createState() => InboxScreenState();
 }
 
-class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin {
-  int tabbarview = 0;
-  String tabbarname = "sos";
-  late TabController tabController;
+class InboxScreenState extends State<InboxScreen> with TickerProviderStateMixin {
+  late TabController _tabController;
+  String _tabName = 'sos'; // hanya 'sos' atau 'other'
 
-  Future<void> getData() async {
-    if(!mounted) return;
-      context.read<InboxProvider>().getInbox(context, tabbarname);
-  }
-
+  @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this, initialIndex: 0);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
-    tabController.addListener(() {
-      if(!mounted) return;
-        context.read<InboxProvider>().getInbox(context, tabbarname); 
+    // load awal
+    Future.microtask(() {
+      if (!mounted) return;
+      context.read<InboxProvider>().getInbox(context, _tabName);
     });
-
-    Future.microtask(() => getData());
   }
 
+  @override
   void dispose() {
-    tabController.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _switchTab(int index) async {
+    setState(() {
+      _tabName = (index == 0) ? 'sos' : 'other';
+    });
+    await context.read<InboxProvider>().getInbox(context, _tabName);
   }
 
   @override
@@ -64,14 +66,15 @@ class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin
             SliverAppBar(
               systemOverlayStyle: SystemUiOverlayStyle.light,
               backgroundColor: ColorResources.brown,
-              title: Text(getTranslated("INBOX", context), 
+              title: Text(
+                getTranslated('INBOX', context),
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                   fontWeight: FontWeight.bold,
                   color: ColorResources.white,
-                )
+                ),
               ),
-              elevation: 0.0,
+              elevation: 0,
               pinned: false,
               centerTitle: true,
               floating: true,
@@ -79,499 +82,314 @@ class InboxScreenState extends State<InboxScreen>  with TickerProviderStateMixin
             ),
             SliverToBoxAdapter(
               child: TabBar(
-                onTap: (val) {
-                  switch (val) {
-                    case 0:
-                      setState(() {
-                        tabbarview = val;       
-                        tabbarname = "sos";
-                      });
-                    break;
-                    case 1:
-                      setState(() {
-                        tabbarview = val;       
-                        tabbarname = "payment";
-                      });
-                    break;
-                    case 2:
-                      setState(() {
-                        tabbarview = val;       
-                        tabbarname = "other";
-                      });
-                    break;
-                    default:
-                  }
-                },
-                controller: tabController,
+                controller: _tabController,
+                onTap: _switchTab,
                 unselectedLabelColor: Colors.grey,
-                indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: ColorResources.white,
-                indicator: BubbleTabIndicator(
+                labelStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicator: const BubbleTabIndicator(
                   indicatorHeight: 32.0,
                   indicatorRadius: 6.0,
                   indicatorColor: ColorResources.brown,
                   tabBarIndicatorSize: TabBarIndicatorSize.tab,
                 ),
-                labelStyle: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeSmall
-                ),
-                tabs: [
-                  Tab(text: "SOS"),
-                  Tab(text: "Pembayaran"),
-                  Tab(text: "Lainnya"),
-                ]
+                tabs: const [
+                  Tab(text: 'SOS'),
+                  Tab(text: 'Lainnya'),
+                ],
               ),
-            )
+            ),
           ];
         },
-        body: tabbarname == "sos" 
-        ? getInbox(context, "sos")
-        : tabbarname == "payment" 
-        ? getInbox(context, "payment") 
-        : getInbox(context, "other")
-      )
-    );
-  }
-  Widget tabSection(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: TabBar(
-        controller: tabController,
-        physics: NeverScrollableScrollPhysics(),
-        unselectedLabelColor: Colors.grey,
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelColor: ColorResources.brown,
-        indicator: BubbleTabIndicator(
-          indicatorHeight: 32.0,
-          indicatorRadius: 6.0,
-          indicatorColor: ColorResources.brown,
-          tabBarIndicatorSize: TabBarIndicatorSize.tab,
-        ),
-        labelStyle: robotoRegular,
-        tabs: [
-          Tab(text: "SOS"),
-          Tab(text: "Pembayaran"),
-          Tab(text: "Lainnya"),
-        ]
+        body: _InboxList(type: _tabName),
       ),
-    );
-  }  
-
-  Widget getInbox(BuildContext context, String type) {
-    
-    return Consumer<InboxProvider>(
-      builder: (BuildContext context, InboxProvider inboxProvider, Widget? child) {
-        if(inboxProvider.inboxStatus == InboxStatus.loading) {
-          return Loader(
-            color: ColorResources.primaryOrange,
-          );
-        }
-        if(inboxProvider.inboxStatus == InboxStatus.error) {
-          return Center(
-            child: Text(getTranslated("THERE_WAS_PROBLEM", context),
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault
-              ),
-            ),
-          );
-        }
-        if(inboxProvider.inboxStatus == InboxStatus.empty) {
-          return RefreshIndicator(
-            backgroundColor: ColorResources.brown,
-            color: ColorResources.white,
-            onRefresh: () {
-              return Future.sync(() {
-                context.read<InboxProvider>().getInbox(context, type);
-              });       
-            },
-            child: ListView(
-              padding: EdgeInsets.zero,
-              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height / 1.5,
-                  child: Center(
-                    child: Text("Belum ada pesan",
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault
-                      )
-                    ),
-                  ),
-                ),
-              ]
-            ),
-          );
-        }
-        return RefreshIndicator(
-          backgroundColor: ColorResources.brown,
-          color: ColorResources.white,
-          onRefresh: () {
-            return Future.sync(() {
-              context.read<InboxProvider>().getInbox(context, type);         
-            }); 
-          },
-          child: ListView.builder(
-            padding: EdgeInsets.zero,
-            physics: AlwaysScrollableScrollPhysics(),
-            itemCount: inboxProvider.inboxes.length,
-            itemBuilder: (BuildContext context, int i) {
-              
-            return Container(
-              margin: EdgeInsets.only(
-                top: 10.0,
-                bottom: 10.0,
-                left: 10.0,
-                right: 10.0
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Card(
-                    elevation: 0.0,
-                    color: inboxProvider.inboxes[i].read! 
-                    ? ColorResources.white 
-                    : Color(0xFFE3E3E3),
-                    child: ListTile(
-                      onTap: () async {
-              
-                        await Provider.of<InboxProvider>(context, listen: false).updateInbox(context, inboxProvider.inboxes[i].inboxId!, type);
-                        
-                        if(inboxProvider.inboxes[i].subject == "Emergency") {
-                          Provider.of<ProfileProvider>(context, listen: false).getSingleUser(context, inboxProvider.inboxes[i].senderId!);
-              
-                          showAnimatedDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                    
-                              return Dialog(
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Consumer<ProfileProvider>(
-                                    builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-              
-                                          SizedBox(height: 20.0),
-              
-                                          Container(
-                                            child: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                            ? SizedBox(
-                                                width: 18.0,
-                                                height: 18.0,
-                                                child: CircularProgressIndicator(
-                                                  valueColor: AlwaysStoppedAnimation<Color>(ColorResources.white),
-                                                ),
-                                              )
-                                            : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                            ? CircleAvatar(
-                                                backgroundColor: Colors.transparent,
-                                                backgroundImage: NetworkImage("assets/images/profile.png"),
-                                                radius: 30.0,
-                                              )
-                                            : CachedNetworkImage(
-                                              imageUrl: "${profileProvider.singleUserData.profilePic}",
-                                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                                return CircleAvatar(
-                                                  backgroundColor: Colors.transparent,
-                                                  backgroundImage: imageProvider,
-                                                  radius: 30.0,
-                                                );
-                                              },
-                                              errorWidget: (BuildContext context, String url, dynamic error) {
-                                                return CircleAvatar(
-                                                  backgroundColor: Colors.transparent,
-                                                  backgroundImage: AssetImage("assets/images/profile.png"),
-                                                  radius: 30.0,
-                                                );
-                                              },
-                                              placeholder: (BuildContext context, String text) => SizedBox(
-                                                width: 18.0,
-                                                height: 18.0,
-                                                child: CircularProgressIndicator(
-                                                  valueColor: AlwaysStoppedAnimation<Color>(ColorResources.white)),
-                                                ),
-                                            ),
-                                          ),
-              
-                                          SizedBox(height: 16.0),
-              
-                                          Container(
-                                            width: double.infinity,
-                                            margin: EdgeInsets.only(left: 16.0, right: 16.0),
-                                            child: Card(
-                                              elevation: 3.0,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      children: [
-                                                        Text("Nama",
-                                                          style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault
-                                                          )
-                                                        ),
-                                                        Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                        ? "..." 
-                                                        : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                        ? "..." 
-                                                        : profileProvider.singleUserData.fullname!,
-                                                          style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault
-                                                          ),
-                                                        )
-                                                      ]
-                                                    ),
-                                                    SizedBox(height: 12.0),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      children: [
-                                                        Text("No HP",
-                                                          style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault
-                                                          )
-                                                        ),
-                                                        Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                        ? "..." 
-                                                        : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                        ? "..." 
-                                                        : profileProvider.singleUserData.phoneNumber!,
-                                                          style: robotoRegular.copyWith(
-                                                            fontSize: Dimensions.fontSizeDefault
-                                                          ),
-                                                        )
-                                                      ]
-                                                    ),
-                                                  ],
-                                                )
-                                              ),
-                                            ),
-                                          ),
-              
-                                          Container(
-                                            width: double.infinity,
-                                            margin: EdgeInsets.only(left: 16.0, right: 16.0),
-                                            child: Card(
-                                              elevation: 3.0,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-              
-                                                    Text(inboxProvider.inboxes[i].body!,
-                                                      textAlign: TextAlign.justify,
-                                                      style: robotoRegular.copyWith(
-                                                        height: 1.4,
-                                                        fontSize: Dimensions.fontSizeDefault
-                                                      ),
-                                                    ),
-              
-                                                    SizedBox(height: 10.0),
-              
-                                                    FractionallySizedBox(
-                                                      widthFactor: 1.0,
-                                                      child: Container(
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          mainAxisSize: MainAxisSize.max,
-                                                          children: [
-                                                            // ElevatedButton(
-                                                            //   style: ElevatedButton.styleFrom(
-                                                            //     elevation: 3.0,
-                                                            //     backgroundColor: ColorResources.success
-                                                            //   ),
-                                                            //   onPressed: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                            //   ? () {} 
-                                                            //   : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                            //   ? () {}
-                                                            //   : () async {
-                                                            //     try {
-                                                            //       await launchUrl(Uri.parse("whatsapp://send?phone=${profileProvider.getUserPhoneNumber}"));
-                                                            //     } catch(e) {
-                                                            //       print(e);
-                                                            //     }
-                                                            //   },
-                                                            //   child: Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                            //     ? "..."
-                                                            //     : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                            //     ? "..."
-                                                            //     : "Whatsapp",
-                                                            //     style: robotoRegular.copyWith(
-                                                            //       color: ColorResources.white
-                                                            //     ),
-                                                            //   ),
-                                                            // ),
-                                                            // ElevatedButton(
-                                                            //   style: ElevatedButton.styleFrom(
-                                                            //     elevation: 3.0,
-                                                            //     backgroundColor: ColorResources.blue,
-                                                            //   ),
-                                                            //   onPressed: profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                            //   ? () {} 
-                                                            //   : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                            //   ? () {}
-                                                            //   : () async {
-                                                            //     try {
-                                                            //       await launchUrl(Uri.parse("tel:${profileProvider.getSingleUserPhoneNumber}"));
-                                                            //     } catch(e) {
-                                                            //       print(e);
-                                                            //     }
-                                                            //   },
-                                                            //   child: Text(profileProvider.singleUserDataStatus == SingleUserDataStatus.loading 
-                                                            //     ? "..."
-                                                            //     : profileProvider.singleUserDataStatus == SingleUserDataStatus.error 
-                                                            //     ? "..."
-                                                            //     : "Phone",
-                                                            //     style: robotoRegular.copyWith(
-                                                            //       color: ColorResources.white
-                                                            //     ),
-                                                            //   )
-                                                            // )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    )
-                                                    
-                                                  
-                                                  ],
-                                                )
-                                              ),
-                                            ),
-                                          )
-                                
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                                
-                            },
-                            animationType: DialogTransitionType.scale,
-                            curve: Curves.fastOutSlowIn,
-                            duration: Duration(seconds: 1),
-                          );
-                        } else {
-                          NS.push(context, InboxDetailScreen(
-                            inboxId: inboxProvider.inboxes[i].inboxId,
-                            type: inboxProvider.inboxes[i].type!,
-                            body: inboxProvider.inboxes[i].body!,
-                            subject: inboxProvider.inboxes[i].subject,
-                            field1: inboxProvider.inboxes[i].field1,
-                            field2: inboxProvider.inboxes[i].field2,
-                            field3: inboxProvider.inboxes[i].field3,
-                            field4: inboxProvider.inboxes[i].field4,
-                            field5: inboxProvider.inboxes[i].field5,
-                            field6: inboxProvider.inboxes[i].field6,
-                            field7: inboxProvider.inboxes[i].field7,
-                            created: inboxProvider.inboxes[i].created,
-                            read: inboxProvider.inboxes[i].read,
-                            recepientId: inboxProvider.inboxes[i].recepientId,
-                            senderId: inboxProvider.inboxes[i].senderId,
-                            updated: inboxProvider.inboxes[i].updated,
-                            typeInbox: inboxProvider.inboxes[i].type,
-                          ));
-                        }
-                      },
-                      isThreeLine: false,
-                      dense: false,
-                      leading: inboxProvider.inboxes[i].subject == "Emergency"  
-                      ? Image.asset(
-                          Images.sos,
-                          width: 25.0,
-                          height: 25.0,
-                        ) 
-                      : inboxProvider.inboxes[i].type == "payment"
-                      ? Image.asset(
-                          Images.money,
-                          width: 25.0,
-                          height: 25.0,
-                          color: ColorResources.success,
-                        ) 
-                      :
-                      Icon(
-                        inboxProvider.inboxStatus == InboxStatus.loading  
-                        ? Icons.label
-                        : inboxProvider.inboxStatus == InboxStatus.error 
-                        ? Icons.label
-                        : Icons.info,
-                        color: inboxProvider.inboxes[i].type == "payment"
-                        ? ColorResources.success
-                        : ColorResources.blueGrey,
-                      ),
-                      title: Container(
-                        margin: EdgeInsets.symmetric(vertical: 5.0),
-                        child: Text(
-                          inboxProvider.inboxStatus == InboxStatus.loading 
-                          ? "..."
-                          : inboxProvider.inboxStatus == InboxStatus.error 
-                          ? "..." 
-                          : inboxProvider.inboxes[i].subject!,
-                          style: robotoRegular.copyWith(
-                            fontWeight: inboxProvider.inboxes[i].read! 
-                            ? FontWeight.normal 
-                            : FontWeight.bold,
-                            fontSize: Dimensions.fontSizeSmall
-                          ),  
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 2.0),
-                            child: Text(inboxProvider.inboxStatus == InboxStatus.loading 
-                            ? "..."
-                            : inboxProvider.inboxStatus == InboxStatus.error 
-                            ? "..."
-                            : inboxProvider.inboxes[i].subject == "Emergency" 
-                            ? inboxProvider.inboxes[i].body! 
-                            : inboxProvider.inboxes[i].body!,
-                              overflow: inboxProvider.inboxes[i].subject == "Emergency" 
-                            ? TextOverflow.fade
-                            : TextOverflow.ellipsis,
-                              style: robotoRegular.copyWith(
-                                height: 1.6,
-                                fontSize: Dimensions.fontSizeSmall,
-                              ),
-                              textAlign: TextAlign.justify,
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 6.0),
-                            child: Text(inboxProvider.inboxStatus == InboxStatus.loading 
-                            ? "..."
-                            : inboxProvider.inboxStatus == InboxStatus.error 
-                            ? "..."
-                            : DateFormat('dd MMM yyyy kk:mm').format(inboxProvider.inboxes[i].created!),
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
-                              ),
-                            ),
-                          )
-                        ],
-                      ) 
-                    ),
-                  ),
-                  Divider()
-                ]
-              ),
-            );
-                          
-            },
-          ),
-        );   
-      },
     );
   }
 }
 
+class _InboxList extends StatelessWidget {
+  final String type;
+  const _InboxList({required this.type});
+
+  Future<void> _refresh(BuildContext context) async {
+    await context.read<InboxProvider>().getInbox(context, type);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<InboxProvider>(
+      builder: (context, inboxProvider, _) {
+        final status = inboxProvider.inboxStatus;
+
+        if (status == InboxStatus.loading) {
+          return const Center(child: Loader(color: ColorResources.primaryOrange));
+        }
+
+        if (status == InboxStatus.error) {
+          return Center(
+            child: Text(
+              getTranslated('THERE_WAS_PROBLEM', context),
+              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+            ),
+          );
+        }
+
+        if (status == InboxStatus.empty) {
+          // tetap bisa pull-to-refresh walau kosong
+          return RefreshIndicator(
+            backgroundColor: ColorResources.brown,
+            color: ColorResources.white,
+            onRefresh: () => _refresh(context),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: Center(
+                    child: Text(
+                      'Belum ada pesan',
+                      style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // success
+        final items = inboxProvider.inboxes;
+        return RefreshIndicator(
+          backgroundColor: ColorResources.brown,
+          color: ColorResources.white,
+          onRefresh: () => _refresh(context),
+          child: ListView.separated(
+            padding: EdgeInsets.zero,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: items.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, i) {
+              final it = items[i];
+              final isEmergency = (it.subject == 'Emergency');
+
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                child: Card(
+                  elevation: 0,
+                  color: (it.read ?? false) ? ColorResources.white : const Color(0xFFE3E3E3),
+                  child: ListTile(
+                    onTap: () async {
+                      // tandai read
+                      await context.read<InboxProvider>().updateInbox(context, it.inboxId!, type);
+
+                      if (isEmergency) {
+                        // preload profil
+                        // ignore: use_build_context_synchronously
+                        context.read<ProfileProvider>().getSingleUser(context, it.senderId!);
+                        // ignore: use_build_context_synchronously
+                        _showEmergencyDialog(context, it.body ?? '');
+                      } else {
+                        NS.push(
+                          context,
+                          InboxDetailScreen(
+                            inboxId: it.inboxId,
+                            type: it.type ?? '',
+                            body: it.body ?? '',
+                            subject: it.subject,
+                            field1: it.field1,
+                            field2: it.field2,
+                            field3: it.field3,
+                            field4: it.field4,
+                            field5: it.field5,
+                            field6: it.field6,
+                            field7: it.field7,
+                            created: it.created,
+                            read: it.read,
+                            recepientId: it.recepientId,
+                            senderId: it.senderId,
+                            updated: it.updated,
+                            typeInbox: it.type,
+                          ),
+                        );
+                      }
+                    },
+                    isThreeLine: false,
+                    dense: false,
+                    leading: isEmergency
+                        ? Image.asset(Images.sos, width: 25, height: 25)
+                        : Icon(Icons.info, color: ColorResources.brown),
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Text(
+                        it.subject ?? '...',
+                        style: robotoRegular.copyWith(
+                          fontWeight: (it.read ?? false) ? FontWeight.normal : FontWeight.bold,
+                          fontSize: Dimensions.fontSizeSmall,
+                        ),
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // body
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          child: Text(
+                            it.body ?? '...',
+                            overflow: isEmergency ? TextOverflow.fade : TextOverflow.ellipsis,
+                            textAlign: TextAlign.justify,
+                            style: robotoRegular.copyWith(
+                              height: 1.6,
+                              fontSize: Dimensions.fontSizeSmall,
+                            ),
+                          ),
+                        ),
+                        // date
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          child: Text(
+                            it.created != null
+                                ? DateFormat('dd MMM yyyy HH:mm').format(it.created!)
+                                : '-',
+                            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void _showEmergencyDialog(BuildContext context, String message) {
+    showAnimatedDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Consumer<ProfileProvider>(
+              builder: (context, profileProvider, _) {
+                final st = profileProvider.singleUserDataStatus;
+
+                Widget avatar;
+                if (st == SingleUserDataStatus.loading) {
+                  avatar = const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(ColorResources.white),
+                    ),
+                  );
+                } else if (st == SingleUserDataStatus.error) {
+                  avatar = const CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: AssetImage('assets/images/profile.png'),
+                    radius: 30,
+                  );
+                } else {
+                  avatar = CachedNetworkImage(
+                    imageUrl: profileProvider.singleUserData.profilePic ?? '',
+                    imageBuilder: (_, img) => CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: img,
+                      radius: 30,
+                    ),
+                    errorWidget: (_, __, ___) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/profile.png'),
+                      radius: 30,
+                    ),
+                    placeholder: (_, __) => const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(ColorResources.white),
+                      ),
+                    ),
+                  );
+                }
+
+                String name = '...';
+                String phone = '...';
+                if (st == SingleUserDataStatus.loaded) {
+                  name = profileProvider.singleUserData.fullname ?? '-';
+                  phone = profileProvider.singleUserData.phoneNumber ?? '-';
+                }
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
+                    avatar,
+                    const SizedBox(height: 16),
+
+                    // info user
+                    _InfoRowCard(label: 'Nama', value: name),
+                    _InfoRowCard(label: 'No HP', value: phone),
+
+                    // pesan
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Card(
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            message,
+                            textAlign: TextAlign.justify,
+                            style: robotoRegular.copyWith(
+                              height: 1.4,
+                              fontSize: Dimensions.fontSizeDefault,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
+      animationType: DialogTransitionType.scale,
+      curve: Curves.fastOutSlowIn,
+      duration: const Duration(milliseconds: 600),
+    );
+  }
+}
+
+class _InfoRowCard extends StatelessWidget {
+  final String label;
+  final String value;
+  const _InfoRowCard({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Card(
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+              Text(value, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

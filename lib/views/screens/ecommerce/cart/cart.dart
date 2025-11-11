@@ -170,7 +170,7 @@ class CartScreenState extends State<CartScreen> {
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   ),
-                  leading: CupertinoNavigationBarBackButton(
+                  leading: BackButton(
                       color: ColorResources.black,
                       onPressed: () {
                         NS.pop();

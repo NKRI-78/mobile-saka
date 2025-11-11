@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "94689171996",
     "project_id": "communityapp-67cba",
-    "storage_bucket": "communityapp-67cba.appspot.com"
+    "storage_bucket": "communityapp-67cba.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +12,12 @@
           "package_name": "com.inovasi78.fasi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telolet"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,12 @@
           "package_name": "com.inovasi78.saka"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
@@ -39,7 +61,127 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telolet"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94689171996:android:55ace32804b12008ec5dd9",
+        "android_client_info": {
+          "package_name": "com.inovatif78.fspmi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telolet"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94689171996:android:e2377fa39416c7d2ec5dd9",
+        "android_client_info": {
+          "package_name": "com.inovatif78.hp3ki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telolet"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94689171996:android:7cbbef814ee8290eec5dd9",
+        "android_client_info": {
+          "package_name": "com.inovatif78.mhs_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.telolet"
+              }
+            }
+          ]
         }
       }
     }

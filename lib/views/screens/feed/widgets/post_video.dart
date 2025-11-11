@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -29,123 +28,133 @@ class PostVideoState extends State<PostVideo>
   bool get wantKeepAlive => true;
 
   VideoPlayerController? _controller;
-  bool _initializing = false;
+  Future<void>? _initFuture;
   Object? _lastError;
 
-  // --- Lifecycle -------------------------------------------------------------
+  bool _pausedByVisibility = false;
 
+  // ---------------------------------------------------------------------------
+  // Lifecycle
+  // ---------------------------------------------------------------------------
   @override
   void initState() {
     super.initState();
-    // Tunda 1 microtask agar context siap, lalu init.
-    Future.microtask(_initializePlayer);
+    _initController();
   }
 
   @override
   void didUpdateWidget(covariant PostVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Jika URL video berubah -> re-init
+    // Ganti sumber video → re-init
     if (widget.media != oldWidget.media) {
-      _reinitializePlayer();
-      return; // biar nggak langsung proses blok di bawah sebelum siap
+      _reinitController();
+      return;
     }
 
-    // Sinkronkan play/pause dengan kontrol eksternal
-    if (widget.isPlaying != oldWidget.isPlaying) {
-      if (widget.isPlaying) {
-        _controller?.play();
-      } else {
-        _controller?.pause();
-      }
-    }
+    // Sinkronkan status play/pause dari luar
+    _syncExternalPlayState();
   }
 
   @override
   void dispose() {
-    _removeListener();
-    _controller?.dispose();
+    _disposeController();
     super.dispose();
   }
 
-  // --- Init helpers ----------------------------------------------------------
-
-  Future<void> _reinitializePlayer() async {
-    _removeListener();
-    await _controller?.dispose();
+  // ---------------------------------------------------------------------------
+  // Controller helpers
+  // ---------------------------------------------------------------------------
+  void _disposeController() {
+    final c = _controller;
     _controller = null;
-    if (mounted) setState(() => _lastError = null);
-    await _initializePlayer();
+    _initFuture = null;
+    c?.removeListener(_noopListener);
+    c?.dispose();
   }
 
-  Future<void> _initializePlayer() async {
-    if (_initializing) return;
-    _initializing = true;
-    _lastError = null;
+  Future<void> _reinitController() async {
+    _disposeController();
+    setState(() => _lastError = null);
+    _initController();
+  }
 
+  void _initController() {
     try {
       final uri = Uri.parse(widget.media);
       final controller = VideoPlayerController.networkUrl(uri);
+      controller.addListener(_noopListener);
 
-      controller.addListener(_onControllerUpdate);
-      await controller.initialize();
-
-      // Optional: set preferensi default
-      controller.setLooping(true);
-      if (widget.isPlaying) {
-        // Mulai sesuai state eksternal saat selesai init
-        await controller.play();
-      } else {
-        await controller.pause();
-      }
-
-      if (!mounted) {
-        controller.removeListener(_onControllerUpdate);
-        await controller.dispose();
-        return;
-      }
-
-      setState(() {
-        _controller = controller;
+      _controller = controller;
+      _initFuture = controller.initialize().then((_) async {
+        controller.setLooping(true);
+        // Terapkan state eksternal setelah init
+        if (!mounted) return;
+        if (widget.isPlaying) {
+          await controller.play();
+        } else {
+          await controller.pause();
+        }
+        setState(() {}); // render pertama setelah init
+      }).catchError((e) {
+        _lastError = e;
+        if (mounted) setState(() {});
       });
     } catch (e) {
-      debugPrint('Error initializing video player: $e');
-      if (mounted) setState(() => _lastError = e);
-    } finally {
-      _initializing = false;
-      if (mounted) setState(() {}); // segarkan UI
+      _lastError = e;
+      setState(() {});
     }
   }
 
-  void _removeListener() {
-    _controller?.removeListener(_onControllerUpdate);
+  // Listener dummy agar ValueListenableBuilder tetap update, tanpa setState spam
+  void _noopListener() {}
+
+  Future<void> _syncExternalPlayState() async {
+    final c = _controller;
+    if (c == null || !c.value.isInitialized) return;
+    // Jangan override jika sedang dipause karena invisible
+    if (_pausedByVisibility && widget.isPlaying) {
+      // tunggu hingga visible lagi
+      return;
+    }
+    if (widget.isPlaying && !c.value.isPlaying) {
+      await c.play();
+    } else if (!widget.isPlaying && c.value.isPlaying) {
+      await c.pause();
+    }
   }
 
-  void _onControllerUpdate() {
-    // Minimalkan rebuild; gunakan setState ringan hanya saat mounted
-    if (!mounted) return;
-    // Hindari setState spam: video_player memanggil listener cukup sering.
-    // Tetapi di sini kita tidak heavy rebuild (UI pakai ValueListenableBuilder),
-    // setState kecil untuk kasus error/ready sudah cukup.
-    setState(() {});
-  }
+  // ---------------------------------------------------------------------------
+  // Visibility
+  // ---------------------------------------------------------------------------
+  void _onVisibilityChanged(VisibilityInfo info) async {
+    final c = _controller;
+    if (c == null || !c.value.isInitialized) return;
 
-  // --- Visibility ------------------------------------------------------------
-
-  void _onVisibilityChanged(VisibilityInfo info) {
     if (info.visibleFraction == 0.0) {
-      _controller?.pause();
+      if (c.value.isPlaying) {
+        _pausedByVisibility = true;
+        await c.pause();
+      }
+    } else {
+      if (_pausedByVisibility && widget.isPlaying) {
+        _pausedByVisibility = false;
+        await c.play();
+      }
     }
   }
 
-  // --- UI Helpers ------------------------------------------------------------
-
-  Widget _buildLoading({double height = 80}) {
+  // ---------------------------------------------------------------------------
+  // UI helpers
+  // ---------------------------------------------------------------------------
+  Widget _buildLoading({double height = 180}) {
     return SizedBox(
       height: height,
-      child: Center(
-        child: SpinKitChasingDots(
-          color: ColorResources.primaryOrange,
+      child: const Center(
+        child: SizedBox(
+          width: 28,
+          height: 28,
+          child: CircularProgressIndicator(strokeWidth: 2),
         ),
       ),
     );
@@ -178,7 +187,7 @@ class PostVideoState extends State<PostVideo>
           ),
           const SizedBox(height: 12),
           ElevatedButton.icon(
-            onPressed: _reinitializePlayer,
+            onPressed: _reinitController,
             icon: const Icon(Icons.refresh),
             label: const Text('Coba lagi'),
             style: ElevatedButton.styleFrom(
@@ -195,113 +204,131 @@ class PostVideoState extends State<PostVideo>
     );
   }
 
-  void _handleTapToggle() {
-    // Optimistic update: responsif langsung
-    final playing = _controller?.value.isPlaying ?? false;
-    if (playing) {
-      _controller?.pause();
+  void _togglePlay() {
+    final c = _controller;
+    if (c == null || !c.value.isInitialized) return;
+
+    if (c.value.isPlaying) {
+      c.pause();
       widget.onPause();
     } else {
-      _controller?.play();
+      c.play();
       widget.onPlay();
     }
+    // Tidak perlu setState: UI dipicu oleh ValueListenableBuilder
   }
 
-  // --- Build ----------------------------------------------------------------
-
+  // ---------------------------------------------------------------------------
+  // Build
+  // ---------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    if (_lastError != null) {
-      return _buildError();
-    }
+    if (_lastError != null) return _buildError();
 
-    final controller = _controller;
+    final c = _controller;
 
-    if (controller == null || !controller.value.isInitialized) {
-      // Saat belum init, tampilkan loader
+    // Saat inisialisasi
+    if (c == null || _initFuture == null) {
       return _buildLoading();
     }
 
-    return VisibilityDetector(
-      key: ValueKey('post-video-${widget.media}'),
-      onVisibilityChanged: _onVisibilityChanged,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Video area
-          Container(
+    return FutureBuilder<void>(
+      future: _initFuture,
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return _buildLoading();
+        }
+        if (_lastError != null) return _buildError();
+        if (!c.value.isInitialized) return _buildLoading();
+
+        return VisibilityDetector(
+          key: ValueKey('post-video-${widget.media}'),
+          onVisibilityChanged: _onVisibilityChanged,
+          child: Container(
             margin: const EdgeInsets.only(top: 10, left: 12, right: 12),
             child: AspectRatio(
-              aspectRatio: controller.value.aspectRatio == 0
-                  ? 16 / 9
-                  : controller.value.aspectRatio,
+              aspectRatio: (c.value.aspectRatio == 0) ? (16 / 9) : c.value.aspectRatio,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: ValueListenableBuilder<VideoPlayerValue>(
-                  valueListenable: controller,
-                  builder: (_, value, __) {
-                    return Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        VideoPlayer(controller),
-
-                        // Buffering overlay
-                        if (value.isBuffering)
-                          Center(
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.black45,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const SizedBox(
-                                width: 28,
-                                height: 28,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Video + buffering overlay menggunakan ValueListenableBuilder
+                    ValueListenableBuilder<VideoPlayerValue>(
+                      valueListenable: c,
+                      builder: (_, value, __) {
+                        return Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                width: value.size.width,
+                                height: value.size.height,
+                                child: VideoPlayer(c),
                               ),
                             ),
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
+                            if (value.isBuffering)
+                              Center(
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black45,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const SizedBox(
+                                    width: 28,
+                                    height: 28,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
 
-          // Play/Pause overlay button
-          Positioned.fill(
-            child: Center(
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: _handleTapToggle,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 160),
-                    opacity: 1.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: ColorResources.primaryOrange,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.all(8),
-                      child: Icon(
-                        (controller.value.isPlaying && widget.isPlaying)
-                            ? Icons.pause
-                            : Icons.play_arrow,
-                        color: ColorResources.white,
+                    // Tombol play/pause (tampil saat paused, hilang saat playing)
+                    Positioned.fill(
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _togglePlay,
+                          child: ValueListenableBuilder<VideoPlayerValue>(
+                            valueListenable: c,
+                            builder: (_, v, __) {
+                              final showOverlay = !v.isPlaying;
+                              return AnimatedOpacity(
+                                duration: const Duration(milliseconds: 160),
+                                opacity: showOverlay ? 1.0 : 0.0,
+                                child: Center(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: ColorResources.primaryOrange,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.all(8),
+                                    child: Icon(
+                                      showOverlay ? Icons.play_arrow : Icons.pause,
+                                      color: ColorResources.white,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

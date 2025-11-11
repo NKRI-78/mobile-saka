@@ -98,7 +98,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
           SliverAppBar(
             backgroundColor: ColorResources.brown,
             systemOverlayStyle: SystemUiOverlayStyle.light,
-            leading: CupertinoNavigationBarBackButton(
+            leading: BackButton(
               color: ColorResources.white,
               onPressed: () {
                 NS.pop();
