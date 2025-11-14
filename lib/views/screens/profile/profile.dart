@@ -92,21 +92,45 @@ class ProfileScreenState extends State<ProfileScreen>
     if (mounted) Navigator.of(context).pop();
   }
 
+  // --- ANDROID-ONLY: minta izin galeri yang benar (storage untuk <=12, photos untuk 13+) ---
+  Future<bool> _ensureAndroidGalleryPermission() async {
+    if (!Platform.isAndroid) return true;
+
+    // request keduanya; kalau salah satu granted → lanjut
+    final statuses = await [Permission.storage, Permission.photos].request();
+
+    final grantedAny = statuses.values.any((s) => s.isGranted);
+    if (grantedAny) return true;
+
+    final permanentlyDenied =
+        statuses.values.any((s) => s.isPermanentlyDenied);
+
+    if (permanentlyDenied) {
+      ShowSnackbar.snackbar(
+        getTranslated("PERMISSION_DENIED", context),
+        getTranslated("OPEN_SETTINGS_TO_ALLOW_PERMISSION", context),
+        Colors.red,
+      );
+      // buka settings supaya user bisa aktifkan izin
+      await openAppSettings();
+    } else {
+      ShowSnackbar.snackbar(
+        getTranslated("PERMISSION_DENIED", context),
+        getTranslated("PLEASE_ALLOW_GALLERY_PERMISSION", context),
+        Colors.red,
+      );
+    }
+    return false;
+  }
+
   Future<void> _downloadKTA() async {
     if (_savingKTA) return;
     try {
       setState(() => _savingKTA = true);
 
-      // 1) Permission
-      final status = await Permission.photos.request();
-      if (status.isDenied || status.isPermanentlyDenied) {
-        ShowSnackbar.snackbar(
-          getTranslated("PERMISSION_DENIED", context),
-          getTranslated("PLEASE_ALLOW_GALLERY_PERMISSION", context),
-          Colors.red,
-        );
-        return;
-      }
+      // 1) Permission (prioritas Android)
+      final ok = await _ensureAndroidGalleryPermission();
+      if (!ok) return;
 
       // 2) Render RepaintBoundary
       final boundary = _ktaKey.currentContext?.findRenderObject()
@@ -510,8 +534,8 @@ class _AvatarCircleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ketebalan ring dan stroke menyesuaikan radius agar selalu proporsional
-    final ring = radius * 0.14;    // outer white ring (card feel)
-    final stroke = radius * 0.06;  // inner white stroke di atas foto
+    final ring = radius * 0.14; // outer white ring (card feel)
+    final stroke = radius * 0.06; // inner white stroke di atas foto
 
     final totalSize = (radius * 2) + (ring * 2);
     final imageSize = (radius * 2);

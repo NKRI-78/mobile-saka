@@ -47,7 +47,7 @@ import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 class FeedIndex extends StatefulWidget {
-  const FeedIndex({Key? key}) : super(key: key);
+  const FeedIndex({super.key});
 
   @override
   FeedIndexState createState() => FeedIndexState();
@@ -801,13 +801,13 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
+            value: "/delete-post",
             child: Text(getTranslated("DELETE_POST", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall
               )
-            ), 
-            value: "/delete-post"
+            )
           )
         ];
       },
@@ -899,13 +899,13 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
+            value: "/delete-comment",
             child: Text(getTranslated("DELETE_COMMENT", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall
               )
-            ), 
-            value: "/delete-comment"
+            )
           )
         ];
       },

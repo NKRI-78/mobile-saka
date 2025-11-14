@@ -28,12 +28,14 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/screens/auth/sign_in.dart';
 
 class SignUpScreen extends StatefulWidget{
+  const SignUpScreen({super.key});
+
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
   late TextEditingController fullnameC;
@@ -55,47 +57,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   String? province;
   String? city;
-  String? codeProvince = "";
-  String? codeCity = "";
 
   List<Province> provinces = [];
   List<City> cities = [];
-
-  Future<List<Province>> getRegionRegister() async {
-    try {
-      Dio dio = Dio();
-      Response res = await dio.get("https://api-kosgoro.connexist.id/user-service/region");
-      Map<String, dynamic> data = res.data;
-      RegionRegisterModel regionRegisterModel = RegionRegisterModel.fromJson(data);
-
-      setState(() {     
-        provinces = [];
-        cities = [];
-      });
-      
-      List<Province> provinsi = regionRegisterModel.provinsi!;
-      List<City> kabupatenKota = regionRegisterModel.kabupatenKota!;
-
-      setState(() {
-        provinces.addAll(provinsi);
-        cities.addAll(kabupatenKota);
-      });
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
-    }
-    return provinces;
-  }
-
-  Future<List<Province>> getAllProvince(String province) async {
-    await Future.delayed(Duration(seconds: province.length == 4 ? 2 : 2));
-    return provinces.where((item) => item.nama!.toLowerCase().contains(province.toLowerCase())).toList();
-  }
-
-  Future<List<City>> getAllCity(String city) async {
-    await Future.delayed(Duration(seconds: city.length == 4 ? 2 : 2));
-    var filteredCityList = cities.where((el) => el.provinsiId == codeProvince).toList();
-    return filteredCityList.where((item) => item.nama!.toLowerCase().contains(city.toLowerCase())).toList();
-  }
 
   Future<void> register(BuildContext context) async {
     try {
@@ -158,13 +122,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       userData.emailAddress = email;
       userData.password = password;
       userData.province = province;
-      userData.codeProvince = codeProvince;
       userData.city = city;
-      userData.codeCity = codeCity;
     
       await context.read<AuthProvider>().register(context, userData);
     } catch(e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -190,12 +152,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       //   } 
       // });
     }
-
-    Future.delayed(Duration.zero, () {
-      if(mounted) {
-        getRegionRegister();
-      }
-    });
   }
 
   @override 
@@ -206,6 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     phoneNumberC.dispose();
     passwordC.dispose();
     passwordConfirmC.dispose();
+
     super.dispose();
   }
 
@@ -516,10 +473,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                     "display": "Perwakilan Lanud BNY Lampung",
                                                     "value": "Lanud BNY Lampung"
                                                   },
-                                                  {
-                                                    "display": "Lainnya",
-                                                    "value": "Lainnya"
-                                                  }
                                                 ],
                                                 textField: 'display',
                                                 valueField: 'value',
@@ -551,14 +504,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             const SizedBox(height: 10.0),
                                             TextField(
                                               readOnly: true,
-                                              onTap: () => modal("province"),
+                                              onTap: () {},
                                               style: robotoRegular.copyWith(
                                                 color: ColorResources.white,
                                                 fontSize: Dimensions.fontSizeSmall
                                               ),
                                               textInputAction: TextInputAction.next,
                                               decoration: InputDecoration(
-                                                hintText: province == null ? "Province" : province,
+                                                hintText: province ?? "Province",
                                                 hintStyle: robotoRegular.copyWith(
                                                   color: ColorResources.brown,
                                                   fontSize: Dimensions.fontSizeSmall
@@ -602,21 +555,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             const SizedBox(height: 10.0),
                                             TextField(
                                               readOnly: true,
-                                              onTap: () => province == null ? showAnimatedDialog(context, Dialog(
-                                                child: Container(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text("Silahkan pilih provinsi dahulu",
-                                                    style: robotoRegular,
-                                                  ),
-                                                ),
-                                              )) : modal("city"),
+                                              onTap: () => () {},
                                               style: robotoRegular.copyWith(
                                                 color: ColorResources.brown,
                                                 fontSize: Dimensions.fontSizeSmall
                                               ),
                                               textInputAction: TextInputAction.next,
                                               decoration: InputDecoration(
-                                                hintText: city == null ? "City" : city,
+                                                hintText: city ?? "City",
                                                 hintStyle: robotoRegular.copyWith(
                                                   color: ColorResources.brown,
                                                   fontSize: Dimensions.fontSizeSmall
@@ -1224,229 +1170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  modal(String typeInput) {
-    var citiesFiltered = cities.where((item) => item.provinsiId == codeProvince).toList();
 
-    if(typeInput == "city")
-      return showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-      return Wrap(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: ColorResources.primaryOrange,
-            ),
-            width: double.infinity,
-            height: 50.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(getTranslated("SELECT_CITY", context),
-                    style: TextStyle(
-                    color: ColorResources.white,
-                    fontSize: Dimensions.fontSizeSmall,
-                    fontWeight: FontWeight.bold
-                  )
-                )
-              ]
-            )
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Container(
-              decoration: BoxDecoration(color: Colors.white),              
-              height: MediaQuery.of(context).size.height / 2.0,
-              child: s.SearchBar(
-                searchBarPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                headerPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                listPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                onSearch: (val) async {
-                  return await getAllCity(val!);
-                },
-                searchBarController: searchBarCity,
-                debounceDuration: Duration(milliseconds: 500),
-                placeHolder: ListView.separated(
-                  separatorBuilder: (BuildContext context, int i) {
-                    return Divider();
-                  },
-                  itemCount: citiesFiltered.length + 1,
-                  itemBuilder: (BuildContext context, int i) {
-                    if(i == citiesFiltered.length) {
-                      return SizedBox(height: 20.0);
-                    }
-                    return InkWell(
-                    onTap: () {
-                      setState(() {
-                        city = citiesFiltered[i].nama;
-                        codeCity = citiesFiltered[i].kode!;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10.0, left:12.0),
-                        child: Text(citiesFiltered[i].nama!,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.bold
-                          )
-                        )
-                      )
-                    );
-                  },
-                ),
-                cancellationWidget: Text("Batal"),
-                emptyWidget: Container(
-                margin: EdgeInsets.only(top: 5.0, left: 12.0),
-                child: Text( "Data tidak ditemukan",
-                  style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall,
-                      fontWeight: FontWeight.bold
-                    )
-                  )
-                ),
-                header: Row(),
-                onCancelled: () {},
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                crossAxisCount: 2,
-                onItemFound: (dynamic kota, int i) {
-                  return ListTile(
-                    title: Text(kota.nama,
-                    style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight:FontWeight.bold
-                      )
-                    ),
-                    onTap: () {
-                      setState(() {
-                        city = kota.nama;
-                        codeCity = kota.kode;
-                      });
-                      Navigator.pop(context);
-                    },
-                  );
-                },
-              ),
-            ),
-          )
-        ],
-      );
-    });
-
-    return showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-      return Wrap(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: ColorResources.primaryOrange,
-            ),
-            width: double.infinity,
-            height: 50.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(getTranslated("SELECT_PROVINCE", context),
-                    style: robotoRegular.copyWith(
-                    color: ColorResources.white,
-                    fontSize: Dimensions.fontSizeSmall,
-                    fontWeight: FontWeight.bold
-                  )
-                )
-              ]
-            )
-          ),
-          Container(
-            decoration: BoxDecoration(color: Colors.white),
-            height: MediaQuery.of(context).size.height / 2.0,
-            child: s.SearchBar(
-              searchBarPadding: EdgeInsets.symmetric(horizontal: 8.0),
-              headerPadding: EdgeInsets.symmetric(horizontal: 8.0),
-              listPadding: EdgeInsets.symmetric(horizontal: 8.0),
-              onSearch: (val) async {
-                return await getAllProvince(val!);
-              },
-              searchBarController: searchBarProvince,
-              debounceDuration: Duration(milliseconds: 500),
-              placeHolder: ListView.separated(
-                separatorBuilder: (BuildContext context, int i) {
-                  return Divider();
-                },
-                itemCount: provinces.length + 1,
-                itemBuilder: (BuildContext context, int i) {
-                  if(i == provinces.length) {
-                    return SizedBox(height: 20.0);
-                  }
-                  return InkWell(
-                    onTap: () async {
-                      setState(() {
-                        codeProvince = provinces[i].kode!;
-                        province = provinces[i].nama;
-                        city = null;
-                        codeCity = null;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10.0, left:12.0),
-                        child: Text(provinces[i].nama!,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.brown,
-                            fontWeight: FontWeight.bold
-                          )
-                        )
-                      )
-                    );
-                  },
-                ),
-              cancellationWidget: Text("Batal"),
-              emptyWidget: Container(
-              margin: EdgeInsets.only(top: 5.0, left: 12.0),
-              child: Text( "Data tidak ditemukan",
-                style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeSmall,
-                    fontWeight: FontWeight.bold
-                  )
-                )
-              ),
-              header: Row(),
-              onCancelled: () {},
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              crossAxisCount: 2,
-              onItemFound: (dynamic provinsi, int i) {
-                return ListTile(
-                  title: Text(provinsi.nama,
-                  style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall,
-                      color: ColorResources.brown,
-                      fontWeight: FontWeight.bold
-                    )
-                  ),
-                  onTap: () {
-                    setState(() {
-                      codeProvince = provinsi.kode;
-                      province = provinsi.nama;
-                      city = null;
-                      codeCity = null;
-                    });
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            ),
-          )
-        ],
-      );
-    });
-  }
 
   Widget selectedLanudProvince(BuildContext context, String lanudType) {
     province = lanudType == "Lanud Atang Sendjaja" 
@@ -1473,8 +1197,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ? "Sumatera Utara"
     : lanudType == "Lanud Sultan Iskandar Muda" 
     ? "Nangroe Aceh Darusalam" 
-    : lanudType == "Lanud Raja Haji Fasabillilah" 
-    ? "Kep. Riau" 
+    : lanudType == "Lanud Raja Haji Fasabilillah" 
+    ? "Kepulauan Riau" 
     : lanudType == "Lanud Wiriadinata"
     ? "Jawa Barat" 
     : lanudType == "Lanud Sugiri Sukani" 
@@ -1557,116 +1281,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ? "Sumatera Barat" 
     : lanudType == "Lanud BNY Lampung" 
     ? "Bandar Lampung" 
-    : "-";   
-    codeProvince = lanudType == "Lanud Atang Sendjaja" 
-    ? "10" 
-    : lanudType == "Lanud Roesmin Nurjadin" 
-    ? "04" 
-    : lanudType == "Lanud Supadio" 
-    ? "14" 
-    : lanudType == "Lanud Halim Perdana Kusuma" 
-    ? "09" 
-    : lanudType == "Lanud Suryadarma" 
-    ? "10" 
-    : lanudType == "Lanud Maimun Saleh" 
-    ? "01" 
-    : lanudType == "Lanud Raden Sadjad"  
-    ? "31" 
-    : lanudType == "Lanud Sri Mulyono Herlambang" 
-    ? "06"
-    : lanudType == "Lanud Sultan Sjahril" 
-    ? "03" 
-    : lanudType == "Lanud Husein Sastranegara" 
-    ? "10" 
-    : lanudType == "Lanud Soewondo" 
-    ? "02"
-    : lanudType == "Lanud Sultan Iskandar Muda" 
-    ? "01" 
-    : lanudType == "Lanud Raja Haji Fasabillilah" 
-    ? "04" 
-    : lanudType == "Lanud Wiriadinata"
-    ? "10" 
-    : lanudType == "Lanud Sugiri Sukani" 
-    ? "10"
-    : lanudType == "Lanud Jendral Besar Sudirman"
-    ? "11"
-    : lanudType == "Lanud Hang Nadim" 
-    ? "31" 
-    : lanudType == "Lanud Pangeran M. Bun Yamin" 
-    ? "08" 
-    : lanudType == "Lanud H. Abdullah Sanusi H" 
-    ? "29" 
-    : lanudType == "Lanud Harry Hadisoemantri" 
-    ? "14" 
-    : lanudType == "Lanud Iswahjudi" 
-    ? "13"  
-    : lanudType == "Lanud Sultan Hasanuddin" 
-    ? "20"
-    : lanudType == "Lanud Abdulrachman Saleh"
-    ? "13" 
-    : lanudType == "Lanud Mujiono" 
-    ? "13"
-    : lanudType == "Lanud Sam Ratulangi" 
-    ? "18" 
-    : lanudType == "Lanud Sjamsuddin Noor"
-    ? "16"
-    : lanudType == "Lanud Dhomber" 
-    ? "17" 
-    : lanudType == "Lanud Tuan Guru Kyai Haji Muhammad Zainudin" 
-    ? "23" 
-    : lanudType == "Lanud Anang Bursa" 
-    ? "17"
-    : lanudType == "Lanud I Gusti Ngurah Rai" 
-    ? "22" 
-    : lanudType == "Lanud Haluoleo" 
-    ? "21" 
-    : lanudType == "Lanud Iskandar" 
-    ? "15"
-    : lanudType == "Lanud Silas Papare" 
-    ? "26" 
-    : lanudType == "Lanud Manuhua" 
-    ? "26" 
-    : lanudType == "Lanud Eltari" 
-    ? "24" 
-    : lanudType == "Lanud Leo Wattimena" 
-    ? "27" 
-    : lanudType == "Lanud Pattimura" 
-    ? "25" 
-    : lanudType == "Lanud Johanes Abraham Dimara" 
-    ? "Papua" 
-    : lanudType == "Lanud Yohanis Kapiyau" 
-    ? "26" 
-    : lanudType == "Lanud Dumatubun" 
-    ? "25" 
-    : lanudType == "Lanud Wamena" 
-    ? "26" 
-    : lanudType == "Lanud Adisucjipto" 
-    ? "12" 
-    : lanudType == "Lanud Adi Soemarmo" 
-    ? "11" 
-    : lanudType == "Lanud Sulaiman" 
-    ? "10" 
-    : lanudType == "Lanud SRI Palu" 
-    ? "19" 
-    : lanudType == "Lanud ZAM Lombok" 
-    ? "23" 
-    : lanudType == "Lanud SRI Gorontalo" 
-    ? "18" 
-    : lanudType == "Lanud IKR Palangkaraya" 
-    ? "15" 
-    : lanudType == "Lanud ELI Maumere" 
-    ? "24" 
-    : lanudType == "Lanud SWO Sibolga" 
-    ? "02" 
-    : lanudType == "Lanud SIM Lhoksumawe" 
-    ? "15" 
-    : lanudType == "Lanud SKI Cirebon" 
-    ? "10"
-    : lanudType == "Lanud SUT Padang" 
-    ? "02" 
-    : lanudType == "Lanud BNY Lampung" 
-    ? "09" 
-    : "-"; 
+    : lanudType == "Lanud Muljono" 
+    ? "Jawa Timur"
+    :  lanudType == "Lanud I. Gusti Ngurah Rai" 
+    ? "Bali"
+    : lanudType == "Lanud Raja Haji Fasabilillah" 
+    ? "Riau" 
+    : "-";
+
     return Column(
       children: [
         Container(
@@ -1742,7 +1364,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ? "Medan"
     : lanudType == "Lanud Sultan Iskandar Muda" 
     ? "Banda Aceh" 
-    : lanudType == "Lanud Raja Haji Fasabillilah" 
+    : lanudType == "Lanud Raja Haji Fasabilillah" 
     ? "Pinang" 
     : lanudType == "Lanud Wiriadinata"
     ? "Tasikmalaya" 
@@ -1826,117 +1448,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ? "Padang" 
     : lanudType == "Lanud BNY Lampung" 
     ? "Lampung" 
+    : lanudType == "Lanud Muljono" 
+    ? "Surabaya"
+    : lanudType == "Lanud I. Gusti Ngurah Rai" 
+    ? "Denpasar"
+    : lanudType == "Lanud Raja Haji Fasabilillah" 
+    ?  "Riau"
     : "-";  
 
-    codeCity = lanudType == "Lanud Atang Sendjaja" 
-    ? "19" 
-    : lanudType == "Lanud Roesmin Nurjadin" 
-    ? "11" 
-    : lanudType == "Lanud Supadio" 
-    ? "05" 
-    : lanudType == "Lanud Halim Perdana Kusuma" 
-    ? "05" 
-    : lanudType == "Lanud Suryadarma" 
-    ? "10" 
-    : lanudType == "Lanud Maimun Saleh" 
-    ? "13" 
-    : lanudType == "Lanud Raden Sadjad"  
-    ? "31" 
-    : lanudType == "Lanud Sri Mulyono Herlambang" 
-    ? "07"
-    : lanudType == "Lanud Sultan Sjahril" 
-    ? "12" 
-    : lanudType == "Lanud Husein Sastranegara" 
-    ? "01" 
-    : lanudType == "Lanud Soewondo" 
-    ? "15"
-    : lanudType == "Lanud Sultan Iskandar Muda" 
-    ? "12" 
-    : lanudType == "Lanud Raja Haji Fasabillilah" 
-    ? "05" 
-    : lanudType == "Lanud Wiriadinata"
-    ? "16" 
-    : lanudType == "Lanud Sugiri Sukani" 
-    ? "11"
-    : lanudType == "Lanud Jendral Besar Sudirman"
-    ? "20"
-    : lanudType == "Lanud Hang Nadim" 
-    ? "04" 
-    : lanudType == "Lanud Pangeran M. Bun Yamin" 
-    ? "09" 
-    : lanudType == "Lanud H. Abdullah Sanusi H" 
-    ? "29" 
-    : lanudType == "Lanud Harry Hadisoemantri" 
-    ? "14" 
-    : lanudType == "Lanud Iswahjudi" 
-    ? "12"  
-    : lanudType == "Lanud Sultan Hasanuddin" 
-    ? "21"
-    : lanudType == "Lanud Abdulrachman Saleh"
-    ? "14" 
-    : lanudType == "Lanud Mujiono" 
-    ? "37"
-    : lanudType == "Lanud Sam Ratulangi" 
-    ? "05" 
-    : lanudType == "Lanud Sjamsuddin Noor"
-    ? "11"
-    : lanudType == "Lanud Dhomber" 
-    ? "09" 
-    : lanudType == "Lanud Tuan Guru Kyai Haji Muhammad Zainudin" 
-    ? "23" 
-    : lanudType == "Lanud Anang Bursa" 
-    ? "12"
-    : lanudType == "Lanud I Gusti Ngurah Rai" 
-    ? "09" 
-    : lanudType == "Lanud Haluoleo" 
-    ? "02" 
-    : lanudType == "Lanud Iskandar" 
-    ? "15"
-    : lanudType == "Lanud Silas Papare" 
-    ? "01" 
-    : lanudType == "Lanud Manuhua" 
-    ? "05" 
-    : lanudType == "Lanud Eltari" 
-    ? "27" 
-    : lanudType == "Lanud Leo Wattimena" 
-    ? "05" 
-    : lanudType == "Lanud Pattimura" 
-    ? "04" 
-    : lanudType == "Lanud Johanes Abraham Dimara" 
-    ? "26" 
-    : lanudType == "Lanud Yohanis Kapiyau" 
-    ? "25" 
-    : lanudType == "Lanud Dumatubun" 
-    ? "26" 
-    : lanudType == "Lanud Wamena" 
-    ? "12" 
-    : lanudType == "Lanud Adisucjipto" 
-    ? "12" 
-    : lanudType == "Lanud Adi Soemarmo" 
-    ? "34" 
-    : lanudType == "Lanud Sulaiman" 
-    ? "01" 
-    : lanudType == "Lanud SRI Palu" 
-    ? "08" 
-    : lanudType == "Lanud ZAM Lombok" 
-    ? "04" 
-    : lanudType == "Lanud SRI Gorontalo" 
-    ? "30" 
-    : lanudType == "Lanud IKR Palangkaraya" 
-    ? "06" 
-    : lanudType == "Lanud ELI Maumere" 
-    ? "24" 
-    : lanudType == "Lanud SWO Sibolga" 
-    ? "17" 
-    : lanudType == "Lanud SIM Lhoksumawe" 
-    ? "15" 
-    : lanudType == "Lanud SKI Cirebon" 
-    ? "06"
-    : lanudType == "Lanud SUT Padang" 
-    ? "12" 
-    : lanudType == "Lanud BNY Lampung" 
-    ? "09" 
-    : "-"; 
+    
     return Column(
       children: [
         Container(

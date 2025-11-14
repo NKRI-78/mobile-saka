@@ -29,14 +29,14 @@ import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:saka/views/screens/news/detail.dart';
 
-// @pragma('vm:entry-point')
+@pragma('vm:entry-point')
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Penting: tunggu init Firebase selesai
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform
-  // );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
 
   // Locale untuk timeago
   timeago.setLocaleMessages('id', CustomLocalDate());

@@ -11,18 +11,9 @@ environment:
 dependencies:
   firebase_core: ^4.2.1
   firebase_messaging: ^16.0.4
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-dependency_overrides:
-  intl: ^0.19.0
-  firebase_core_platform_interface: 5.3.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
+  firebase_core_platform_interface: 6.0.2
+  shared_preferences: ^2.3.2
+  
   # A
   android_intent_plus: ^6.0.0
   audio_video_progress_bar: ^2.0.3
@@ -124,7 +115,6 @@ dev_dependencies:
   # R
   readmore: ^2.1.0
   rxdart: ^0.27.5
-  shared_preferences: ^2.3.2
 
   # S
   shimmer: ^2.0.0
@@ -149,7 +139,19 @@ dev_dependencies:
 
   # W
   webview_flutter: ^4.2.1
+  
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
+
+dependency_overrides:
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
 flutter_icons:
   android: "launcher_icon"
