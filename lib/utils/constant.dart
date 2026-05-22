@@ -4,34 +4,46 @@ import 'package:timeago/src/messages/lookupmessages.dart';
 import 'package:saka/data/models/language/language.dart';
 
 class AppConstants {
-  static String baseUrl = 'https://api-saka.inovatiftujuh8.com';
-  static const String baseUrlDisbursementDenom = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/denom';
-  static const String baseUrlEcommerceDeliveryTimeslots = '$switchToBaseUrl/commerce-saka/pub/v1/ninja/deliveryTimeSlots';
-  static const String baseUrlDisbursementBank = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/bank';
-  static const String baseUrlDisbursementEmoney = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/emoney';
+  static String baseUrl = 'https://api-saka.langitdigital78.com';
+  static const String baseUrlDisbursementDenom =
+      'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/denom';
+  static const String baseUrlEcommerceDeliveryTimeslots =
+      '$switchToBaseUrl/commerce-saka/pub/v1/ninja/deliveryTimeSlots';
+  static const String baseUrlDisbursementBank =
+      'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/bank';
+  static const String baseUrlDisbursementEmoney =
+      'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/emoney';
   static const String baseUrlDisbursement = 'https://pg-$switchTo.connexist.id/disbursement/api/v1';
-  static const String baseUrlFeed = '$switchToBaseUrlFeed';
-  static const String baseUrlFeedV2 = 'https://api-forum-general.inovatiftujuh8.com';
-  static const String baseUrlMedia = 'https://api-media.inovatiftujuh8.com/api/v1/media/upload';
-  static const String baseUrlSocketFeed = 'https://feedapi.connexist.id:5091'; 
+  static const String baseUrlFeed = switchToBaseUrlFeed;
+  static const String baseUrlFeedV2 = 'https://api-forum-general.langitdigital78.com';
+  static const String baseUrlMedia =
+      'https://api-media.langitdigital78.com/api/v1/media/upload-local';
+  static const String baseUrlSocketFeed = 'https://feedapi.connexist.id:5091';
   static const String baseUrlEcommerce = '$switchToBaseUrl/commerce-saka/api/v1';
   static const String baseUrlPpob = '$switchToBaseUrl/ppob/api/v1';
   static const String baseUrlPpobV2 = 'https://api-pg.inovasi78.com';
   static const String baseUrlAirmen = 'https://void.idserverhost.com:8024/stream';
-  static const String baseUrlVa = 'https://pg-$switchTo.connexist.id/payment/pub/v2/payment/channels';
-  static const String baseUrlPaymentBilling = 'https://pg-$switchTo.connexist.id/payment/page/guidance';
+  static const String baseUrlVa =
+      'https://pg-$switchTo.connexist.id/payment/pub/v2/payment/channels';
+  static const String baseUrlPaymentBilling =
+      'https://pg-$switchTo.connexist.id/payment/page/guidance';
   static const String baseUrlHelpPayment = 'https://pg-$switchTo.connexist.id/payment/help/howto';
-  static const String baseUrlHelpInboxPayment = 'https://pg-$switchTo.connexist.id/payment/help/howto/trx';
-  static const String baseUrlEcommercePickupTimeslots = '$switchToBaseUrl/commerce-saka/pub/v1/ninja/pickupTimeSlots';
-  static const String baseUrlEcommerceDimensionSize = '$switchToBaseUrl/commerce-saka/pub/v1/ninja/dimensionSizes';
-  static const String baseUrlEcommerceApproximatelyVolumes = '$switchToBaseUrl/commerce-saka/pub/v1/ninja/pickupApproxVolumes';
+  static const String baseUrlHelpInboxPayment =
+      'https://pg-$switchTo.connexist.id/payment/help/howto/trx';
+  static const String baseUrlEcommercePickupTimeslots =
+      '$switchToBaseUrl/commerce-saka/pub/v1/ninja/pickupTimeSlots';
+  static const String baseUrlEcommerceDimensionSize =
+      '$switchToBaseUrl/commerce-saka/pub/v1/ninja/dimensionSizes';
+  static const String baseUrlEcommerceApproximatelyVolumes =
+      '$switchToBaseUrl/commerce-saka/pub/v1/ninja/pickupApproxVolumes';
 
   static const String switchTo = "prod";
   static const String switchToBaseUrlFeed = "https://feedapi.connexist.id/api/v1";
   static const String switchToBaseUrl = "https://smsapi.connexist.com:8443";
 
   static const String xContextId = '603659477896';
-  static const String mobileUa = 'Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36';
+  static const String mobileUa =
+      'Mozilla/5.0 (Linux; Android 7.0; SM-G930V Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36';
   static const String productId = 'dfadf7e6-6a8d-4704-a082-9025289cb37e';
 
   // va prod https://pg-prod.sandbox.connexist.id/payment/pub/v1/payment/channels
@@ -52,7 +64,7 @@ class AppConstants {
 
   static List<LanguageModel> languages = [
     LanguageModel(imageUrl: '', languageName: 'English', countryCode: 'US', languageCode: 'en'),
-    LanguageModel(imageUrl: '', languageName: 'Indonesia', countryCode: 'ID', languageCode: 'id')
+    LanguageModel(imageUrl: '', languageName: 'Indonesia', countryCode: 'ID', languageCode: 'id'),
   ];
 }
 

@@ -8,7 +8,7 @@ plugins {
 }
 
 val keystoreProps = Properties().apply {
-    val f = file("key.properties")
+    val f = rootProject.file("key.properties")
     if (f.exists()) {
         f.inputStream().use { load(it) }
     }
@@ -47,7 +47,8 @@ android {
         if (hasReleaseKeystore) {
             create("release") {
                 val storeFilePath = keystoreProps.getProperty("storeFile")!!.trim()
-                storeFile = file(storeFilePath)
+
+                storeFile = rootProject.file(storeFilePath)
                 storePassword = keystoreProps.getProperty("storePassword")!!.trim()
                 keyAlias = keystoreProps.getProperty("keyAlias")!!.trim()
                 keyPassword = keystoreProps.getProperty("keyPassword")!!.trim()
@@ -57,18 +58,21 @@ android {
 
     buildTypes {
         release {
+            isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
 
             signingConfig = signingConfigs.findByName("release")
-                ?: signingConfigs.getByName("debug")
+                ?: error("Release keystore not found. Check android/key.properties")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+
         debug {
+            isDebuggable = true
             isMinifyEnabled = false
             isShrinkResources = false
             signingConfig = signingConfigs.getByName("debug")
@@ -82,11 +86,11 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-    
+
+    // Play Core modern replacement for Flutter deferred components / SDK 34+ compatible
+    implementation("com.google.android.play:feature-delivery:2.1.0")
+
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("com.google.android.play:core:1.10.3")    
-    implementation("com.squareup.okhttp3:okhttp:4.12.0") 
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
-
-

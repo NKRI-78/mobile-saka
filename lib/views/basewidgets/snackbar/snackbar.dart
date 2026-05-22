@@ -9,24 +9,35 @@ import 'package:saka/utils/dimensions.dart';
 class ShowSnackbar {
   ShowSnackbar._();
 
-  static snackbar(String content, String label, Color backgroundColor) {
-    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+  static void snackbar(
+    String content,
+    String label,
+    Color backgroundColor, {
+    int durationSeconds = 3,
+  }) {
+    final messenger = ScaffoldMessenger.of(navigatorKey.currentContext!);
+    messenger.hideCurrentSnackBar();
+
+    messenger.showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: backgroundColor,
+        duration: Duration(seconds: durationSeconds),
         content: Text(
-          content, 
+          content,
           style: robotoRegular.copyWith(
             color: ColorResources.white,
-            fontSize: Dimensions.fontSizeSmall
-          )
+            fontSize: Dimensions.fontSizeSmall,
+          ),
         ),
-        action: SnackBarAction(
-          textColor: ColorResources.white,
-          label: label,
-          onPressed: () => ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar()
-        ),
-      )
+        action: label.trim().isEmpty
+            ? null
+            : SnackBarAction(
+                textColor: ColorResources.white,
+                label: label,
+                onPressed: () => messenger.hideCurrentSnackBar(),
+              ),
+      ),
     );
   }
 }

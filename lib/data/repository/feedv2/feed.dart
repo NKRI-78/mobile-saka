@@ -129,7 +129,8 @@ class FeedRepoV2 {
     try {
       FormData formData = FormData.fromMap({
         "folder": folder,
-        "subfolder": "fasi",
+        // Samakan dengan app namespace yang dipakai endpoint media.
+        "subfolder": "saka",
         "media": await MultipartFile.fromFile(
           media.path,
           filename: p.basename(media.path),
@@ -140,12 +141,12 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;
       return data;
     } on DioException catch (e) {
-      debugPrint(e.response!.data.toString());
+      debugPrint(e.response?.data.toString() ?? e.message);
     } catch (e) {
       debugPrint(e.toString());
     }
 
-    return {};
+    return null;
   }
   Future<void> postMedia({
     required String forumId,

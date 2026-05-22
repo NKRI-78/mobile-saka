@@ -339,13 +339,19 @@ class FeedProviderV2 with ChangeNotifier {
     if (feedType == "video") {
 
       Map<String, dynamic>? d = await fr.uploadMedia(folder: "videos", media: files);
+
+      if (d == null || d["data"] == null || d["data"]["path"] == null) {
+        setStateWritePost(WritePostStatus.error);
+        ShowSnackbar.snackbar("Upload video gagal. Coba lagi beberapa saat.", "", ColorResources.error);
+        return;
+      }
       
       await fr.post(
         forumId: forumId,
         appName: 'saka', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: d!["data"]["path"], 
+        media: d["data"]["path"], 
         link: '',
         caption: postC.text, 
       );

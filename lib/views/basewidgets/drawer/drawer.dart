@@ -39,8 +39,6 @@ class DrawerHeaderWidget extends StatefulWidget {
 }
 
 class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
-
-
   @override
   Widget build(BuildContext context) {
     return DrawerHeader(
@@ -49,11 +47,11 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
           padding: EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             color: Colors.white38,
-            borderRadius: BorderRadius.circular(60.0)
+            borderRadius: BorderRadius.circular(60.0),
           ),
           child: Consumer<ProfileProvider>(
             builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-              if(profileProvider.profileStatus == ProfileStatus.loading) {
+              if (profileProvider.profileStatus == ProfileStatus.loading) {
                 return Container(
                   width: 100.0,
                   height: 100.0,
@@ -62,12 +60,12 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                     color: ColorResources.white,
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage('assets/images/default_avatar.jpg')
-                    )
+                      image: AssetImage('assets/images/default_avatar.jpg'),
+                    ),
                   ),
                 );
               }
-              if(profileProvider.profileStatus == ProfileStatus.error) {
+              if (profileProvider.profileStatus == ProfileStatus.error) {
                 return Container(
                   width: 100.0,
                   height: 100.0,
@@ -76,8 +74,8 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                     color: ColorResources.white,
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage('assets/images/default_avatar.jpg')
-                    )
+                      image: AssetImage('assets/images/default_avatar.jpg'),
+                    ),
                   ),
                 );
               }
@@ -89,12 +87,9 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                     height: 100.0,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: imageProvider
-                      )
+                      image: DecorationImage(fit: BoxFit.cover, image: imageProvider),
                     ),
-                  );  
+                  );
                 },
                 placeholder: (BuildContext context, String url) {
                   return Container(
@@ -105,8 +100,8 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                       color: ColorResources.white,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage('assets/images/default_avatar.jpg')
-                      )
+                        image: AssetImage('assets/images/default_avatar.jpg'),
+                      ),
                     ),
                   );
                 },
@@ -119,28 +114,26 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                       color: ColorResources.white,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage('assets/images/default_avatar.jpg')
-                      )
+                        image: AssetImage('assets/images/default_avatar.jpg'),
+                      ),
                     ),
-                  );             
-                }, 
-              );         
+                  );
+                },
+              );
             },
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
 
 class DrawerWidget extends StatefulWidget {
-
   @override
   DrawerWidgetState createState() => DrawerWidgetState();
 }
 
 class DrawerWidgetState extends State<DrawerWidget> {
-
   PackageInfo packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
@@ -160,178 +153,176 @@ class DrawerWidgetState extends State<DrawerWidget> {
           child: Material(
             color: ColorResources.transparent,
             child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 30.0),
-            height: 580.0,
-            decoration: BoxDecoration(
-              color: ColorResources.brown, 
-              borderRadius: BorderRadius.circular(20.0)
-            ),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      top: 0.0, 
-                      left: 0.0
+              margin: const EdgeInsets.symmetric(horizontal: 30.0),
+              height: 580.0,
+              decoration: BoxDecoration(
+                color: ColorResources.brown,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 0.0, left: 0.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Image.asset("assets/images/background/shading-top-left.png"),
+                      ),
                     ),
-                    child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                      child: Image.asset("assets/images/background/shading-top-left.png")
-                    )
-                  )
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      top: 0.0, 
-                      right: 0.0
+                  ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 0.0, right: 0.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Image.asset("assets/images/background/shading-right.png"),
+                      ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child: Image.asset("assets/images/background/shading-right.png")
-                    )
-                  )
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 200.0, right: 0.0),
-                    child: Image.asset("assets/images/background/shading-right-bottom.png")
-                  )
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-
-                      Text("I'ts important that you understand what",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.w300,
-                          color: ColorResources.white
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 200.0, right: 0.0),
+                      child: Image.asset("assets/images/background/shading-right-bottom.png"),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "I'ts important that you understand what",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.w300,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
-                      
-                      const SizedBox(height: 8.0),
 
-                      Text("information Saka Dirgantara collects.",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.w300,
-                          color: ColorResources.white
+                        const SizedBox(height: 8.0),
+
+                        Text(
+                          "information Saka Dirgantara collects.",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.w300,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("Some examples of data Saka Dirgantara\n collects and users are:",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.w300,
-                          color: ColorResources.white
+                        Text(
+                          "Some examples of data Saka Dirgantara\n collects and users are:",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.w300,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("● Your Forum Information & Content",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.bold,
-                          color: ColorResources.white
+                        Text(
+                          "● Your Forum Information & Content",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.bold,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("This may include any information you share with us,\nfor example; your create a post and another users\ncan like your post or comment also you can delete\nyour post.",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.w300,
-                          color: ColorResources.white
+                        Text(
+                          "This may include any information you share with us,\nfor example; your create a post and another users\ncan like your post or comment also you can delete\nyour post.",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.w300,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("● Photos, Videos & Documents",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.bold,
-                          color: ColorResources.white
+                        Text(
+                          "● Photos, Videos & Documents",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.bold,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("This may include your can post on media\nphotos, videos, or documents",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.w300,
-                          color: ColorResources.white
+                        Text(
+                          "This may include your can post on media\nphotos, videos, or documents",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.w300,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("● Embedded Links",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.bold,
-                          color: ColorResources.white
+                        Text(
+                          "● Embedded Links",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.bold,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
 
-                      Text("This may include your can post on link\nsort of news, etc",
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          fontWeight: FontWeight.w300,
-                          color: ColorResources.white
+                        Text(
+                          "This may include your can post on link\nsort of news, etc",
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontWeight: FontWeight.w300,
+                            color: ColorResources.white,
+                          ),
                         ),
-                      ),
-                    ]
-                  ) 
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                          left: 30.0,
-                          right: 30.0,
-                          bottom: 30.0,
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
+                          child: CustomButton(
+                            isBorderRadius: true,
+                            onTap: () {
+                              Helper.prefs!.setBool("isAccept", true);
+                              NS.pop();
+                            },
+                            fontSize: Dimensions.fontSizeSmall,
+                            btnColor: ColorResources.brown,
+                            btnTextColor: ColorResources.white,
+                            btnTxt: "Agree",
+                          ),
                         ),
-                        child: CustomButton(
-                          isBorderRadius: true,
-                          onTap: () {
-                            Helper.prefs!.setBool("isAccept", true);
-                            NS.pop();
-                          }, 
-                          fontSize: Dimensions.fontSizeSmall,
-                          btnColor: ColorResources.brown,
-                          btnTextColor: ColorResources.white,
-                          btnTxt: "Agree"
-                        ),
-                      )
-                    ],
-                  ) 
-                )
-              ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        )
-      );
-    },
+        );
+      },
       transitionBuilder: (_, anim, __, child) {
         Tween<Offset> tween;
         if (anim.status == AnimationStatus.reverse) {
@@ -341,10 +332,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
         }
         return SlideTransition(
           position: tween.animate(anim),
-          child: FadeTransition(
-            opacity: anim,
-            child: child,
-          ),
+          child: FadeTransition(opacity: anim, child: child),
         );
       },
     );
@@ -357,14 +345,14 @@ class DrawerWidgetState extends State<DrawerWidget> {
     });
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
 
     initPackageInfo();
   }
 
-  @override 
+  @override
   void dispose() {
     super.dispose();
   }
@@ -378,11 +366,8 @@ class DrawerWidgetState extends State<DrawerWidget> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                ColorResources.brown,
-                ColorResources.primaryOrange,
-              ]
-            )
+              colors: [ColorResources.brown, ColorResources.primaryOrange],
+            ),
           ),
           child: ListView(
             padding: EdgeInsets.zero,
@@ -391,38 +376,43 @@ class DrawerWidgetState extends State<DrawerWidget> {
               drawerUserDisplayAccount(context),
               Consumer<AuthProvider>(
                 builder: (BuildContext context, AuthProvider authProvider, Widget? child) {
-                  if(authProvider.isLoggedIn()) {
+                  if (authProvider.isLoggedIn()) {
                     return Container(
                       padding: EdgeInsets.all(15.0),
-                      margin: EdgeInsets.only(
-                        top: 10.0, 
-                        left: 30.0, 
-                        right: 10.0
-                      ),
+                      margin: EdgeInsets.only(top: 10.0, left: 30.0, right: 10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
                             alignment: Alignment.centerRight,
-                            child: Text("Version ${packageInfo.version}",
+                            child: Text(
+                              "Version ${packageInfo.version}",
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 fontWeight: FontWeight.bold,
-                                color: ColorResources.white
+                                color: ColorResources.white,
                               ),
                             ),
                           ),
                           SizedBox(height: 10.0),
-                          drawerItems(context, AboutUsScreen(), "aboutus", "assets/images/svg/aboutus.svg", getTranslated("ABOUT_US", context)),
-                          SizedBox(height: 10.0),
-                          Divider(
-                            color: ColorResources.brown,
-                            height: 1.0,
-                            thickness: 0.2
+                          drawerItems(
+                            context,
+                            AboutUsScreen(),
+                            "aboutus",
+                            "assets/images/svg/aboutus.svg",
+                            getTranslated("ABOUT_US", context),
                           ),
                           SizedBox(height: 10.0),
-                          drawerItems(context, ProfileScreen(), "profil", "assets/images/svg/user.svg", getTranslated("PROFILE", context)),
+                          Divider(color: ColorResources.brown, height: 1.0, thickness: 0.2),
+                          SizedBox(height: 10.0),
+                          drawerItems(
+                            context,
+                            ProfileScreen(),
+                            "profil",
+                            "assets/images/svg/user.svg",
+                            getTranslated("PROFILE", context),
+                          ),
                           // SizedBox(height: 10.0),
                           // Divider(
                           //   color: ColorResources.brown,
@@ -432,27 +422,31 @@ class DrawerWidgetState extends State<DrawerWidget> {
                           // SizedBox(height: 10.0),
                           // Consumer<StoreProvider>(
                           //   builder: (BuildContext context, StoreProvider storeProvider, Widget? child) {
-                          //     return storeProvider.sellerStoreStatus == SellerStoreStatus.loading 
-                          //     ? drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg",  "...")               
-                          //     : drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg", storeProvider.sellerStoreStatus == SellerStoreStatus.empty ? getTranslated("OPEN_STORE", context) : getTranslated("MY_STORE", context));                
+                          //     return storeProvider.sellerStoreStatus == SellerStoreStatus.loading
+                          //     ? drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg",  "...")
+                          //     : drawerItems(context, Container(), "store", "assets/imagesv2/svg/store.svg", storeProvider.sellerStoreStatus == SellerStoreStatus.empty ? getTranslated("OPEN_STORE", context) : getTranslated("MY_STORE", context));
                           //   },
                           // ),
                           SizedBox(height: 10.0),
-                          Divider(
-                            color: ColorResources.brown,
-                            height: 1.0,
-                            thickness: 0.2,
+                          Divider(color: ColorResources.brown, height: 1.0, thickness: 0.2),
+                          SizedBox(height: 10.0),
+                          drawerItems(
+                            context,
+                            SettingScreen(),
+                            "setting",
+                            "assets/imagesv2/svg/settings.svg",
+                            getTranslated("SETTINGS", context),
                           ),
                           SizedBox(height: 10.0),
-                          drawerItems(context, SettingScreen(), "setting", "assets/imagesv2/svg/settings.svg", getTranslated("SETTINGS", context)),
+                          Divider(color: ColorResources.brown, height: 1.0, thickness: 0.2),
                           SizedBox(height: 10.0),
-                          Divider(
-                            color: ColorResources.brown,
-                            height: 1.0,
-                            thickness: 0.2,
+                          drawerItems(
+                            context,
+                            Container(),
+                            "tos",
+                            "assets/imagesv2/svg/support.svg",
+                            getTranslated("TERMS_OF_CONDITION", context),
                           ),
-                          SizedBox(height: 10.0),
-                          drawerItems(context, Container(), "tos", "assets/imagesv2/svg/support.svg", getTranslated("TERMS_OF_CONDITION", context)),
                           SizedBox(height: 10.0),
                           // drawerItems(context, Container(), "cashout", "assets/imagesv2/svg/cashout.svg", getTranslated("CASH_OUT", context)),
                           // SizedBox(height: 10.0),
@@ -462,21 +456,25 @@ class DrawerWidgetState extends State<DrawerWidget> {
                           //   thickness: 0.2,
                           // ),
                           // SizedBox(height: 10.0),
-                          Divider(
-                            color: ColorResources.brown,
-                            height: 1.0,
-                            thickness: 0.2,
+                          Divider(color: ColorResources.brown, height: 1.0, thickness: 0.2),
+                          SizedBox(height: 10.0),
+                          drawerItems(
+                            context,
+                            Container(),
+                            "bantuan",
+                            "assets/imagesv2/svg/support.svg",
+                            getTranslated("SUPPORT", context),
                           ),
                           SizedBox(height: 10.0),
-                          drawerItems(context, Container(), "bantuan", "assets/imagesv2/svg/support.svg", getTranslated("SUPPORT", context)),
+                          Divider(color: ColorResources.brown, height: 1.0, thickness: 0.2),
                           SizedBox(height: 10.0),
-                          Divider(
-                            color: ColorResources.brown,
-                            height: 1.0,
-                            thickness: 0.2,
+                          drawerItems(
+                            context,
+                            Container(),
+                            "logout",
+                            "assets/imagesv2/svg/logout.svg",
+                            getTranslated("LOGOUT", context),
                           ),
-                          SizedBox(height: 10.0),
-                          drawerItems(context, Container(), "logout", "assets/imagesv2/svg/logout.svg", getTranslated("LOGOUT", context)),
                           SizedBox(height: 10.0),
                         ],
                       ),
@@ -487,17 +485,21 @@ class DrawerWidgetState extends State<DrawerWidget> {
                         width: double.infinity,
                         margin: EdgeInsets.only(top: 10.0, left: 16.0, right: 16.0),
                         child: TextButton(
-                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen())),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignInScreen()),
+                          ),
                           style: TextButton.styleFrom(
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0)
+                              borderRadius: BorderRadius.circular(30.0),
                             ),
-                            backgroundColor: ColorResources.white
+                            backgroundColor: ColorResources.white,
                           ),
-                          child: Text(getTranslated("SIGN_IN", context),
+                          child: Text(
+                            getTranslated("SIGN_IN", context),
                             style: robotoRegular.copyWith(
                               color: ColorResources.black,
-                              fontSize: Dimensions.fontSizeDefault
+                              fontSize: Dimensions.fontSizeDefault,
                             ),
                           ),
                         ),
@@ -506,7 +508,6 @@ class DrawerWidgetState extends State<DrawerWidget> {
                   }
                 },
               ),
-
             ],
           ),
         ),
@@ -516,43 +517,42 @@ class DrawerWidgetState extends State<DrawerWidget> {
 
   Widget drawerUserDisplayAccount(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(
-        top: 10.0, 
-        bottom: 10.0
-      ),
+      margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: Consumer<ProfileProvider>(
         builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(profileProvider.profileStatus == ProfileStatus.loading 
-                ? "..." 
-                : profileProvider.profileStatus == ProfileStatus.error 
-                ? "-" 
-                : profileProvider.userProfile.fullname!,
+              Text(
+                profileProvider.profileStatus == ProfileStatus.loading
+                    ? "..."
+                    : profileProvider.profileStatus == ProfileStatus.error
+                    ? "-"
+                    : profileProvider.userProfile.fullname!,
                 style: robotoRegular.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: Dimensions.fontSizeLarge,
-                  color: ColorResources.white
-                )
+                  color: ColorResources.white,
+                ),
               ),
               SizedBox(
                 width: 150.0,
-                child: Text(profileProvider.profileStatus == ProfileStatus.loading 
-                  ? "..." 
-                  : profileProvider.profileStatus == ProfileStatus.error 
-                  ? "-" 
-                  : profileProvider.getUserEmail,
+                child: Text(
+                  profileProvider.profileStatus == ProfileStatus.loading
+                      ? "..."
+                      : profileProvider.profileStatus == ProfileStatus.error
+                      ? "-"
+                      : profileProvider.getUserEmail,
                   maxLines: 1,
                   style: robotoRegular.copyWith(
                     overflow: TextOverflow.ellipsis,
                     fontWeight: FontWeight.bold,
                     fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.white
+                    color: ColorResources.white,
                   ),
                 ),
-              )
+              ),
             ],
           );
         },
@@ -568,15 +568,16 @@ class DrawerWidgetState extends State<DrawerWidget> {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(profileProvider.profileStatus == ProfileStatus.loading 
-                ? "..." 
-                : profileProvider.profileStatus == ProfileStatus.error 
-                ? "..." 
-                : profileProvider.userProfile.fullname!,
+              Text(
+                profileProvider.profileStatus == ProfileStatus.loading
+                    ? "..."
+                    : profileProvider.profileStatus == ProfileStatus.error
+                    ? "..."
+                    : profileProvider.userProfile.fullname!,
                 style: robotoRegular.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: ColorResources.primaryOrange
-                )
+                  color: ColorResources.primaryOrange,
+                ),
               ),
             ],
           );
@@ -588,35 +589,26 @@ class DrawerWidgetState extends State<DrawerWidget> {
   Widget drawerItems(BuildContext context, Widget widget, String menu, String svg, String title) {
     return Container(
       margin: EdgeInsets.only(left: 16.0, right: 16.0),
-      child:  ListTile(
+      child: ListTile(
         dense: true,
         isThreeLine: false,
-        visualDensity: VisualDensity(
-          horizontal: 0.0, 
-          vertical: 0.0
-        ),
+        visualDensity: VisualDensity(horizontal: 0.0, vertical: 0.0),
         minVerticalPadding: 0.0,
         minLeadingWidth: 0.0,
         contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-        onTap: () async { 
-          if(menu == "logout") {
-            cw.showAnimatedDialog(context,
-              SignOutConfirmationDialog(),
-              isFlip: true
-            );
-          } else if(menu == "aboutus") {
+        onTap: () async {
+          if (menu == "logout") {
+            cw.showAnimatedDialog(context, SignOutConfirmationDialog(), isFlip: true);
+          } else if (menu == "aboutus") {
             NS.push(context, AboutUsScreen());
-          } else if(menu == "cashout") {
-            NS.push(context, ComingSoonScreen(
-              title: "Cashout",
-              key: UniqueKey(),
-            ));
-          } else if(menu == "bantuan") {
-            if(Platform.isAndroid) {
+          } else if (menu == "cashout") {
+            NS.push(context, ComingSoonScreen(title: "Cashout", key: UniqueKey()));
+          } else if (menu == "bantuan") {
+            if (Platform.isAndroid) {
               final AndroidIntent intent = AndroidIntent(
                 action: 'android.intent.action.SENDTO',
-                data: Uri.encodeFull('mailto:customercare@inovatiftujuh8.com'),  
-                package: 'com.google.android.gm' 
+                data: Uri.encodeFull('mailto:customercare@langitdigital78.com'),
+                package: 'com.google.android.gm',
               );
 
               try {
@@ -627,7 +619,7 @@ class DrawerWidgetState extends State<DrawerWidget> {
             } else {
               final Uri emailLaunchUri = Uri(
                 scheme: 'mailto',
-                path: 'customercare@inovatiftujuh8.com',
+                path: 'customercare@langitdigital78.com',
               );
 
               try {
@@ -640,29 +632,26 @@ class DrawerWidgetState extends State<DrawerWidget> {
                 print('Error: $e');
               }
             }
-          }
-          else if(menu == "tos") {
+          } else if (menu == "tos") {
             termsAndCondition();
           } else {
             NS.push(context, widget);
           }
-        },  
-        title: Text(title,
+        },
+        title: Text(
+          title,
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
-            color: ColorResources.white
-          )
+            color: ColorResources.white,
+          ),
         ),
         leading: Container(
           width: 20.0,
           height: 20.0,
           margin: EdgeInsets.only(left: 20.0),
-          child: SvgPicture.asset(svg,
-            color: ColorResources.white
-          ),
+          child: SvgPicture.asset(svg, color: ColorResources.white),
         ),
-      )
+      ),
     );
   }
-  
 }
