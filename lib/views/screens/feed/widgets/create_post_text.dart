@@ -49,7 +49,7 @@ class CreatePostTextState extends State<CreatePostText> {
   List<File> files = [];
   List<Asset> resultList = [];
 
-  static const int _maxBytes = 100 * 1024 * 1024; 
+  static const int _maxBytes = 100 * 1024 * 1024;
 
   Future<File> _assetToTempFile(Asset asset) async {
     final byteData = await asset.getByteData();
@@ -206,7 +206,9 @@ class CreatePostTextState extends State<CreatePostText> {
     await _ensureCameraPermission();
     final XFile? x = await ImagePicker().pickVideo(
       source: ImageSource.camera,
-      maxDuration: const Duration(minutes: 5), // batasi durasi agar ukuran wajar
+      maxDuration: const Duration(
+        minutes: 5,
+      ), // batasi durasi agar ukuran wajar
     );
     if (x == null) return null;
     return File(x.path);
@@ -215,14 +217,12 @@ class CreatePostTextState extends State<CreatePostText> {
   /// Pilih video dari galeri
   Future<File?> _pickVideoFromGallery() async {
     // Bisa via ImagePicker (lebih aman Scoped Storage)…
-    final XFile? x = await ImagePicker().pickVideo(
-      source: ImageSource.gallery,
-    );
+    final XFile? x = await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (x != null) return File(x.path);
 
     // …atau fallback ke FilePicker jika mau (tetap dipertahankan agar kompatibel)
     final pr = ProgressDialog(context: context);
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.video,
       allowMultiple: false,
       compressionQuality: 50,
@@ -343,7 +343,7 @@ class CreatePostTextState extends State<CreatePostText> {
   }
 
   void uploadDoc() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: [
         "pdf",
@@ -356,7 +356,6 @@ class CreatePostTextState extends State<CreatePostText> {
         "pptx",
         "txt",
       ],
-      allowCompression: true,
     );
     if (result != null) {
       for (int i = 0; i < result.files.length; i++) {
@@ -411,9 +410,9 @@ class CreatePostTextState extends State<CreatePostText> {
           icon: const Icon(Icons.arrow_back, color: ColorResources.black),
           onPressed:
               context.watch<FeedProviderV2>().writePostStatus ==
-                      WritePostStatus.loading
-                  ? () {}
-                  : () => Navigator.of(context).pop(),
+                  WritePostStatus.loading
+              ? () {}
+              : () => Navigator.of(context).pop(),
         ),
         actions: [
           Container(
@@ -425,13 +424,14 @@ class CreatePostTextState extends State<CreatePostText> {
                 InkWell(
                   onTap:
                       context.watch<FeedProviderV2>().writePostStatus ==
-                              WritePostStatus.loading
-                          ? () {}
-                          : () async {
-                              await fd.post(context, "text", []);
-                            },
+                          WritePostStatus.loading
+                      ? () {}
+                      : () async {
+                          await fd.post(context, "text", []);
+                        },
                   child: Container(
-                    width: context.watch<FeedProviderV2>().writePostStatus ==
+                    width:
+                        context.watch<FeedProviderV2>().writePostStatus ==
                             WritePostStatus.loading
                         ? null
                         : 80.0,
@@ -440,7 +440,8 @@ class CreatePostTextState extends State<CreatePostText> {
                       color: ColorResources.primaryOrange,
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: context.watch<FeedProviderV2>().writePostStatus ==
+                    child:
+                        context.watch<FeedProviderV2>().writePostStatus ==
                             WritePostStatus.loading
                         ? const Loader(color: ColorResources.white)
                         : Text(
@@ -505,31 +506,23 @@ class CreatePostTextState extends State<CreatePostText> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Consumer<ProfileProvider>(
-              builder: (
-                BuildContext context,
-                ProfileProvider profileProvider,
-                Widget? child,
-              ) {
-                return CachedNetworkImage(
-                  imageUrl: "${profileProvider.userProfile.profilePic}",
-                  imageBuilder:
-                      (BuildContext context, dynamic imageProvider) =>
-                          CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            // ignore: avoid_dynamic_calls
-                            backgroundImage: imageProvider,
-                            radius: 20.0,
-                          ),
-                  placeholder: (BuildContext context, String url) =>
-                      const CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: AssetImage(
-                          'assets/images/default_avatar.jpg',
-                        ),
-                        radius: 20.0,
-                      ),
-                  errorWidget:
-                      (BuildContext context, String url, dynamic error) =>
+              builder:
+                  (
+                    BuildContext context,
+                    ProfileProvider profileProvider,
+                    Widget? child,
+                  ) {
+                    return CachedNetworkImage(
+                      imageUrl: "${profileProvider.userProfile.profilePic}",
+                      imageBuilder:
+                          (BuildContext context, dynamic imageProvider) =>
+                              CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                // ignore: avoid_dynamic_calls
+                                backgroundImage: imageProvider,
+                                radius: 20.0,
+                              ),
+                      placeholder: (BuildContext context, String url) =>
                           const CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: AssetImage(
@@ -537,8 +530,17 @@ class CreatePostTextState extends State<CreatePostText> {
                             ),
                             radius: 20.0,
                           ),
-                );
-              },
+                      errorWidget:
+                          (BuildContext context, String url, dynamic error) =>
+                              const CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                backgroundImage: AssetImage(
+                                  'assets/images/default_avatar.jpg',
+                                ),
+                                radius: 20.0,
+                              ),
+                    );
+                  },
             ),
             const SizedBox(width: 20.0),
             Flexible(

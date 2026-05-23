@@ -21,12 +21,12 @@ class CreatePostVideoScreen extends StatefulWidget {
   final String? groupId;
   final String? videoSize; 
   const CreatePostVideoScreen({
-    Key? key, 
+    super.key,
     this.thumbnail,
     this.file,
     this.groupId,
     this.videoSize
-  }) : super(key: key);
+  });
   @override
   CreatePostVideoScreenState createState() => CreatePostVideoScreenState();
 }
@@ -36,7 +36,6 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   late FeedProviderV2 fdv2;
 
   File? fileX;
-  double? progress;
 
   @override
   void initState() {
@@ -44,6 +43,7 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
     
     fdv2 = context.read<FeedProviderV2>();
     fdv2.postC = TextEditingController();
+    fdv2.setVideoUploadProgress(null);
     
     setState(() => fileX = File(widget.file!.path));
 
@@ -177,7 +177,9 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   }
 
   Widget displaySingleVideo() {
-    int progressBar = progress == null ? 0 : (progress!).toInt(); 
+    final uploadProgress = context.watch<FeedProviderV2>().videoUploadProgress;
+    final progressBar = (uploadProgress ?? 0).toInt();
+
     return widget.thumbnail == null && widget.videoSize == null ? const CircularProgressIndicator()
     : Column(
       mainAxisSize: MainAxisSize.min,
@@ -193,15 +195,23 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
           ),
         ),
         const SizedBox(height: 10.0),
-        Text(progressBar.toString() == "0" 
-        ? ""
-        : "${progressBar.toString()} %",
-          style: robotoRegular.copyWith(
-            color: ColorResources.success,
-            fontSize: Dimensions.fontSizeSmall,
-            fontWeight: FontWeight.bold,
+        if (uploadProgress != null) ...[
+          LinearProgressIndicator(
+            value: uploadProgress / 100,
+            minHeight: 6,
+            backgroundColor: Colors.grey.shade300,
+            valueColor: const AlwaysStoppedAnimation<Color>(ColorResources.success),
           ),
-        ),
+          const SizedBox(height: 6.0),
+          Text(
+            "$progressBar%",
+            style: robotoRegular.copyWith(
+              color: ColorResources.success,
+              fontSize: Dimensions.fontSizeSmall,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ],
     );  
   }

@@ -19,6 +19,8 @@ import 'package:saka/data/repository/auth/auth.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:saka/views/screens/auth/otp.dart';
+import 'package:saka/views/screens/auth/set_new_password.dart';
+import 'package:saka/views/screens/auth/sign_in.dart';
 import 'package:saka/views/screens/dashboard/dashboard.dart';
 
 import 'package:saka/localization/language_constraints.dart';
@@ -86,6 +88,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
 
   bool changeEmail = true;
   String? otp;
+  String? forgotPasswordResetToken;
   String whenCompleteCountdown = "start";
   String changeEmailName = "";
   String emailCustom = "";
@@ -113,8 +116,10 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   ResendOtpStatus _resendOtpStatus = ResendOtpStatus.idle;
   ResendOtpStatus get resendOtpStatus => _resendOtpStatus;
 
-  ApplyChangeEmailOtpStatus _applyChangeEmailOtpStatus = ApplyChangeEmailOtpStatus.idle;
-  ApplyChangeEmailOtpStatus get applyChangeEmailOtpStatus => _applyChangeEmailOtpStatus;
+  ApplyChangeEmailOtpStatus _applyChangeEmailOtpStatus =
+      ApplyChangeEmailOtpStatus.idle;
+  ApplyChangeEmailOtpStatus get applyChangeEmailOtpStatus =>
+      _applyChangeEmailOtpStatus;
 
   MascotStatus _mascotStatus = MascotStatus.idle;
   MascotStatus get mascotStatus => _mascotStatus;
@@ -154,7 +159,9 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus applyChangeEmailOtpStatus) {
+  void setApplyChangeEmailOtpStatus(
+    ApplyChangeEmailOtpStatus applyChangeEmailOtpStatus,
+  ) {
     _applyChangeEmailOtpStatus = applyChangeEmailOtpStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -178,7 +185,9 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     setStateMascotStatus(MascotStatus.loading);
     try {
       Dio d = await DioManager.shared.getClient();
-      Response res = await d.get("${AppConstants.baseUrl}/content-service/maskot");
+      Response res = await d.get(
+        "${AppConstants.baseUrl}/content-service/maskot",
+      );
       MascotModel mm = MascotModel.fromJson(json.decode(res.data));
       MascotData md = mm.data!;
       _isShow = md.show!;
@@ -196,7 +205,11 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       }
       if (e.type == DioErrorType.badResponse) {
         if (e.response!.statusCode == 400 || e.response!.statusCode == 500) {
-          ShowSnackbar.snackbar("${e.response!.data["error"]}", "", ColorResources.error);
+          ShowSnackbar.snackbar(
+            "${e.response!.data["error"]}",
+            "",
+            ColorResources.error,
+          );
         }
         if (e.response!.statusCode == 404) {
           ShowSnackbar.snackbar("URL no found", "", ColorResources.error);
@@ -282,22 +295,26 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
           },
         ),
       );
-      InquiryRegisterModel inquiryRegisterModel = InquiryRegisterModel.fromJson(res.data);
+      InquiryRegisterModel inquiryRegisterModel = InquiryRegisterModel.fromJson(
+        res.data,
+      );
       return inquiryRegisterModel;
     } on DioError catch (e) {
       if (e.response?.data != null) {
-        if (e.response?.data['code'] == 404 && user.data!.user!.status == "pending") {
+        if (e.response?.data['code'] == 404 &&
+            user.data!.user!.status == "pending") {
           ShowSnackbar.snackbar(
             getTranslated("THERE_WAS_PROBLEM", context),
             "",
             ColorResources.error,
           );
         }
-        if (e.response?.data['code'] == 404 && user.data!.user!.status == "enabled") {
+        if (e.response?.data['code'] == 404 &&
+            user.data!.user!.status == "enabled") {
           writeData(user);
-          Navigator.of(
-            context,
-          ).pushReplacement(MaterialPageRoute(builder: (context) => DashboardScreen()));
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
+          );
         }
       }
     } catch (e, stacktrace) {
@@ -332,15 +349,20 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     try {
       Response res = await dio.post(
         "${AppConstants.baseUrl}/user-service/login",
-        data: {"phone_number": userData.phoneNumber, "password": userData.password},
+        data: {
+          "phone_number": userData.phoneNumber,
+          "password": userData.password,
+        },
         options: Options(headers: {"Accept": "application/json"}),
       );
       Map<String, dynamic> data = json.decode(res.data);
       UserModel userModel = UserModel.fromJson(data);
       if (userModel.data!.user!.emailActivated!) {
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => DashboardScreen()));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (BuildContext context) => DashboardScreen(),
+          ),
+        );
         UserModel user = UserModel.fromJson(json.decode(res.data));
         writeData(user);
       } else {
@@ -449,7 +471,10 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   //   }
   // }
 
-  Future<void> isEmailAddressExistWithGmail(BuildContext context, String emailAddress) async {
+  Future<void> isEmailAddressExistWithGmail(
+    BuildContext context,
+    String emailAddress,
+  ) async {
     try {
       Response response = await dio.get(
         "${AppConstants.baseUrl}/user-service/users/email-exist/$emailAddress",
@@ -487,7 +512,11 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       }
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("THERE_WAS_PROBLEM", context),
+        "",
+        ColorResources.error,
+      );
     }
   }
 
@@ -619,17 +648,24 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     setStateForgotPasswordStatus(ForgotPasswordStatus.loading);
     try {
       await dio.post(
-        "${AppConstants.baseUrl}/user-service/forgot-password",
+        "${AppConstants.baseUrl}/user-service/forgot-password/request",
         data: {"email": email},
         options: Options(headers: {"Accept": "application/json"}),
       );
       ShowSnackbar.snackbar(
-        "Berhasil! Password baru sudah dikirim. Silakan cek email Anda.",
+        "Berhasil! Kode OTP sudah dikirim. Silakan cek email Anda.",
         "",
         ColorResources.success,
       );
       setStateForgotPasswordStatus(ForgotPasswordStatus.loaded);
-      Navigator.of(context).pop();
+      NS.pushReplacement(
+        context,
+        OtpScreen(
+          key: UniqueKey(),
+          forgotPasswordMode: true,
+          initialEmail: email,
+        ),
+      );
     } on DioError catch (e) {
       final responseData = e.response?.data;
       Map<String, dynamic> data = <String, dynamic>{};
@@ -648,7 +684,8 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         }
       }
 
-      final message = data["error"]?.toString() ??
+      final message =
+          data["error"]?.toString() ??
           data["message"]?.toString() ??
           (responseData is String && responseData.trimLeft().startsWith("<html")
               ? "Server mengembalikan HTML (bukan JSON). Cek baseUrl/API endpoint forgot-password."
@@ -662,13 +699,102 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
   }
 
-  Future<void> applyChangeEmailOtp(BuildContext context, GlobalKey<ScaffoldState> globalKey) async {
+  Future<void> verifyOtpForgotPassword(
+    BuildContext context,
+    String email,
+  ) async {
+    if (otp == null || otp!.trim().isEmpty) {
+      ShowSnackbar.snackbar("Mohon input OTP Anda", "", ColorResources.error);
+      return;
+    }
+    setVerifyOtpStatus(VerifyOtpStatus.loading);
+    try {
+      Response res = await dio.post(
+        "${AppConstants.baseUrl}/user-service/forgot-password/verify-otp",
+        data: {"otp": otp, "email": email},
+        options: Options(headers: {"Accept": "application/json"}),
+      );
+
+      dynamic decoded = res.data;
+      if (decoded is String) {
+        decoded = json.decode(decoded);
+      }
+      forgotPasswordResetToken = decoded["body"]?["reset_token"];
+
+      if (forgotPasswordResetToken == null ||
+          forgotPasswordResetToken!.isEmpty) {
+        throw Exception("Reset token tidak ditemukan");
+      }
+
+      setVerifyOtpStatus(VerifyOtpStatus.loaded);
+      NS.pushReplacement(context, SetNewPasswordScreen(email: email));
+    } on DioError catch (e) {
+      Map<String, dynamic> data = json.decode(e.response!.data);
+      if (e.response?.statusCode == 400) {
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
+      }
+      setVerifyOtpStatus(VerifyOtpStatus.error);
+    } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      ShowSnackbar.snackbar(
+        "Terjadi kesalahan, silakan coba lagi",
+        "",
+        ColorResources.error,
+      );
+      setVerifyOtpStatus(VerifyOtpStatus.error);
+    }
+  }
+
+  Future<void> forgotPasswordReset(
+    BuildContext context,
+    String newPassword,
+    String confirmPassword,
+  ) async {
+    setStateForgotPasswordStatus(ForgotPasswordStatus.loading);
+    try {
+      await dio.post(
+        "${AppConstants.baseUrl}/user-service/forgot-password/reset",
+        data: {
+          "reset_token": forgotPasswordResetToken,
+          "new_password": newPassword,
+          "confirm_password": confirmPassword,
+        },
+        options: Options(headers: {"Accept": "application/json"}),
+      );
+      forgotPasswordResetToken = null;
+      ShowSnackbar.snackbar(
+        "Password berhasil diubah",
+        "",
+        ColorResources.success,
+      );
+      setStateForgotPasswordStatus(ForgotPasswordStatus.loaded);
+      NS.pushReplacement(context, SignInScreen());
+    } on DioError catch (e) {
+      Map<String, dynamic> data = json.decode(e.response!.data);
+      if (e.response?.statusCode == 400) {
+        ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
+      }
+      setStateForgotPasswordStatus(ForgotPasswordStatus.error);
+    } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      setStateForgotPasswordStatus(ForgotPasswordStatus.error);
+    }
+  }
+
+  Future<void> applyChangeEmailOtp(
+    BuildContext context,
+    GlobalKey<ScaffoldState> globalKey,
+  ) async {
     changeEmailName = sp.getString("email_otp")!;
     bool emailValid = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
     ).hasMatch(changeEmailName);
     if (!emailValid) {
-      ShowSnackbar.snackbar("Ex : customcare@inovasi78.com", "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        "Ex : customcare@inovasi78.com",
+        "",
+        ColorResources.error,
+      );
       return;
     } else {
       if (emailCustom.trim().isNotEmpty) {
@@ -680,7 +806,10 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     try {
       await dio.post(
         "${AppConstants.baseUrl}/user-service/change-email",
-        data: {"old_email": sp.getString("email_otp"), "new_email": changeEmailName},
+        data: {
+          "old_email": sp.getString("email_otp"),
+          "new_email": changeEmailName,
+        },
         options: Options(headers: {"Accept": "application/json"}),
       );
       sp.setString("email_otp", changeEmailName);
@@ -768,7 +897,10 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     notifyListeners();
   }
 
-  Future<void> resendOtpCall(BuildContext context, GlobalKey<ScaffoldState> globalKey) async {
+  Future<void> resendOtpCall(
+    BuildContext context,
+    GlobalKey<ScaffoldState> globalKey,
+  ) async {
     whenCompleteCountdown = "start";
     notifyListeners();
     await resendOtp(context, changeEmailName);
@@ -782,7 +914,9 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
 
   void applyCustomEmail() {
     changeEmail = true;
-    changeEmailName = emailCustom.trim().isEmpty ? sp.getString("email_otp")! : emailCustom;
+    changeEmailName = emailCustom.trim().isEmpty
+        ? sp.getString("email_otp")!
+        : emailCustom;
     notifyListeners();
   }
 

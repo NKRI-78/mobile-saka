@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -60,6 +62,14 @@ class FeedProviderV2 with ChangeNotifier {
   String? docName;
   File? docFile;
   String? docSize;
+
+  double? _videoUploadProgress;
+  double? get videoUploadProgress => _videoUploadProgress;
+
+  void setVideoUploadProgress(double? value) {
+    _videoUploadProgress = value;
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
 
   List<File> pickedFile = [];
   List<Asset> images = [];
@@ -337,10 +347,20 @@ class FeedProviderV2 with ChangeNotifier {
     setStateWritePost(WritePostStatus.loading);
 
     if (feedType == "video") {
+      setVideoUploadProgress(0);
 
-      Map<String, dynamic>? d = await fr.uploadMedia(folder: "videos", media: files);
+      Map<String, dynamic>? d = await fr.uploadMedia(
+        folder: "videos",
+        media: files,
+        onProgress: (sent, total) {
+          if (total > 0) {
+            setVideoUploadProgress((sent / total) * 100);
+          }
+        },
+      );
 
       if (d == null || d["data"] == null || d["data"]["path"] == null) {
+        setVideoUploadProgress(null);
         setStateWritePost(WritePostStatus.error);
         ShowSnackbar.snackbar("Upload video gagal. Coba lagi beberapa saat.", "", ColorResources.error);
         return;
@@ -357,6 +377,7 @@ class FeedProviderV2 with ChangeNotifier {
       );
 
       await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
+      setVideoUploadProgress(100);
 
       for (int i = 0; i < 2; i++) {
         Navigator.of(context).pop();
@@ -364,6 +385,7 @@ class FeedProviderV2 with ChangeNotifier {
     }
 
     setStateWritePost(WritePostStatus.loaded);
+    setVideoUploadProgress(null);
     
     Future.delayed(Duration.zero, () {
       fetchFeedMostRecent(context);

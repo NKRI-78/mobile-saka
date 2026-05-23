@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -91,36 +92,57 @@ class SplashScreenState extends State<SplashScreen> {
     await _ensureLocationPermission();
 
     // Izin lain via permission_handler
-    final statuses = await <Permission>[
+    final permissions = <Permission>[
       Permission.camera,
       Permission.microphone,
       Permission.notification,
       // Catatan: Permission.storage deprecated di Android 13+,
       // pertimbangkan gunakan Permission.photos atau manage external storage sesuai kebutuhan.
       Permission.storage,
-    ].request();
+    ];
 
-    // contoh: jika notifikasi ditolak, bisa abaikan atau arahkan user buka setting
-    // if (statuses[Permission.notification] == PermissionStatus.denied) { ... }
+    try {
+      await permissions.request();
+    } on PlatformException catch (e) {
+      // Sering terjadi saat app baru start: "Unable to detect current Android Activity"
+      // Retry sekali setelah frame berikutnya.
+      if ((e.message ?? '').contains('Unable to detect current Android Activity')) {
+        await Future.delayed(const Duration(milliseconds: 350));
+        if (!mounted) return;
+        try {
+          await permissions.request();
+        } catch (_) {
+          // swallow, app tetap lanjut bootstrap
+        }
+      }
+    } catch (_) {
+      // swallow, app tetap lanjut bootstrap
+    }
   }
 
   Future<void> _ensureLocationPermission() async {
-    // Pastikan service lokasi aktif
-    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Tidak memaksa, hanya early return (bisa tampilkan dialog sendiri bila perlu)
-      return;
-    }
+    try {
+      // Pastikan service lokasi aktif
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // Tidak memaksa, hanya early return (bisa tampilkan dialog sendiri bila perlu)
+        return;
+      }
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.deniedForever) {
+        // arahkan user ke settings jika ingin menggunakan fitur lokasi
+        await openAppSettings();
+      }
+      // granted / whileInUse / always -> lanjut
+    } on PlatformException {
+      // Activity belum siap, abaikan agar splash tidak crash.
+    } catch (_) {
+      // swallow
     }
-    if (permission == LocationPermission.deniedForever) {
-      // arahkan user ke settings jika ingin menggunakan fitur lokasi
-      await openAppSettings();
-    }
-    // granted / whileInUse / always -> lanjut
   }
 
   // ======= T&C DIALOG =======

@@ -8,7 +8,6 @@ import 'package:saka/data/models/feedv2/feedDetail.dart';
 import 'package:saka/data/models/feedv2/feedReply.dart';
 import 'package:saka/data/models/feedv2/user_mention.dart';
 
-import 'package:path/path.dart' as p;
 
 import 'package:saka/utils/constant.dart';
 import 'package:saka/utils/dio.dart';
@@ -48,7 +47,7 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;   
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -65,7 +64,7 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;   
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(EdgeInsets.only.toString());
@@ -81,7 +80,7 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;   
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -97,7 +96,7 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
@@ -113,7 +112,7 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -125,6 +124,7 @@ class FeedRepoV2 {
   Future<Map<String, dynamic>?> uploadMedia({
     required String folder,
     required File media,
+    void Function(int sent, int total)? onProgress,
   }) async {
     try {
       FormData formData = FormData.fromMap({
@@ -133,11 +133,20 @@ class FeedRepoV2 {
         "subfolder": "saka",
         "media": await MultipartFile.fromFile(
           media.path,
-          filename: p.basename(media.path),
+          filename: media.path.split(Platform.pathSeparator).last,
         ),
       });
       Dio dio = DioManager.shared.getClient();
-      Response res = await dio.post(AppConstants.baseUrlMedia, data: formData);
+      Response res = await dio.post(
+        AppConstants.baseUrlMedia,
+        data: formData,
+        onSendProgress: onProgress,
+        options: Options(
+          // Upload video bisa lama di jaringan lambat.
+          sendTimeout: const Duration(minutes: 5),
+          receiveTimeout: const Duration(minutes: 5),
+        ),
+      );
       Map<String, dynamic> data = res.data;
       return data;
     } on DioException catch (e) {
@@ -163,7 +172,7 @@ class FeedRepoV2 {
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload-media",
         data: data
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -191,7 +200,7 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create", data: data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
     } catch (e) {
       debugPrint(e.toString());
@@ -205,7 +214,7 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-forum", data: data);
-   } on DioError catch(e) {
+   } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -219,7 +228,7 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-comment", data: data);
-   } on DioError catch(e) {
+   } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -233,7 +242,7 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-reply", data: data);
-   } on DioError catch(e) {
+   } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -257,12 +266,12 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-comment", data: data);
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
-      throw new Exception("=== POST COMMENT ===");
+      throw Exception("=== POST COMMENT ===");
     } catch(e) {
       debugPrint(e.toString());
-      throw new Exception("=== POST COMMENT ===");
+      throw Exception("=== POST COMMENT ===");
     }
   }
 
@@ -285,12 +294,12 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-reply", data: data);
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
-      throw new Exception("=== POST REPLY ===");
+      throw Exception("=== POST REPLY ===");
     } catch(e) {
       debugPrint(e.toString());
-      throw new Exception("=== POST REPLY ===");
+      throw Exception("=== POST REPLY ===");
     }
   }
 
@@ -305,7 +314,7 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;
       FeedReplyModel fm = FeedReplyModel.fromJson(data);
       return fm;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -327,7 +336,7 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/like", data: data);
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -349,7 +358,7 @@ class FeedRepoV2 {
       };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/comment-like", data: data);
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
@@ -370,7 +379,7 @@ class FeedRepoV2 {
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/comment-reply-like",
         data: data
       );
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
