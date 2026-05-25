@@ -16,9 +16,9 @@ import 'package:saka/utils/dimensions.dart';
 class CreatePostDocScreen extends StatefulWidget {
   final FilePickerResult? files;
   const CreatePostDocScreen({
-    Key? key, 
+    super.key, 
     this.files,
-  }) : super(key: key);
+  });
   @override
   CreatePostDocScreenState createState() => CreatePostDocScreenState();
 }

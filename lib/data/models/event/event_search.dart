@@ -11,8 +11,8 @@ class EventSearchModel {
 
   factory EventSearchModel.fromJson(Map<String, dynamic> json) => EventSearchModel(
     data: json["body"] == null ? [] : List<EventSearchData>.from(json["body"].map((x) => EventSearchData.fromJson(x))),
-    code: json["code"] == null ? null : json["code"],
-    message: json["message"] == null ? null : json["message"],
+    code: json["code"],
+    message: json["message"],
   );
 
 }
@@ -49,16 +49,16 @@ class EventSearchData {
   List<EventSearchMedia>? media;
 
   factory EventSearchData.fromJson(Map<String, dynamic> json) => EventSearchData(
-    eventId: json["event_id"] == null ? null : json["event_id"],
-    description: json["description"] == null ? null : json["description"],
+    eventId: json["event_id"],
+    description: json["description"],
     eventDate: DateTime.parse(json["event_date"]),
-    status: json["status"] == null ? null : json["status"],
-    location: json["location"] == null ? null : json["location"],
-    start: json["start"] == null ? null : json["start"],
-    end: json["end"] == null ? null : json["end"],
-    summary: json["summary"] == null ? null : json["summary"],
-    picture: json["picture"] == null ? null : json["picture"],
-    createdBy: json["created_by"] == null ? null : json["created_by"],
+    status: json["status"],
+    location: json["location"],
+    start: json["start"],
+    end: json["end"],
+    summary: json["summary"],
+    picture: json["picture"],
+    createdBy: json["created_by"],
     created: DateTime.parse(json["created"]),
     updated: DateTime.parse(json["updated"]),
     media: json["Media"] == null ? [] : List<EventSearchMedia>.from(json["Media"].map((x) => EventSearchMedia.fromJson(x))),
@@ -89,13 +89,13 @@ class EventSearchMedia {
   DateTime? updated;
 
   factory EventSearchMedia.fromJson(Map<String, dynamic> json) => EventSearchMedia(
-    mediaId: json["media_id"] == null ? null : json["media_id"],
-    status: json["status"] == null ? null : json["status"],
-    contentType: json["content_type"] == null ? null : json["content_type"],
-    fileLength: json["file_length"] == null ? null : json["file_length"],
-    originalName: json["original_name"] == null ? null : json["original_name"],
-    path: json["path"] == null ? null : json["path"],
-    createdBy: json["created_by"] == null ? null : json["created_by"],
+    mediaId: json["media_id"],
+    status: json["status"],
+    contentType: json["content_type"],
+    fileLength: json["file_length"],
+    originalName: json["original_name"],
+    path: json["path"],
+    createdBy: json["created_by"],
     created: json["created"] == null ? null : DateTime.parse(json["created"]),
     updated: json["updated"] == null ? null : DateTime.parse(json["updated"]),
   );

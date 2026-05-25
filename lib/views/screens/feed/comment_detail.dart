@@ -22,10 +22,10 @@ class CommentDetailScreen extends StatefulWidget {
   final String postId;
 
   const CommentDetailScreen({
-    Key? key, 
+    super.key, 
     required this.commentId,
     required this.postId
-  }) : super(key: key);
+  });
 
   @override
   CommentDetailScreenState createState() => CommentDetailScreenState();

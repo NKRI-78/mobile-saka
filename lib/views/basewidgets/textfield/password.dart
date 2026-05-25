@@ -17,7 +17,7 @@ class CustomPasswordTextField extends StatefulWidget {
   final bool isIcon;
 
   const CustomPasswordTextField({
-    Key? key, 
+    super.key, 
     required this.controller,
     required this.focusNode,
     this.hintText = "",
@@ -28,7 +28,7 @@ class CustomPasswordTextField extends StatefulWidget {
     this.isBorder = true,
     this.isBorderRadius = false,
     this.isIcon = true
-  }) : super(key: key);
+  });
 
   @override
   _CustomPasswordFieldState createState() => _CustomPasswordFieldState();

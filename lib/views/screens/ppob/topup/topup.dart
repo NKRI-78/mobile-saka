@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -365,7 +364,7 @@ class TopupScreenState extends State<TopupScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.0)
                             ),
-                            child: Text("${CurrencyHelper.formatCurrency(denoms[i]["price"])}",
+                            child: Text(CurrencyHelper.formatCurrency(denoms[i]["price"]),
                               style: robotoRegular.copyWith(
                                 color: Colors.white, 
                                 fontSize: Dimensions.fontSizeDefault,

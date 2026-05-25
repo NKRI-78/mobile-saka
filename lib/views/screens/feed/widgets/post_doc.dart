@@ -10,9 +10,9 @@ class PostDoc extends StatefulWidget {
   final List medias;
 
   const PostDoc({
-    Key? key, 
+    super.key, 
     required this.medias,
-  }) : super(key: key);
+  });
 
   @override
   PostDocState createState() => PostDocState();

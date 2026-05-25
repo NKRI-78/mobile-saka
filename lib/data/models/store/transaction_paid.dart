@@ -481,7 +481,7 @@ class TransactionStorePaidUser {
       email: json["email"],
       created: json["created"] == null ? DateTime.now() : DateTime.parse(json["created"]),
       phone: json["phone"],
-      avatar: json["avatar"] == null ? "" : json["avatar"],
+      avatar: json["avatar"] ?? "",
       classId: json["classId"],
     );
 }

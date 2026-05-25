@@ -113,7 +113,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -127,10 +126,10 @@ import 'package:saka/utils/dimensions.dart';
 class WebViewScreen extends StatefulWidget {
   final String title;
   final String url;
-  const WebViewScreen({Key? key, 
+  const WebViewScreen({super.key, 
     required this.url, 
     required this.title
-  }) : super(key: key);
+  });
 
   @override
   WebViewScreenState createState() => WebViewScreenState();

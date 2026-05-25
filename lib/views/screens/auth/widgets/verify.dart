@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_unnecessary_containers, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 
 import 'package:saka/utils/color_resources.dart';
@@ -16,7 +17,7 @@ class VerifyScreen extends StatefulWidget {
   final String? productId;
   final String? transactionId;
 
-  VerifyScreen({
+  const VerifyScreen({super.key, 
     this.accountName,
     this.accountNumber,
     this.bankFee,
@@ -85,7 +86,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         children: [
                           Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 150.0,
                                 child: Text(
                                   "Nama",
@@ -94,7 +95,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                   ),
                                 ),
                               ),
-                              Container(
+                              SizedBox(
                                 width: 8.0,
                                 child: Text(
                                   ":",
@@ -117,7 +118,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                           SizedBox(height: 14.0),
                           Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 150.0,
                                 child: Text(
                                   "No Handphone",
@@ -126,7 +127,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                   ),
                                 ),
                               ),
-                              Container(
+                              SizedBox(
                                 width: 8.0,
                                 child: Text(
                                   ":",
@@ -149,14 +150,14 @@ class _VerifyScreenState extends State<VerifyScreen> {
                           SizedBox(height: 14.0),
                           Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 150.0,
                                 child: Text(
                                   "Biaya Registrasi",
                                   style: TextStyle(fontSize: 14.0),
                                 ),
                               ),
-                              Container(
+                              SizedBox(
                                 width: 8.0,
                                 child: Text(
                                   ":",
@@ -189,7 +190,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                   size: 40.0,
                                   color: ColorResources.white,
                                 ),
-                                Container(
+                                SizedBox(
                                   width: 250.0,
                                   child: Text("Silahkan lakukan pembayaran terlebih dahulu untuk menyelesaikan registrasi Anda.",
                                     softWrap: true,

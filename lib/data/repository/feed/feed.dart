@@ -26,7 +26,7 @@ class FeedRepo {
 
   Future<void> deletePost(BuildContext context, String postId) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.delete("${AppConstants.baseUrlFeed}/post/delete/$postId");
     } catch(e) {
       debugPrint(e.toString());
@@ -35,7 +35,7 @@ class FeedRepo {
 
   Future<PostModel?> fetchPost(BuildContext context, String postId) async {
     try{ 
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/fetch/$postId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchPost, data);
@@ -47,7 +47,7 @@ class FeedRepo {
 
   Future<Sticker?> fetchListSticker(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/sticker/list");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchListSticker, data);
@@ -59,7 +59,7 @@ class FeedRepo {
 
   Future<SingleReply?> fetchReply(BuildContext context, String postId) async {
     try { 
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/reply/fetch/$postId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchReply, data);
@@ -71,7 +71,7 @@ class FeedRepo {
 
   Future<SingleComment?> fetchComment(BuildContext context, String targetId) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/comment/fetch/$targetId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchComment, data);
@@ -83,7 +83,7 @@ class FeedRepo {
 
   Future<Reply?> fetchAllReply(BuildContext context, String targetId, [String nextCursor = ""]) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/reply/list?targetId=$targetId&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchAllReply, data);
@@ -95,7 +95,7 @@ class FeedRepo {
 
   Future<FeedNotification?> fetchAllNotification(BuildContext context, [String cursorId = ""]) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/notification/list?cursorId=$cursorId");
       Map<String, dynamic> data = res.data;
       return compute(parseFetchAllNotification, data);
@@ -107,7 +107,7 @@ class FeedRepo {
     
   Future<Comment?> fetchListCommentMostRecent(BuildContext context, String targetId, [String nextCursor = ""]) async {
     try { 
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/comment/list?targetType=POST&type=MOST_RECENT&targetId=$targetId&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchListCommentMostRecent, data);      
@@ -119,7 +119,7 @@ class FeedRepo {
 
   Future<GroupsModel?> fetchGroupsMostRecent(BuildContext context, [String nextCursor = ""]) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_RECENT&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
@@ -131,7 +131,7 @@ class FeedRepo {
 
   Future<GroupsModel?> fetchGroupsMostPopular(BuildContext context, [String nextCursor = ""]) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_POPULAR&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
@@ -143,7 +143,7 @@ class FeedRepo {
 
   Future<GroupsModel?> fetchGroupsSelf(BuildContext context, [String nextCursor = ""]) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=SELF&cursorId=$nextCursor");
       Map<String, dynamic> data = res.data;   
       return compute(parseFetchGroupsMostRecent, data);
@@ -155,7 +155,7 @@ class FeedRepo {
 
   Future<Response?> uploadMedia(BuildContext context, File file) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       // Response res = await dio.post("${AppConstants.baseUrlFeedMedia}/$mediaKey/$base64?path=/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}", 
       //   data: file.readAsBytesSync()
       // );
@@ -174,7 +174,7 @@ class FeedRepo {
 
   Future<Response?> like(BuildContext context, String targetId, String targetType, String type) async {
     try { 
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlFeed}/like/toggle", 
         data: {
           "targetType": targetType,
@@ -191,7 +191,7 @@ class FeedRepo {
 
   Future<Response?> sendPostText(BuildContext context, String text) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
         data: {
           "groupId": "",
@@ -212,7 +212,7 @@ class FeedRepo {
 
   Future<Response?> sendPostLink(BuildContext context, String caption, String text) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
         data: {
          "groupId": "",
@@ -234,7 +234,7 @@ class FeedRepo {
 
   Future<Response?> sendPostDoc(BuildContext context, String caption, FilePickerResult files) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
         data: {
           "groupId": "",
@@ -262,7 +262,7 @@ class FeedRepo {
 
   Future<Response?> sendPostImage(BuildContext context, String caption, List<File> files) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Map<String, Object> postsData = {};
       List<Map<String, Object>> postsMedia = [];
       if(files.length > 1) {
@@ -315,7 +315,7 @@ class FeedRepo {
 
   Future<Response?> sendPostImageCamera(BuildContext context, String caption, File file) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Map<String, Object> postsData = {}; 
       postsData = {
         "groupId": "",
@@ -345,7 +345,7 @@ class FeedRepo {
 
   Future<Response?> sendPostVideo(BuildContext context, String caption, File file) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Map<String, Object> postsData = {
         "groupId": "",
         "visibilityType": "PUBLIC",
@@ -374,7 +374,7 @@ class FeedRepo {
 
   Future<Response?> sendReply(BuildContext context, String text, String targetId) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Map<String, Object> postsData = {
         "targetId": targetId,
         "type": "TEXT",
@@ -394,7 +394,7 @@ class FeedRepo {
 
   Future<void> sendComment(BuildContext context, String content, String targetId, [String type = "TEXT"]) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Map<String, Object> data = {};
       if(type == "TEXT") {
         data = {

@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -14,7 +15,7 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/localization/language_constraints.dart';
 
 class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({Key? key}) : super(key: key);
+  const NotificationScreen({super.key});
 
   @override
   NotificationScreenState createState() => NotificationScreenState();

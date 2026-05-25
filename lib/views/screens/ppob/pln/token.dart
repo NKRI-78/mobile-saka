@@ -213,7 +213,7 @@
 //                                             style: robotoRegular.copyWith(
 //                                               color: selected == i 
 //                                               ? ColorResources.purple 
-//                                               : ColorResources.dimGrey.withOpacity(0.8),
+//                                               : ColorResources.dimGrey.withValues(alpha: 0.8),
 //                                               fontSize: Dimensions.fontSizeSmall
 //                                             ),
 //                                           )

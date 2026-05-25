@@ -13,6 +13,8 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 
 class LanguageDialog extends StatelessWidget {
+  const LanguageDialog({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,9 @@ class LanguageDialog extends StatelessWidget {
             builder: (BuildContext context, SplashProvider splashProvider, Widget? child) {
 
             List<String> valueList = [];
-            AppConstants.languages.forEach((language) => valueList.add(language.languageName!));
+            for (var language in AppConstants.languages) {
+              valueList.add(language.languageName!);
+            }
 
               return CupertinoPicker(
                 itemExtent: 40,

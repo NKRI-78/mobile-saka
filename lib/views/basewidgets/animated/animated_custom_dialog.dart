@@ -36,11 +36,11 @@ void showAnimatedDialog(BuildContext context, Widget dialog, {bool isFlip = fals
 
 class Rotation3DTransition extends AnimatedWidget {
   const Rotation3DTransition({ 
-    Key? key,
+    super.key,
     required this.turns, 
     this.alignment = Alignment.center,
     this.child,
-  }) : super(key: key, listenable: turns);
+  }) : super(listenable: turns);
 
   final Animation<double> turns;
   final Alignment alignment;

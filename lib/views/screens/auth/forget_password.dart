@@ -11,6 +11,8 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/custom_themes.dart';
 
 class ScreenForgetPassword extends StatefulWidget {
+  const ScreenForgetPassword({super.key});
+
   @override
   State<ScreenForgetPassword> createState() => _ScreenForgetPasswordState();
 }
@@ -130,7 +132,7 @@ class _ScreenForgetPasswordState extends State<ScreenForgetPassword> {
                   margin: EdgeInsets.only(top: 160.0),
                   child: Consumer<AuthProvider>(
                     builder: (BuildContext context, AuthProvider authProvider, Widget? child) {
-                      return Container(
+                      return SizedBox(
                         width: double.infinity,
                         height: 50.0,
                         child: TextButton( 

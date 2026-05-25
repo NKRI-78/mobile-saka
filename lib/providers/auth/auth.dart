@@ -166,6 +166,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+  @override
   late InquiryRegisterModel inquiryRegisterModel;
 
   int _selectedIndex = 0;
@@ -184,7 +185,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
   Future<void> mascot(BuildContext context) async {
     setStateMascotStatus(MascotStatus.loading);
     try {
-      Dio d = await DioManager.shared.getClient();
+      Dio d = DioManager.shared.getClient();
       Response res = await d.get(
         "${AppConstants.baseUrl}/content-service/maskot",
       );
@@ -192,7 +193,8 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       MascotData md = mm.data!;
       _isShow = md.show!;
       setStateMascotStatus(MascotStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
+      if (!context.mounted) return;
       if (e.type == DioExceptionType.connectionTimeout) {
         ShowSnackbar.snackbar(
           getTranslated("CONNECTION_TIMEOUT", context),
@@ -203,7 +205,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       if (e.type == DioExceptionType.unknown) {
         ShowSnackbar.snackbar(e.error.toString(), "", ColorResources.error);
       }
-      if (e.type == DioErrorType.badResponse) {
+      if (e.type == DioExceptionType.badResponse) {
         if (e.response!.statusCode == 400 || e.response!.statusCode == 500) {
           ShowSnackbar.snackbar(
             "${e.response!.data["error"]}",
@@ -225,6 +227,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
   }
 
+  @override
   bool isLoggedIn() {
     return ar.isLoggedIn();
   }
@@ -267,7 +270,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       data: {"app_name": "saka", "user_id": sp.getString("userId")},
     );
     deleteData();
-    return Future.value(true);
+    return;
   }
 
   @override
@@ -277,7 +280,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     String token,
     UserModel user,
   ) async {
-    var productId;
+    String productId;
     if (user.data!.user!.role == "lead") {
       productId = "48dc000f-07fb-4b7a-940d-1029ec604bf8"; // 200 K
     } else {
@@ -299,7 +302,8 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         res.data,
       );
       return inquiryRegisterModel;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
+      if (!context.mounted) return inquiryRegisterModel;
       if (e.response?.data != null) {
         if (e.response?.data['code'] == 404 &&
             user.data!.user!.status == "pending") {
@@ -319,6 +323,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       }
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
+      if (!context.mounted) return inquiryRegisterModel;
       showAnimatedDialog(
         context: context,
         barrierDismissible: true,
@@ -355,6 +360,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         },
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       Map<String, dynamic> data = json.decode(res.data);
       UserModel userModel = UserModel.fromJson(data);
       if (userModel.data!.user!.emailActivated!) {
@@ -483,6 +489,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       dataGoogleVerification = data;
       Future.delayed(Duration.zero, () => notifyListeners());
     } on DioException catch (e) {
+      if (!context.mounted) return;
       Map<String, dynamic> data = json.decode(e.response!.data);
       dataGoogleVerification = data;
       Future.delayed(Duration.zero, () => notifyListeners());
@@ -512,6 +519,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       }
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
+      if (!context.mounted) return;
       ShowSnackbar.snackbar(
         getTranslated("THERE_WAS_PROBLEM", context),
         "",
@@ -542,6 +550,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         data: obj,
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       Map<String, dynamic> data = json.decode(res.data);
       UserModel userModel = UserModel.fromJson(data);
       if (userModel.data!.user!.emailActivated!) {
@@ -599,7 +608,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         ),
       );
       setStateAuthDisbursement(AuthDisbursementStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if (e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
@@ -631,7 +640,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         ),
       );
       setStateForgotPasswordStatus(ForgotPasswordStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = e.response!.data;
       if (e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
@@ -644,6 +653,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
   }
 
+  @override
   Future<void> forgetPassword(BuildContext context, String email) async {
     setStateForgotPasswordStatus(ForgotPasswordStatus.loading);
     try {
@@ -652,6 +662,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         data: {"email": email},
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       ShowSnackbar.snackbar(
         "Berhasil! Kode OTP sudah dikirim. Silakan cek email Anda.",
         "",
@@ -666,7 +677,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
           initialEmail: email,
         ),
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       final responseData = e.response?.data;
       Map<String, dynamic> data = <String, dynamic>{};
 
@@ -726,9 +737,10 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         throw Exception("Reset token tidak ditemukan");
       }
 
+      if (!context.mounted) return;
       setVerifyOtpStatus(VerifyOtpStatus.loaded);
       NS.pushReplacement(context, SetNewPasswordScreen(email: email));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if (e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
@@ -761,6 +773,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         },
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       forgotPasswordResetToken = null;
       ShowSnackbar.snackbar(
         "Password berhasil diubah",
@@ -769,7 +782,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       );
       setStateForgotPasswordStatus(ForgotPasswordStatus.loaded);
       NS.pushReplacement(context, SignInScreen());
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if (e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
@@ -812,6 +825,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         },
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       sp.setString("email_otp", changeEmailName);
       ShowSnackbar.snackbar(
         getTranslated("UPDATE_CHANGE_EMAIL_SUCCESSFUL", context),
@@ -820,7 +834,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       );
       changeEmail = true;
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if (e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
@@ -833,6 +847,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
   }
 
+  @override
   Future<void> verifyOtp(BuildContext context) async {
     if (otp == null) {
       ShowSnackbar.snackbar("Mohon input OTP Anda", "", ColorResources.error);
@@ -845,6 +860,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         data: {"otp": otp, "email": changeEmailName},
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       ShowSnackbar.snackbar(
         "Akun Alamat E-mail $changeEmailName Anda sudah aktif",
         "",
@@ -854,7 +870,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
       writeData(user);
       NS.pushReplacement(context, DashboardScreen());
       setVerifyOtpStatus(VerifyOtpStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if (e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);
@@ -866,6 +882,7 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
     }
   }
 
+  @override
   Future<void> resendOtp(BuildContext context, String email) async {
     setResendOtpStatus(ResendOtpStatus.loading);
     try {
@@ -874,13 +891,14 @@ class AuthProvider with ChangeNotifier implements BaseAuth {
         data: {"email": email},
         options: Options(headers: {"Accept": "application/json"}),
       );
+      if (!context.mounted) return;
       ShowSnackbar.snackbar(
         "Silahkan periksa Alamat E-mail $email Anda, untuk melihat kode OTP yang tercantum",
         "",
         ColorResources.success,
       );
       setResendOtpStatus(ResendOtpStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       Map<String, dynamic> data = json.decode(e.response!.data);
       if (e.response?.statusCode == 500 || e.response?.statusCode == 400) {
         ShowSnackbar.snackbar(data["error"], "", ColorResources.error);

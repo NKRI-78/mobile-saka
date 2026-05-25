@@ -26,7 +26,7 @@ class MembernearProvider with ChangeNotifier {
 
   late GoogleMapController googleMapC;
 
-  List<Marker> _markers = [];
+  final List<Marker> _markers = [];
   List<Marker> get markers => [..._markers];
 
   List<MembernearData> _membernearData = [];

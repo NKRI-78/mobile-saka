@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saka/data/models/event/event_search.dart';
 import 'package:saka/services/navigation.dart';
@@ -23,7 +22,7 @@ class EventRepo {
 
   bool isCheckEvent = true;
 
-  List<EventData> _eventData = [];
+  final List<EventData> _eventData = [];
   List<EventData> get eventData => [..._eventData];
 
   List<EventSearchData> _eventSearchData = [];
@@ -31,7 +30,7 @@ class EventRepo {
 
   Future<List<EventData>> getEvent() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get("${AppConstants.baseUrl}/content-service/event");
 
       final dynamic raw = response.data;
@@ -74,7 +73,7 @@ class EventRepo {
 
   Future<List<EventSearchData>?> getEventSearchData(BuildContext context, String query) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get(
         "${AppConstants.baseUrl}/content-service/event/search?event=$query",
       );
@@ -91,14 +90,14 @@ class EventRepo {
 
   Future<void> joinEvent({required int eventId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
 
       await dio.post(
         "${AppConstants.baseUrl}/content-service/event-join/add",
         data: {"event_id": eventId, "user_id": ar.getUserId()},
       );
       ShowSnackbar.snackbar("Anda berhasil gabung", "", ColorResources.success);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response!.statusCode == 400) {
         ShowSnackbar.snackbar("Anda sudah bergabung", "", ColorResources.error);
       }
@@ -109,7 +108,7 @@ class EventRepo {
 
   Future<bool?> checkEvent(BuildContext context) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrl}/content-service/scanner-joins/check");
       if (json.decode(res.data)["code"] == 0) {
         isCheckEvent = false;
@@ -117,7 +116,7 @@ class EventRepo {
         isCheckEvent = true;
       }
       return isCheckEvent;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response!.statusCode == 400) {
         isCheckEvent = true;
       } else {
@@ -132,14 +131,14 @@ class EventRepo {
 
   Future<void> presentEvent(BuildContext context, {required String eventId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "${AppConstants.baseUrl}/content-service/event/present",
         data: {"event_id": eventId, "user_id": ar.getUserId()},
       );
       ShowSnackbar.snackbar("Anda berhasil hadir", "", ColorResources.success);
       NS.pop();
-    } on DioError catch (_) {
+    } on DioException catch (_) {
       NS.pop();
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());

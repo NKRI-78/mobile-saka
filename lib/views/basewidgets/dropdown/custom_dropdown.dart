@@ -20,9 +20,9 @@ class CustomDropDownFormField extends FormField<dynamic> {
   final bool filled;
 
   CustomDropDownFormField({
-  Key? key, 
-  FormFieldSetter<dynamic>? onSaved,
-  FormFieldValidator<dynamic>? validator,
+  super.key, 
+  super.onSaved,
+  super.validator,
   bool autovalidate = false,
   this.titleText = '',
   this.titleColor = ColorResources.white,
@@ -38,10 +38,7 @@ class CustomDropDownFormField extends FormField<dynamic> {
   this.filled = true,
   this.fillColor = ColorResources.white,
   })
-  : super(key: key, 
-    onSaved: onSaved,
-    validator: validator,
-    autovalidateMode: AutovalidateMode.always,
+  : super(autovalidateMode: AutovalidateMode.always,
     initialValue: value == '' ? '' : value,
     builder: (FormFieldState<dynamic> state) {
       return SizedBox(

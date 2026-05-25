@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 class SquareLoader extends StatefulWidget {
   const SquareLoader({
-    Key? key,
+    super.key,
     this.color,
     this.size = 50.0,
     this.itemBuilder,
@@ -11,8 +11,7 @@ class SquareLoader extends StatefulWidget {
     this.controller,
   })  : assert(!(itemBuilder is IndexedWidgetBuilder && color is Color) && !(itemBuilder == null && color == null),
   'You should specify either a itemBuilder or a color'),
-        assert(size != null),
-        super(key: key);
+        assert(size != null);
 
   final Color? color;
   final double? size;

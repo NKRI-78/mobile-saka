@@ -16,7 +16,7 @@ class OnBoardingScreen extends StatefulWidget {
   final Color indicatorColor;
   final Color selectedIndicatorColor;
 
-  OnBoardingScreen({
+  const OnBoardingScreen({super.key, 
     this.indicatorColor = Colors.grey,
     this.selectedIndicatorColor = Colors.black,
   });

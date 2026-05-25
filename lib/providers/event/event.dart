@@ -58,7 +58,7 @@ class EventProvider with ChangeNotifier {
 
   DateTime selectedDate = DateTime.now();
 
-  Map<DateTime, List<Map<String, dynamic>>> _events = {};
+  final Map<DateTime, List<Map<String, dynamic>>> _events = {};
   Map<DateTime, List<Map<String, dynamic>>> get events => {..._events};
 
   Map<DateTime, List> createEvent = HashMap();

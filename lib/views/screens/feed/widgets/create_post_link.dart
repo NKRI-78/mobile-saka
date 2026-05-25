@@ -11,8 +11,8 @@ import 'package:saka/views/basewidgets/loader/circular.dart';
 
 class CreatePostLink extends StatefulWidget {
   const CreatePostLink({
-    Key? key, 
-  }) : super(key: key);
+    super.key, 
+  });
 
   @override
   CreatePostLinkState createState() => CreatePostLinkState();

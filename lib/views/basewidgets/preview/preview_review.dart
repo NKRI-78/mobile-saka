@@ -18,8 +18,8 @@ class PreviewReviewImageScreen extends StatefulWidget {
   const PreviewReviewImageScreen({
     this.medias,
     this.id,
-    Key? key, 
-  }) : super(key: key);
+    super.key, 
+  });
 
   @override
   PreviewReviewImageScreenState createState() => PreviewReviewImageScreenState();

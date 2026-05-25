@@ -13,12 +13,12 @@ class TopBar extends StatefulWidget {
   final Widget? secondaryAction;
 
   TopBar({
-    Key? key,
+    super.key,
     this.barTitle, 
     this.barTitleColor = ColorResources.white,
     this.primaryAction,
     this.secondaryAction,
-  })  : super(key: key) {
+  }) {
     barTitleFontSize = Dimensions.fontSizeDefault;
   }
 
@@ -81,7 +81,7 @@ class TopBarChat extends StatefulWidget {
 
 
   TopBarChat({
-    Key? key,
+    super.key,
     this.avatar,
     this.barTitle, 
     this.subTitle,
@@ -89,7 +89,7 @@ class TopBarChat extends StatefulWidget {
     this.barSubtitleColor = ColorResources.white,
     this.primaryAction,
     this.secondaryAction,
-  }) : super(key : key) {
+  }) {
     barTitleFontSize = 14.0;
     barSubtitleFontSize = 8.0;
   }

@@ -22,8 +22,8 @@ class PreviewForumImageScreen extends StatefulWidget {
     this.caption,
     this.medias,
     this.id,
-    Key? key, 
-  }) : super(key: key);
+    super.key, 
+  });
 
   @override
   PreviewForumImageScreenState createState() => PreviewForumImageScreenState();

@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+// ignore_for_file: avoid_unnecessary_containers
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
@@ -20,7 +20,6 @@ import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/input_formatters.dart';
 import 'package:saka/views/basewidgets/button/custom.dart';
 
-import 'package:saka/views/basewidgets/dialog/animated/animated.dart';
 import 'package:saka/views/basewidgets/dropdown/custom_dropdown.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
@@ -194,7 +193,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         top: 50.0,
                         left: 0.0,
                         right: 0.0,
-                        child: Container(
+                        child: SizedBox(
                           height: 150.0,
                           child: Image.asset('assets/images/logo.png')
                         ),
@@ -920,7 +919,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                                               recognizer: TapGestureRecognizer()..onTap = () => showGeneralDialog(
                                                   context: context,
                                                   barrierDismissible: false,
-                                                  barrierColor: Colors.black.withOpacity(0.5),
+                                                  barrierColor: Colors.black.withValues(alpha: 0.5),
                                                   transitionDuration: const Duration(milliseconds: 700),
                                                   pageBuilder: (BuildContext ctx, Animation<double> double, _) {
                                                     return Center(

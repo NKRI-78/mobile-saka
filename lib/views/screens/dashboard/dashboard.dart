@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,9 +23,9 @@ import 'package:saka/views/screens/home/home.dart';
 import 'package:saka/views/screens/sos/sos.dart';
 
 class DashboardScreen extends StatefulWidget {
-  DashboardScreen({
-    Key? key 
-  }) : super(key: key);
+  const DashboardScreen({
+    super.key 
+  });
 
   @override
   DashboardScreenState createState() => DashboardScreenState();

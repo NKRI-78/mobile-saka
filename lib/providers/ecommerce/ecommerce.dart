@@ -268,7 +268,7 @@ class EcommerceProvider extends ChangeNotifier {
   GetCourierStatus _getCourierStatus = GetCourierStatus.loading;
   GetCourierStatus get getCourierStatus => _getCourierStatus;
 
-  AddCourierStatus _addCourierStatus = AddCourierStatus.loading;
+  final AddCourierStatus _addCourierStatus = AddCourierStatus.loading;
   AddCourierStatus get addCourierStatus => _addCourierStatus;
 
   GetCheckoutStatus _getCheckoutStatus = GetCheckoutStatus.loading;
@@ -352,7 +352,7 @@ class EcommerceProvider extends ChangeNotifier {
   ProductDetailData _productDetailData = ProductDetailData();
   ProductDetailData get productDetailData => _productDetailData;
 
-  TrackingData _trackingData = TrackingData();
+  final TrackingData _trackingData = TrackingData();
   TrackingData get trackingData => _trackingData;
 
   void setStateCancelOrderStatus(param) {
@@ -1435,7 +1435,7 @@ class EcommerceProvider extends ChangeNotifier {
       Map<String, dynamic> data = res.data;
       AutocompleteModel autocompleteModel = AutocompleteModel.fromJson(data);
       return autocompleteModel.predictions;
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());

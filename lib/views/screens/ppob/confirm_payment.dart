@@ -135,7 +135,7 @@
 //                               Text(getTranslated("PAYMENT", context),
 //                                 style: robotoRegular.copyWith(
 //                                   fontSize: Dimensions.fontSizeSmall,
-//                                   color: ColorResources.dimGrey.withOpacity(0.8)
+//                                   color: ColorResources.dimGrey.withValues(alpha: 0.8)
 //                                 )
 //                               ),
 //                               const SizedBox(height: 5.0),   

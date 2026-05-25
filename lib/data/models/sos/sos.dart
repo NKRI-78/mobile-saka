@@ -13,11 +13,11 @@ class SosModel {
     String? desc,
     String? type
   }) {
-    this._id = id!;
-    this._name = name!;
-    this._icon = icon!;
-    this._desc = desc!;
-    this._type = type!;
+    _id = id!;
+    _name = name!;
+    _icon = icon!;
+    _desc = desc!;
+    _type = type!;
   }
 
   int get id => _id;

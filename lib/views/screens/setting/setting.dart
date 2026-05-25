@@ -17,6 +17,8 @@ import 'package:saka/views/screens/setting/widgets/language_dialog.dart';
 import 'package:saka/localization/language_constraints.dart';
 
 class SettingScreen extends StatefulWidget {
+  const SettingScreen({super.key});
+
 
   @override
   SettingscreenState createState() => SettingscreenState();
@@ -158,7 +160,7 @@ class SettingscreenState extends State<SettingScreen> {
                   ),
                   child: GestureDetector(
                     onTap: () => fad.showAnimatedDialog(context, LanguageDialog()),
-                    child: Text("${getTranslated('CHOOSE_LANGUAGE', context)}",
+                    child: Text(getTranslated('CHOOSE_LANGUAGE', context),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault
                       )

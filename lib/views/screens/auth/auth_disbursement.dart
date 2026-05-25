@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,8 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/basewidgets/textfield/password.dart';
 
 class AuthDisbursementScreen extends StatefulWidget {
+  const AuthDisbursementScreen({super.key});
+
   @override
   _AuthDisbursementScreenState createState() => _AuthDisbursementScreenState();
 }

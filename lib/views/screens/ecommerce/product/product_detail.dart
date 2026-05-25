@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -732,7 +732,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                   
                           Divider(
                             thickness: 1.8,
-                            color: ColorResources.hintColor.withOpacity(0.5),
+                            color: ColorResources.hintColor.withValues(alpha: 0.5),
                           ),
                           
                           Container(
@@ -898,11 +898,13 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
 
           Consumer<EcommerceProvider>(
             builder: (_, notifier, __) {
-              if(notifier.detailProductStatus == DetailProductStatus.loading) 
+              if(notifier.detailProductStatus == DetailProductStatus.loading) {
                 return const SizedBox();
+              }
 
-              if(notifier.detailProductStatus == DetailProductStatus.error) 
+              if(notifier.detailProductStatus == DetailProductStatus.error) {
                 return const SizedBox();
+              }
 
               return Align(
                 alignment: Alignment.bottomCenter,

@@ -13,7 +13,7 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
 
 class LanguageDialog extends StatelessWidget {
-  const LanguageDialog({Key? key}) : super(key: key);
+  const LanguageDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

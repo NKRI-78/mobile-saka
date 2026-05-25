@@ -234,7 +234,7 @@ class ProductItem extends StatelessWidget {
                 ) 
               ),
 
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 38.0,
                 child: Padding(

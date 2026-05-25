@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -618,7 +617,7 @@ class CartScreenState extends State<CartScreen> {
                                                           context: context,
                                                           barrierLabel: "Barrier",
                                                           barrierDismissible: true,
-                                                          barrierColor: Colors.black.withOpacity(0.5),
+                                                          barrierColor: Colors.black.withValues(alpha: 0.5),
                                                           transitionDuration: const Duration(milliseconds: 700),
                                                           pageBuilder: (BuildContext context, Animation<double> double, _) {
                                                             return Center(

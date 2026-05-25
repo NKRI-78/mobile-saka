@@ -38,7 +38,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
 
   const CustomTextField({
-    Key? key, 
+    super.key, 
     required this.controller,
     this.isPrefixIcon = false,
     this.prefixIcon,
@@ -59,7 +59,7 @@ class CustomTextField extends StatelessWidget {
     this.isEnabled = true,
     this.maxLength,
     this.isPhoneNumber = false
-  }) : super(key: key);
+  });
 
 
   @override

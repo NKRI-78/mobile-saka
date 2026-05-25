@@ -10,7 +10,7 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/views/screens/auth/sign_in.dart';
 
 class SignOutConfirmationDialog extends StatelessWidget {
-  const SignOutConfirmationDialog({Key? key}) : super(key: key);
+  const SignOutConfirmationDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ class OnboardingProvider with ChangeNotifier {
     required this.or
   });
 
-  List<OnboardingModel> _onBoardingList = [];
+  final List<OnboardingModel> _onBoardingList = [];
   List<OnboardingModel> get onBoardingList => _onBoardingList;
 
   int _selectedIndex = 0;

@@ -8,10 +8,10 @@ import 'package:saka/utils/custom_themes.dart';
 class SearchWidget extends StatelessWidget {
   final String? hintText;
   final String? type;
-  const SearchWidget({Key? key, 
+  const SearchWidget({super.key, 
     this.hintText,
     this.type
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

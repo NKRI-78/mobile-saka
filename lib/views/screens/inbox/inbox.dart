@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
@@ -186,9 +187,7 @@ class _InboxList extends StatelessWidget {
 
                       if (isEmergency) {
                         // preload profil
-                        // ignore: use_build_context_synchronously
                         context.read<ProfileProvider>().getSingleUser(context, it.senderId!);
-                        // ignore: use_build_context_synchronously
                         _showEmergencyDialog(context, it.body ?? '');
                       } else {
                         NS.push(

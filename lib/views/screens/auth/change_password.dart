@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +14,8 @@ import 'package:saka/utils/dimensions.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
+
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
@@ -92,12 +94,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         children: [
     
           ClipPath(
+            clipper: CustomClipPath(),
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: 150.0,
               color: ColorResources.brown,
             ),
-            clipper: CustomClipPath(),
           ),
     
           Container(
@@ -166,7 +168,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             fontSize: Dimensions.fontSizeSmall
                           ),
                           decoration: InputDecoration(
-                            hintText: "${getTranslated("ENTER_YOUR_NEW_PASSWORD", context)}",
+                            hintText: getTranslated("ENTER_YOUR_NEW_PASSWORD", context),
                             hintStyle: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeSmall
                             ),

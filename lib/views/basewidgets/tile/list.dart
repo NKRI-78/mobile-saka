@@ -6,10 +6,10 @@ class ListTileComponent extends StatefulWidget {
   final String? title;
   final List? items;
 
-  const ListTileComponent({Key? key, 
+  const ListTileComponent({super.key, 
     this.title,
     this.items
-  }) : super(key: key);
+  });
 
   @override
   _ListTileComponentState createState() => _ListTileComponentState();

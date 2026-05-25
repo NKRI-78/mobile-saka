@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -21,15 +22,15 @@ class ReplyDetailScreen extends StatefulWidget {
   final String replyId;
 
   const ReplyDetailScreen({
-    Key? key, 
+    super.key, 
     required this.replyId
-  }) : super(key: key);
+  });
 
   @override
-  _ReplyDetailScreenState createState() => _ReplyDetailScreenState();
+  ReplyDetailScreenState createState() => ReplyDetailScreenState();
 }
 
-class _ReplyDetailScreenState extends State<ReplyDetailScreen> {
+class ReplyDetailScreenState extends State<ReplyDetailScreen> {
 
   Widget replyText(ReplyBody reply) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -1,7 +1,7 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +26,7 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 import 'package:saka/views/screens/dashboard/dashboard.dart';
 
 class EventScannerJoinScreen extends StatefulWidget {
-  const EventScannerJoinScreen({ Key? key }) : super(key: key);
+  const EventScannerJoinScreen({ super.key });
 
   @override
   State<EventScannerJoinScreen> createState() => EventScannerJoinScreenState();
@@ -68,7 +68,7 @@ class EventScannerJoinScreenState extends State<EventScannerJoinScreen> {
                   top: 0.0,
                   left: 0.0,
                   right: 0.0,
-                  child: Container(
+                  child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     child: Container(
@@ -167,9 +167,9 @@ class QRViewScreen extends StatefulWidget {
   final String? title;
   
   const QRViewScreen({
-    Key? key, 
+    super.key, 
     this.title
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _QRViewScreenState();
@@ -207,11 +207,11 @@ class _QRViewScreenState extends State<QRViewScreen> {
 
   Future<void> checkEvent(BuildContext context) async {
     try { 
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/content-service/scanner-joins/joining");
       ShowSnackbar.snackbar("Terima kasih sudah berpartisipasi!", "", ColorResources.success);
       NS.pushReplacement(context, DashboardScreen());
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint(e.error.toString());
       if(e.response!.statusCode == 400) {
         ShowSnackbar.snackbar("${json.decode(e.response!.data)["error"]}", "", ColorResources.error);
@@ -321,7 +321,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
   }
 
   void onQRViewCreated(QRViewController controller) {
-    setState(() => this.qrC = controller);
+    setState(() => qrC = controller);
     controller.scannedDataStream.listen((scanData) {
       if(scanData.code!.isNotEmpty) {
         controller.pauseCamera();

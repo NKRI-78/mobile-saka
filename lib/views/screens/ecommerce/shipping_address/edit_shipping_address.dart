@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,8 +27,8 @@ class EditShippingAddressScreen extends StatefulWidget {
 
   const EditShippingAddressScreen({
     required this.id,
-    Key? key, 
-  }) : super(key: key);
+    super.key, 
+  });
 
   @override
   EditShippingAddressScreenState createState() => EditShippingAddressScreenState();
@@ -187,7 +186,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 )
                               )
                             ),
-                        )).toList()
+                        ))
                       ],
                     )
                   ),
@@ -295,7 +294,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
+                color: Colors.grey.withValues(alpha: 0.1), 
                 spreadRadius: 1.0, 
                 blurRadius: 3.0, 
                 offset: const Offset(0.0, 1.0)
@@ -494,7 +493,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
+                color: Colors.grey.withValues(alpha: 0.1), 
                 spreadRadius: 1.0, 
                 blurRadius: 3.0, 
                 offset: const Offset(0.0, 1.0)
@@ -705,7 +704,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
+                color: Colors.grey.withValues(alpha: 0.1), 
                 spreadRadius: 1.0, 
                 blurRadius: 3.0, 
                 offset: const Offset(0.0, 1.0)
@@ -908,7 +907,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1), 
+                color: Colors.grey.withValues(alpha: 0.1), 
                 spreadRadius: 1.0, 
                 blurRadius: 3.0, 
                 offset: const Offset(0.0, 1.0)
@@ -1115,7 +1114,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               borderRadius: BorderRadius.circular(6.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1), 
+                  color: Colors.grey.withValues(alpha: 0.1), 
                   spreadRadius: 1.0, 
                   blurRadius: 3.0, 
                   offset: const Offset(0.0, 1.0)
@@ -1181,7 +1180,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1), 
+                  color: Colors.grey.withValues(alpha: 0.1), 
                   spreadRadius: 1.0, 
                   blurRadius: 3.0, 
                   offset: const Offset(0.0, 1.0)
@@ -1243,7 +1242,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                 borderRadius: BorderRadius.circular(6.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1), 
+                    color: Colors.grey.withValues(alpha: 0.1), 
                     spreadRadius: 1.0, 
                     blurRadius: 3.0, 
                     offset: const Offset(0.0, 1.0)
@@ -1328,7 +1327,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1), 
+                  color: Colors.grey.withValues(alpha: 0.1), 
                   spreadRadius: 1.0, 
                   blurRadius: 3.0, 
                   offset: const Offset(0.0, 1.0)

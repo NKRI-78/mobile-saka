@@ -9,9 +9,9 @@ import 'package:saka/views/screens/dashboard/dashboard.dart';
 class CashOutSuccessScreen extends StatelessWidget {
   final String? title;
 
-  const CashOutSuccessScreen({Key? key, 
+  const CashOutSuccessScreen({super.key, 
     this.title
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,16 +63,16 @@ class CashOutSuccessScreen extends StatelessWidget {
               width: 140.0,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.resolveWith<double>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
+                  elevation: WidgetStateProperty.resolveWith<double>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.disabled)) {
                         return 0;
                       }
                       return 0;
                     },
                   ),
-                  backgroundColor: MaterialStateProperty.all(Colors.blue[600]),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  backgroundColor: WidgetStateProperty.all(Colors.blue[600]),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     )

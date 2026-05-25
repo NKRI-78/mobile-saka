@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:saka/utils/color_resources.dart';
@@ -12,12 +11,12 @@ class CustomAppBar extends StatelessWidget {
   final Function? onPressed;
 
   const CustomAppBar({
-    Key? key, 
+    super.key, 
     required this.title, 
     this.isBackButtonExist = true, 
     this.icon, 
     this.onPressed
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

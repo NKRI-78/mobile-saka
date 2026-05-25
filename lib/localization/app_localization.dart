@@ -34,11 +34,11 @@ class _DemoLocalizationsDelegate extends LocalizationsDelegate<AppLocalization> 
 
   @override
   bool isSupported(Locale locale) {
-    List<String> _languageString = [];
+    List<String> languageString = [];
     for (var language in AppConstants.languages) {
-      _languageString.add(language.languageCode!);
+      languageString.add(language.languageCode!);
     }
-    return _languageString.contains(locale.languageCode);
+    return languageString.contains(locale.languageCode);
   }
 
   @override

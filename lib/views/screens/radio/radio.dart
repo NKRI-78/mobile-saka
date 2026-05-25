@@ -13,7 +13,6 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/constant.dart';
 
-import 'package:saka/views/basewidgets/appbar/custom_appbar.dart';
 
 /// Metadata sederhana untuk menempel di AudioSource.tag
 class MediaMeta {
@@ -145,7 +144,7 @@ class _RadioScreenState extends State<RadioScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final gradientTop = ColorResources.primaryOrange;
-    final gradientBottom = ColorResources.primaryOrange.withOpacity(0.8);
+    final gradientBottom = ColorResources.primaryOrange.withValues(alpha: 0.8);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
@@ -201,9 +200,9 @@ class _RadioScreenState extends State<RadioScreen>
         child: Container(
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 22),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.12),
+            color: Colors.white.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.white.withOpacity(0.12)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
             boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
@@ -236,8 +235,8 @@ class _RadioScreenState extends State<RadioScreen>
                   }
                   return ProgressBar(
                     barHeight: 8.0,
-                    baseBarColor: Colors.white.withOpacity(0.35),
-                    bufferedBarColor: Colors.white.withOpacity(0.5),
+                    baseBarColor: Colors.white.withValues(alpha: 0.35),
+                    bufferedBarColor: Colors.white.withValues(alpha: 0.5),
                     progressBarColor: Colors.white,
                     thumbColor: Colors.white,
                     timeLabelTextStyle: robotoRegular.copyWith(
@@ -274,7 +273,7 @@ class _RadioScreenState extends State<RadioScreen>
                     child: SliderTheme(
                       data: SliderTheme.of(context).copyWith(
                         activeTrackColor: Colors.white,
-                        inactiveTrackColor: Colors.white.withOpacity(0.3),
+                        inactiveTrackColor: Colors.white.withValues(alpha: 0.3),
                         thumbColor: Colors.white,
                         trackHeight: 3.5,
                       ),
@@ -321,7 +320,7 @@ class _MetaBlock extends StatelessWidget {
       fontWeight: FontWeight.w700,
     );
     final artistStyle = robotoRegular.copyWith(
-      color: Colors.white.withOpacity(0.9),
+      color: Colors.white.withValues(alpha: 0.9),
       fontSize: Dimensions.fontSizeDefault,
       fontWeight: FontWeight.w500,
     );
@@ -430,15 +429,15 @@ class _PlayPauseButton extends StatelessWidget {
           ],
           gradient: LinearGradient(
             colors: [
-              Colors.white.withOpacity(0.25),
-              Colors.white.withOpacity(0.18),
+              Colors.white.withValues(alpha: 0.25),
+              Colors.white.withValues(alpha: 0.18),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
         child: Material(
-          color: Colors.white.withOpacity(0.08),
+          color: Colors.white.withValues(alpha: 0.08),
           shape: const CircleBorder(),
           child: InkWell(
             customBorder: const CircleBorder(),
@@ -476,7 +475,7 @@ class _SmallCircleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final btn = Material(
-      color: Colors.white.withOpacity(0.12),
+      color: Colors.white.withValues(alpha: 0.12),
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),
@@ -590,7 +589,7 @@ class _ErrorBox extends StatelessWidget {
             icon: const Icon(Icons.refresh),
             label: const Text('Coba lagi'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.15),
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(

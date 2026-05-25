@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 
 import 'package:saka/providers/feedv2/feed.dart';
@@ -33,9 +34,9 @@ class RepliesScreen extends StatefulWidget {
   final String commentId;
 
   const RepliesScreen({
-    Key? key, 
+    super.key, 
     required this.commentId,
-  }) : super(key: key);
+  });
 
   @override
   RepliesScreenState createState() => RepliesScreenState();
@@ -105,13 +106,13 @@ class RepliesScreenState extends State<RepliesScreen> {
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
+            value: "/delete-post",
             child: Text(getTranslated("DELETE_REPLY", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.primaryOrange,
                 fontSize: Dimensions.fontSizeSmall
               )
-            ), 
-            value: "/delete-post"
+            )
           )
         ];
       },
@@ -653,13 +654,13 @@ class RepliesScreenState extends State<RepliesScreen> {
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
+            value: "/delete-post",
             child: Text(getTranslated("DELETE_REPLY", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall
               )
-            ), 
-            value: "/delete-post"
+            )
           )
         ];
       },
@@ -679,7 +680,7 @@ class RepliesScreenState extends State<RepliesScreen> {
                   children: [
                     const SizedBox(height: 10.0),
                     const Icon(
-                      Icons.delete,
+                      Icons.error,
                       color: ColorResources.white,
                     ),
                     const SizedBox(height: 10.0),

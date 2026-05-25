@@ -4,7 +4,6 @@ import 'package:slide_countdown/slide_countdown.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:saka/providers/ecommerce/ecommerce.dart';
 
@@ -51,8 +50,8 @@ class InboxDetailScreen extends StatefulWidget {
     required this.read,
     required this.created,
     required this.updated,
-    Key? key
-  }) : super(key: key);
+    super.key
+  });
 
   @override
   State<InboxDetailScreen> createState() => InboxDetailScreenState();
@@ -183,7 +182,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                                   onTap: () {
                                     Clipboard.setData(ClipboardData(text: widget.field6.toString()));
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('${widget.field6.toString()}',
+                                      SnackBar(content: Text(widget.field6.toString(),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeDefault
                                         ),
@@ -379,7 +378,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                                       onTap: () {
                                         Clipboard.setData(ClipboardData(text: widget.field1.toString()));
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('${widget.field1.toString()}',
+                                          SnackBar(content: Text(widget.field1.toString(),
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault,
                                             ),

@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: avoid_unnecessary_containers, use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
 
@@ -25,7 +24,7 @@ import 'package:saka/views/screens/ecommerce/shipping_address/shipping_address_l
 class DeliveryScreen extends StatefulWidget {
   final String from;
 
-  DeliveryScreen({
+  const DeliveryScreen({
     required this.from,
     super.key
   });
@@ -78,7 +77,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) {
           return;
         }
@@ -1178,7 +1177,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                               children: [
                                                 Text(notifier.getPaymentChannelStatus == GetPaymentChannelStatus.loading 
                                                 ? "Mohon tunggu..."
-                                                : "${notifier.paymentName}",
+                                                : notifier.paymentName,
                                                   style: robotoRegular.copyWith(
                                                     fontSize: Dimensions.fontSizeDefault,
                                                     fontWeight: FontWeight.bold,

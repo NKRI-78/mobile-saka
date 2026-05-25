@@ -26,7 +26,7 @@ class CustomButton extends StatelessWidget {
   final bool isBoxShadow;
 
   const CustomButton({
-    Key? key, 
+    super.key, 
     required this.onTap, 
     this.btnTxt, 
     this.customText = false,
@@ -43,7 +43,7 @@ class CustomButton extends StatelessWidget {
     this.isBorder = false,
     this.isBorderRadius = false,
     this.isBoxShadow = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

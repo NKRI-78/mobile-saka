@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -22,7 +23,7 @@ class CheckoutRegistrasiScreen extends StatefulWidget {
   final String? noVa;
   final String? guide;
 
-  const CheckoutRegistrasiScreen({Key? key, 
+  const CheckoutRegistrasiScreen({super.key, 
     this.productPrice,
     this.adminFee,
     this.transactionId,
@@ -30,7 +31,7 @@ class CheckoutRegistrasiScreen extends StatefulWidget {
     this.paymentChannel,
     this.noVa,
     this.guide
-  }) : super(key: key);
+  });
 
   @override
   _CheckoutRegistrasiScreenState createState() => _CheckoutRegistrasiScreenState();
@@ -306,7 +307,7 @@ class _CheckoutRegistrasiScreenState extends State<CheckoutRegistrasiScreen> wit
         Container(
           margin: const EdgeInsets.only(left: 16, right: 16, top: 10),
           child: SelectableText(
-            "Transfer ke Nomor " + widget.nameBank! + " berikut ini :",
+            "Transfer ke Nomor ${widget.nameBank!} berikut ini :",
             textAlign: TextAlign.center,
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeSmall,

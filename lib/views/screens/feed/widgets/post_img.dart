@@ -26,8 +26,8 @@ class PostImage extends StatefulWidget {
     this.caption,
     this.isDetail,
     this.medias,
-    {Key? key}
-  ) : super(key: key);
+    {super.key}
+  );
 
   @override
   PostImageState createState() => PostImageState();
@@ -197,7 +197,7 @@ class PostImageState extends State<PostImage> {
                             alignment: Alignment.center,
                             height: 200.0,
                             decoration:  BoxDecoration(
-                              color: ColorResources.black.withOpacity(0.6)
+                              color: ColorResources.black.withValues(alpha: 0.6)
                             ),
                             child: Text("Photos (+${widget.medias.length - 3})",
                               style: robotoRegular.copyWith(

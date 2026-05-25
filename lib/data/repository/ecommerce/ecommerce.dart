@@ -39,7 +39,7 @@ class EcommerceRepo {
 
   Future<BalanceModel> getBalance() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/user/balance",
         data: {"user_id": sp.getString("userId")},
@@ -60,10 +60,10 @@ class EcommerceRepo {
     required int page,
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
 
       Response response = await dio.get(
-        "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/all?page=$page&limit=5&search=${search}&app_name=saka&cat=$cat",
+        "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/all?page=$page&limit=5&search=$search&app_name=saka&cat=$cat",
       );
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
@@ -77,7 +77,7 @@ class EcommerceRepo {
 
   Future<ProductCategoryModel> fetchProductCategory() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/category?app_name=saka",
       );
@@ -93,7 +93,7 @@ class EcommerceRepo {
 
   Future<ProductTransactionModel> fetchProductTransaction({required String transactionId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/transaction/$transactionId",
       );
@@ -109,7 +109,7 @@ class EcommerceRepo {
 
   Future<ProductDetailModel> getProduct({required String productId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/detail/$productId",
       );
@@ -130,7 +130,7 @@ class EcommerceRepo {
     required double rating,
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/review",
         data: {
@@ -149,7 +149,7 @@ class EcommerceRepo {
 
   Future<void> productReviewMedia({required String productId, required String path}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/products/review/media",
         data: {"product_id": productId, "path": path},
@@ -162,12 +162,12 @@ class EcommerceRepo {
 
   Future<void> cancelOrder({required String transactionId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/order/cancel",
         data: {"transaction_id": transactionId, "app": "saka"},
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed to cancel order");
     } catch (e) {
@@ -178,7 +178,7 @@ class EcommerceRepo {
 
   Future<ListOrderModel> getOrderList({required String orderStatus}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/order/list",
         data: {"app": "saka", "order_status": orderStatus, "user_id": sp.getString("userId")},
@@ -194,7 +194,7 @@ class EcommerceRepo {
 
   Future<DetailOrderModel> getOrderDetail({required String transactionId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/order/detail",
         data: {"transaction_id": transactionId, "app": "saka"},
@@ -202,7 +202,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       DetailOrderModel detailOrderModel = DetailOrderModel.fromJson(data);
       return detailOrderModel;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
       throw Exception("Failed to order detail");
     } catch (e, stacktrace) {
@@ -214,7 +214,7 @@ class EcommerceRepo {
 
   Future<TrackingModel> getTracking({required String waybill}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/order/tracking",
         data: {"waybill": waybill},
@@ -230,7 +230,7 @@ class EcommerceRepo {
 
   Future<CartModel> getCart() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/carts",
         data: {"user_id": sp.getString("userId")},
@@ -256,14 +256,14 @@ class EcommerceRepo {
         "qty": qty,
         "note": note,
       };
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/carts/store",
         data: dataObj,
       );
       Map<String, dynamic> data = response.data;
       return data["data"]["cart_id"];
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       ShowSnackbar.snackbar(e.response!.data["message"], "", ColorResources.error);
       debugPrint(e.response!.data.toString());
     } catch (e) {
@@ -276,14 +276,14 @@ class EcommerceRepo {
   Future<String> addToCartLive({required String productId, required String note}) async {
     try {
       var dataObj = {"user_id": sp.getString("userId"), "product_id": productId, "note": note};
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/carts/live/store",
         data: dataObj,
       );
       Map<String, dynamic> data = response.data;
       return data["data"]["cart_id"];
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       ShowSnackbar.snackbar(e.response!.data["message"], "", ColorResources.error);
       debugPrint(e.response!.data.toString());
     } catch (e) {
@@ -295,7 +295,7 @@ class EcommerceRepo {
 
   Future<void> deleteCart({required String cartId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.delete(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/carts/delete",
         data: {"user_id": sp.getString("userId"), "cart_id": cartId},
@@ -308,7 +308,7 @@ class EcommerceRepo {
 
   Future<void> deleteCartAll() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.delete(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/carts/delete/all",
         data: {"user_id": sp.getString("userId")},
@@ -321,7 +321,7 @@ class EcommerceRepo {
 
   Future<void> deleteCartLiveAll() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.delete(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/carts/live/delete/all",
         data: {"user_id": sp.getString("userId")},
@@ -334,12 +334,12 @@ class EcommerceRepo {
 
   Future<void> updateQty({required String cartId, required int qty}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/update/qty",
         data: {"cart_id": cartId, "qty": qty},
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
     } catch (e) {
       debugPrint(e.toString());
@@ -349,12 +349,12 @@ class EcommerceRepo {
 
   Future<void> updateSelected({required String cartId, required bool selected}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/update/selected",
         data: {"cart_id": cartId, "selected": selected},
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
     } catch (e) {
       debugPrint(e.toString());
@@ -364,12 +364,12 @@ class EcommerceRepo {
 
   Future<void> updateSelectedAll({required bool selected}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/update/selected/all",
         data: {"user_id": sp.getString("userId"), "selected": selected},
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
     } catch (e) {
       debugPrint(e.toString());
@@ -379,7 +379,7 @@ class EcommerceRepo {
 
   Future<void> updateNote({required String cartId, required String note}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/update/note",
         data: {"cart_id": cartId, "note": note},
@@ -392,7 +392,7 @@ class EcommerceRepo {
 
   Future<CheckoutListModel> getCheckoutList({required String from}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/checkout/list",
         data: {"user_id": sp.getString("userId"), "from": from},
@@ -400,7 +400,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       CheckoutListModel checkoutListModel = CheckoutListModel.fromJson(data);
       return checkoutListModel;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.data.toString());
       throw Exception('Failed to get checkout list');
     } catch (e) {
@@ -411,7 +411,7 @@ class EcommerceRepo {
 
   Future<CourierListModel> getCourier({required String storeId, required String from}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/couriers/cost/list",
         data: {"store_id": storeId, "from": from, "user_id": sp.getString("userId")},
@@ -419,7 +419,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       CourierListModel courierListModel = CourierListModel.fromJson(data);
       return courierListModel;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       ShowSnackbar.snackbar(e.response!.data["message"], "", ColorResources.error);
       throw Exception('Failed to get courier');
     } catch (e) {
@@ -439,7 +439,7 @@ class EcommerceRepo {
     required String storeId,
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
 
       final data = {
         "courier_code": courierCode,
@@ -465,7 +465,7 @@ class EcommerceRepo {
 
   Future<void> clearCourier() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
 
       final data = {"user_id": sp.getString("userId")};
 
@@ -481,7 +481,7 @@ class EcommerceRepo {
 
   Future<ShippingAddressModel> getShippingAddressList() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address",
         data: {"user_id": sp.getString("userId"), "default_location": false},
@@ -505,7 +505,7 @@ class EcommerceRepo {
     required String postalCode,
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address/store",
         data: {
@@ -528,7 +528,7 @@ class EcommerceRepo {
 
   Future<void> deleteShippingAddress({required String id}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.delete(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address/delete/$id",
       );
@@ -549,7 +549,7 @@ class EcommerceRepo {
     required String postalCode,
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.put(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address/update/$id",
         data: {
@@ -571,7 +571,7 @@ class EcommerceRepo {
 
   Future<void> selectPrimaryAddress({required String id}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.put(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address/primary/select/$id",
         data: {"user_id": sp.getString("userId")},
@@ -584,7 +584,7 @@ class EcommerceRepo {
 
   Future<HowToPaymentModel> howToPayment({required String channelId}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/payment/how-to",
         data: {"channel_id": channelId},
@@ -600,7 +600,7 @@ class EcommerceRepo {
 
   Future<ShippingAddressModelDefault> getShippingAddressDefault() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address/default",
         data: {"user_id": sp.getString("userId")},
@@ -617,7 +617,7 @@ class EcommerceRepo {
 
   Future<ShippingAddressModelDetail> getShippingAddressDetail({required String id}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/shipping/address/$id",
       );
@@ -634,7 +634,7 @@ class EcommerceRepo {
 
   Future<ProvinceModel> getProvince({required String search}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/regions/province?search=$search",
       );
@@ -649,9 +649,9 @@ class EcommerceRepo {
 
   Future<CityModel> getCity({required String provinceName, required String search}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
-        "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/regions/city/${provinceName}?search=$search",
+        "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/regions/city/$provinceName?search=$search",
       );
       Map<String, dynamic> data = response.data;
       CityModel cityModel = CityModel.fromJson(data);
@@ -664,7 +664,7 @@ class EcommerceRepo {
 
   Future<DistrictModel> getDistrict({required String cityName, required String search}) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/regions/district/$cityName?search=$search",
       );
@@ -682,7 +682,7 @@ class EcommerceRepo {
     required String search,
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/regions/subdistrict/$districtName?search=$search",
       );
@@ -697,7 +697,7 @@ class EcommerceRepo {
 
   Future<PaymentChannelModel> getPaymentChannel() async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.get(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/payment-channel",
       );
@@ -728,7 +728,7 @@ class EcommerceRepo {
         "payment_code": paymentCode,
         "amount": amount,
       };
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/pay",
         data: dataObj,
@@ -736,7 +736,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransVa responseMidtransVa = ResponseMidtransVa.fromJson(data);
       return responseMidtransVa;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
       throw Exception("Failed to pay");
@@ -765,7 +765,7 @@ class EcommerceRepo {
         "payment_code": paymentCode,
         "amount": amount,
       };
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/pay",
         data: dataObj,
@@ -773,7 +773,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransEmoney responseMidtransEmoney = ResponseMidtransEmoney.fromJson(data);
       return responseMidtransEmoney;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
       throw Exception("Failed to pay");
@@ -799,7 +799,7 @@ class EcommerceRepo {
         "payment_code": paymentCode,
         "amount": amount,
       };
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/topup/balance",
         data: dataObj,
@@ -807,7 +807,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransVa responseMidtransVa = ResponseMidtransVa.fromJson(data);
       return responseMidtransVa;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
       throw Exception("Failed to pay");
@@ -834,7 +834,7 @@ class EcommerceRepo {
         "payment_code": paymentCode,
         "amount": amount,
       };
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response response = await dio.post(
         "https://api-ecommerce-general.langitdigital78.com/ecommerces/v1/topup/balance",
         data: dataObj,
@@ -842,7 +842,7 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ResponseMidtransEmoney responseMidtransEmoney = ResponseMidtransEmoney.fromJson(data);
       return responseMidtransEmoney;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
       throw Exception("Failed to pay");

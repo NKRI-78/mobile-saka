@@ -1,6 +1,6 @@
+// ignore_for_file: deprecated_member_use
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:new_version_plus/new_version_plus.dart';

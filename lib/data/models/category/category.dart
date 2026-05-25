@@ -18,14 +18,14 @@ class Category {
     String? createdAt,
     String? updatedAt,
   }) {
-    this._id = id!;
-    this._name = name!;
-    this._slug = slug!;
-    this._icon = icon!;
-    this._parentId = parentId!;
-    this._position = position!;
-    this._createdAt = createdAt!;
-    this._updatedAt = updatedAt!;
+    _id = id!;
+    _name = name!;
+    _slug = slug!;
+    _icon = icon!;
+    _parentId = parentId!;
+    _position = position!;
+    _createdAt = createdAt!;
+    _updatedAt = updatedAt!;
   }
 
   int get id => _id;

@@ -5,9 +5,9 @@ class GestureBounce extends StatefulWidget {
   final VoidCallback? onPress;
 
   const GestureBounce({
-    required this.child, Key? key, 
+    required this.child, super.key, 
     required this.onPress
-  }) : super(key: key);
+  });
 
   @override
   GestureBounceState createState() => GestureBounceState();

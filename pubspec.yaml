@@ -99,7 +99,7 @@ dependencies:
   multi_image_picker_plus: 
 
   # N
-  new_version_plus: ^0.0.10
+  new_version_plus: ^0.1.1
   path_provider: ^2.0.5
   permission_handler: ^11.0.1
   photo_view: ^0.14.0
@@ -146,6 +146,12 @@ dependencies:
     sdk: flutter
 
 
+  path: any
+  flutter_chat_types: any
+  intl: any
+  package_info_plus: any
+  audio_session: any
+  http: any
 dependency_overrides:
   intl: ^0.19.0
 

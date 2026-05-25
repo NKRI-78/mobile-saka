@@ -10,9 +10,9 @@ class PostLink extends StatefulWidget {
   final String url;
 
   const PostLink({
-    Key? key, 
+    super.key, 
     required this.url,
-  }) : super(key: key);
+  });
 
   @override
   State<PostLink> createState() => PostLinkState();

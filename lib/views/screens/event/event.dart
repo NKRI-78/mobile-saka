@@ -18,6 +18,8 @@ import 'package:saka/views/screens/event/detail.dart';
 import 'package:saka/providers/event/event.dart';
 
 class EventScreen extends StatefulWidget {
+  const EventScreen({super.key});
+
   @override
   EventScreenState createState() => EventScreenState();
 }

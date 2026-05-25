@@ -11,12 +11,13 @@ class PDFScreen extends StatefulWidget {
   final String path;
   final String title;
 
-  PDFScreen({
-    Key? key, 
+  const PDFScreen({
+    super.key, 
     required this.path,
     required this.title  
-  }) : super(key: key);
+  });
 
+  @override
   _PDFScreenState createState() => _PDFScreenState();
 }
 
@@ -60,9 +61,9 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
           defaultPage: currentPage,
           fitPolicy: FitPolicy.BOTH,
           preventLinkNavigation: false,
-          onRender: (_pages) {
+          onRender: (int? renderedPages) {
             setState(() {
-              pages = _pages!;
+              pages = renderedPages ?? 0;
               isReady = true;
             });
           },
@@ -83,11 +84,11 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
           onLinkHandler: (String? uri) {
             debugPrint('goto uri: $uri');
           },
-          onPageChanged: (int? _page, int? _total) {
+          onPageChanged: (int? newPage, int? totalPages) {
             setState(() {
-              page = _page! + 1; 
-              total = _total!;
-              currentPage = _page;
+              page = (newPage ?? 0) + 1;
+              total = totalPages ?? 0;
+              currentPage = page;
             });
           },
         ),

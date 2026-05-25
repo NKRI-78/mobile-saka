@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_unnecessary_containers
 import 'package:flutter/material.dart';
 
 import 'package:saka/utils/color_resources.dart';
@@ -5,6 +6,8 @@ import 'package:saka/utils/color_resources.dart';
 import 'package:saka/views/basewidgets/appbar/custom_appbar.dart';
 
 class InfoScreen extends StatefulWidget {
+  const InfoScreen({super.key});
+
 
   @override
   State<InfoScreen> createState() => _InfoScreenState();

@@ -60,12 +60,12 @@ class SosDetailScreenState extends State<SosDetailScreen> {
         children: [
 
           ClipPath(
+            clipper: CustomClipPath(),
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: 160.0,
               color: ColorResources.brown,
             ),
-            clipper: CustomClipPath(),
           ),
 
           Container(

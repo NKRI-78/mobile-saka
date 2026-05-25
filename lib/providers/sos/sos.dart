@@ -47,7 +47,7 @@ class SosProvider extends ChangeNotifier {
   }) async {
     setStateSosStatus(SosStatus.loading);
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
 
       String userId = ar.getUserId().toString();
       String fullname = ar.getUserfullname().toString();
@@ -60,9 +60,9 @@ class SosProvider extends ChangeNotifier {
         "address": location,
         "sosType": "sos.${label.toLowerCase()}",
         "txt1":
-            "${fullname} sedang membutuhkan bantuan cepat, ${fullname} sedang ${label.toLowerCase() == "ambulance" ? "membutuhkan" : "mengalami"} ${getTranslated(label.toUpperCase(), context)} di ${location}",
+            "$fullname sedang membutuhkan bantuan cepat, $fullname sedang ${label.toLowerCase() == "ambulance" ? "membutuhkan" : "mengalami"} ${getTranslated(label.toUpperCase(), context)} di $location",
         "Message":
-            "${fullname} sedang membutuhkan bantuan cepat, ${fullname} sedang ${label.toLowerCase() == "ambulance" ? "membutuhkan" : "mengalami"} ${getTranslated(label.toUpperCase(), context)} di ${location}",
+            "$fullname sedang membutuhkan bantuan cepat, $fullname sedang ${label.toLowerCase() == "ambulance" ? "membutuhkan" : "mengalami"} ${getTranslated(label.toUpperCase(), context)} di $location",
         "sender": fullname,
         "phoneNumber": phone,
       };
@@ -73,7 +73,7 @@ class SosProvider extends ChangeNotifier {
         Navigator.of(context).pop();
       });
       setStateSosStatus(SosStatus.loaded);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       debugPrint(e.toString());
       debugPrint(e.response.toString());
       Navigator.of(context).pop();

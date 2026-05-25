@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:android_intent_plus/android_intent.dart';
@@ -129,6 +128,8 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
 }
 
 class DrawerWidget extends StatefulWidget {
+  const DrawerWidget({super.key});
+
   @override
   DrawerWidgetState createState() => DrawerWidgetState();
 }

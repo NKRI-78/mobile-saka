@@ -12,8 +12,8 @@ class PostText extends StatefulWidget {
 
   const PostText(
     this.text, 
-    {Key? key}
-  ) : super(key: key);
+    {super.key}
+  );
 
   @override
   PostTextState createState() => PostTextState();

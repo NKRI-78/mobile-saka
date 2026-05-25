@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print, avoid_unnecessary_containers
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -35,8 +36,8 @@ class SignUpSocialMediaScreen extends StatefulWidget {
     required this.emailAddress,
     required this.profilePic,
     required this.type,
-    Key? key 
-  }) : super(key: key);
+    super.key 
+  });
 
   @override
   State<SignUpSocialMediaScreen> createState() => _SignUpSocialMediaScreenState();
@@ -85,7 +86,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
         provinces.addAll(provinsi);
         cities.addAll(kabupatenKota);
       });
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       if(e.response!.statusCode == 400 
       || e.response!.statusCode == 401 
       || e.response!.statusCode == 402
@@ -235,7 +236,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
                         top: 50.0,
                         left: 0.0,
                         right: 0.0,
-                        child: Container(
+                        child: SizedBox(
                           height: 150.0,
                           child: Image.asset('assets/images/logo.png')
                         ),
@@ -540,7 +541,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
                                               ),
                                               textInputAction: TextInputAction.next,
                                               decoration: InputDecoration(
-                                                hintText: province == null ? "Province" : province,
+                                                hintText: province ?? "Province",
                                                 hintStyle: robotoRegular.copyWith(
                                                   color: ColorResources.brown,
                                                   fontSize: Dimensions.fontSizeSmall
@@ -590,7 +591,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
                                               ),
                                               textInputAction: TextInputAction.next,
                                               decoration: InputDecoration(
-                                                hintText: city == null ? "City" : city,
+                                                hintText: city ?? "City",
                                                 hintStyle: robotoRegular.copyWith(
                                                   color: ColorResources.brown,
                                                   fontSize: Dimensions.fontSizeSmall
@@ -931,7 +932,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
   modal(String typeInput) {
     var citiesFiltered = cities.where((item) => item.provinsiId == codeProvince).toList();
 
-    if(typeInput == "city")
+    if(typeInput == "city") {
       return showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
@@ -1039,6 +1040,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
         ],
       );
     });
+    }
 
     return showModalBottomSheet(
       backgroundColor: Colors.white,

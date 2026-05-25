@@ -1,3 +1,4 @@
+// ignore_for_file: library_private_types_in_public_api
 import 'dart:async';
 import 'dart:io';
 
@@ -16,6 +17,8 @@ import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/views/basewidgets/appbar/custom_appbar.dart';  
 
 class AboutUsScreen extends StatefulWidget {
+  const AboutUsScreen({super.key});
+
   @override
   _AboutUsScreenState createState() => _AboutUsScreenState();
 }
@@ -76,7 +79,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                   alignment: Alignment.topCenter,
                   child: Container(
                     margin: EdgeInsets.only(top: 40.0),
-                    child: Container(
+                    child: SizedBox(
                       height: 100.0,
                       child: Image.asset(Images.logo)
                     ) 

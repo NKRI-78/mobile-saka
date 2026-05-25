@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: deprecated_member_use
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 

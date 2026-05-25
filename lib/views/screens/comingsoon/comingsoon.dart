@@ -7,8 +7,8 @@ class ComingSoonScreen extends StatefulWidget {
 
   const ComingSoonScreen({ 
     required this.title,
-    Key? key 
-  }) : super(key: key);
+    super.key 
+  });
 
   @override
   State<ComingSoonScreen> createState() => ComingSoonScreenState();

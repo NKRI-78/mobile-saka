@@ -20,10 +20,10 @@ class OtpScreen extends StatefulWidget {
   final String? initialEmail;
 
   const OtpScreen({
-    Key? key,
+    super.key,
     this.forgotPasswordMode = false,
     this.initialEmail,
-  }) : super(key: key);
+  });
 
   @override
   OtpScreenState createState() => OtpScreenState();
@@ -35,6 +35,7 @@ class OtpScreenState extends State<OtpScreen> {
 
   bool loading = true;
 
+  @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
@@ -61,7 +62,7 @@ class OtpScreenState extends State<OtpScreen> {
       backgroundColor: ColorResources.bgGrey,
       body: Consumer<AuthProvider>(
         builder: (BuildContext context, AuthProvider authProvider, Widget? child) {
-          return Container(
+          return SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Column(
@@ -298,7 +299,7 @@ class OtpScreenState extends State<OtpScreen> {
                           height: 40.0,
                           ringColor: Colors.transparent,
                           ringGradient: null,
-                          fillColor: ColorResources.primaryOrange.withOpacity(
+                          fillColor: ColorResources.primaryOrange.withValues(alpha: 
                             0.4,
                           ),
                           fillGradient: null,

@@ -16,8 +16,8 @@ class CreatePostImageCameraScreen extends StatefulWidget {
   final XFile? file;
 
   const CreatePostImageCameraScreen(
-    this.file, {Key? key}
-  ) : super(key: key);
+    this.file, {super.key}
+  );
 
   @override
   CreatePostImageCameraScreenState createState() => CreatePostImageCameraScreenState();

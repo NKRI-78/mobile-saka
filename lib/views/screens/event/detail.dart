@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +25,7 @@ class DetailEventScreen extends StatefulWidget {
   final DateTime date;
 
   const DetailEventScreen({
-    Key? key,
+    super.key,
     required this.id,
     required this.title,
     required this.content,
@@ -35,7 +33,7 @@ class DetailEventScreen extends StatefulWidget {
     required this.joins,
     required this.imageUrl,
     required this.date,
-  }) : super(key: key);
+  });
 
   @override
   DetailEventPageState createState() => DetailEventPageState();
@@ -128,7 +126,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
               background: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     height: double.infinity,
                     child: ClipRRect(
@@ -154,7 +152,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                 opacity: isShrink ? 1.0 : 0.0,
                 duration: Duration(milliseconds: 150),
                 child: Text(
-                  titleMore! + "...",
+                  "${titleMore!}...",
                   maxLines: 1,
                   style: robotoRegular.copyWith(
                     color: ColorResources.black,

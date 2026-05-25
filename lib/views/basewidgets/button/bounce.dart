@@ -5,9 +5,9 @@ class Bouncing extends StatefulWidget {
   final VoidCallback? onPress;
 
   const Bouncing({
-    required this.child, Key? key, 
+    required this.child, super.key, 
     required this.onPress
-  }) : super(key: key);
+  });
 
   @override
   _BouncingState createState() => _BouncingState();

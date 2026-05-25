@@ -6,7 +6,7 @@ import 'package:saka/utils/box_shadow.dart';
 import 'package:saka/utils/dimensions.dart';
 
 class ListViewHorizontal extends StatelessWidget {
-  const ListViewHorizontal({ Key? key }) : super(key: key);
+  const ListViewHorizontal({ super.key });
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'dart:async';
 import 'dart:io';
 
@@ -6,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
-import 'package:saka/views/screens/ppob/topup/topup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:draggable_float_widget/draggable_float_widget.dart';
@@ -31,14 +31,12 @@ import 'package:saka/providers/ecommerce/ecommerce.dart';
 
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
-import 'package:saka/utils/currency.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/box_shadow.dart';
 
 import 'package:saka/views/basewidgets/drawer/drawer.dart';
 
-import 'package:saka/views/screens/ecommerce/product/products.dart';
 import 'package:saka/views/screens/feed/index.dart';
 import 'package:saka/views/screens/membernear/membernear.dart';
 import 'package:saka/views/screens/comingsoon/comingsoon.dart';
@@ -55,6 +53,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _showAllNews = false;
 
   late EcommerceProvider ep;
   late FirebaseProvider fp;
@@ -196,18 +195,40 @@ class HomeScreenState extends State<HomeScreen> {
                           left: 25.0,
                           right: 25.0,
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(getTranslated("NEWS", context),
-                                style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorResources.brown)),
-                          ],
+                        child: Consumer<NewsProvider>(
+                          builder: (context, newsProvider, child) {
+                            final hasMoreThanFive = newsProvider.newsData.length > 5;
+                            return Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text(getTranslated("NEWS", context),
+                                    style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorResources.brown)),
+                                const Spacer(),
+                                if (hasMoreThanFive)
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _showAllNews = !_showAllNews;
+                                      });
+                                    },
+                                    child: Text(
+                                      _showAllNews ? "Show less" : "See all",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall,
+                                        fontWeight: FontWeight.w600,
+                                        color: ColorResources.brown,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
                         ),
                       ),
-                      newsWidget(context),
+                      newsWidget(context, showAll: _showAllNews),
                       Container(
                         margin: EdgeInsets.only(bottom: 15.0),
                         alignment: Alignment.center,
@@ -456,7 +477,7 @@ Widget ourService(BuildContext context) {
 
   const double maxContentWidth = 420;
 
-  Widget _menuItem(BuildContext context, Map<String, dynamic> m) {
+  Widget menuItem(BuildContext context, Map<String, dynamic> m) {
     return Container(
       width: 70,
       height: 70,
@@ -513,7 +534,7 @@ Widget ourService(BuildContext context) {
           height: 100.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: menus.map((m) => _menuItem(context, m)).toList(),
+            children: menus.map((m) => menuItem(context, m)).toList(),
           ),
         ),
       );
@@ -521,7 +542,7 @@ Widget ourService(BuildContext context) {
   );
 }
 
-Widget newsWidget(BuildContext context) {
+Widget newsWidget(BuildContext context, {bool showAll = false}) {
   return Consumer<NewsProvider>(
     builder:
         (BuildContext context, NewsProvider newsProvider, Widget? child) {
@@ -579,13 +600,15 @@ Widget newsWidget(BuildContext context) {
           ),
         );
       }
+      final newsItems =
+          showAll ? newsProvider.newsData : newsProvider.newsData.take(5).toList();
       return Container(
         margin: EdgeInsets.only(left: 25.0, right: 25.0),
         child: ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
-            itemCount: newsProvider.newsData.length,
+            itemCount: newsItems.length,
             itemBuilder: (BuildContext context, int i) {
               return Container(
                 margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
@@ -604,7 +627,7 @@ Widget newsWidget(BuildContext context) {
                         context,
                         DetailNewsScreen(
                           contentId:
-                              newsProvider.newsData[i].articleId.toString(),
+                              newsItems[i].articleId.toString(),
                         ),
                       );
                     },
@@ -619,7 +642,7 @@ Widget newsWidget(BuildContext context) {
                               borderRadius: BorderRadius.circular(15.0),
                               child: CachedNetworkImage(
                                 imageUrl:
-                                    "${newsProvider.newsData[i].media![0].path}",
+                                    "${newsItems[i].media![0].path}",
                                 fit: BoxFit.fitHeight,
                                 width: 80.0,
                                 height: 80.0,
@@ -644,7 +667,7 @@ Widget newsWidget(BuildContext context) {
                                 SizedBox(
                                   width: 150.0,
                                   child: Text(
-                                    newsProvider.newsData[i].title!,
+                                    newsItems[i].title!,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: robotoRegular.copyWith(
@@ -657,7 +680,7 @@ Widget newsWidget(BuildContext context) {
                                   width: double.infinity,
                                   child: Text(
                                     DateFormat('dd MMM yyyy')
-                                        .format(newsProvider.newsData[i].created!),
+                                        .format(newsItems[i].created!),
                                     textAlign: TextAlign.end,
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeSmall,

@@ -23,7 +23,7 @@ class PaymentReceiptEmoney extends StatefulWidget {
   final String type;
   final ResponseMidtransEmoneyData responseMidtransEmoneyData;
 
-  PaymentReceiptEmoney({
+  const PaymentReceiptEmoney({super.key, 
     required this.amount,
     required this.cost,
     required this.type,
@@ -40,7 +40,7 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           return;
         }

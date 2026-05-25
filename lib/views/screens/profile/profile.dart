@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use, unused_element, use_build_context_synchronously
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -549,7 +550,7 @@ class _AvatarCircleCard extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.18),
+              color: Colors.black.withValues(alpha: 0.18),
               blurRadius: radius * 0.35,
               offset: Offset(0, radius * 0.12),
             ),
@@ -588,7 +589,7 @@ class _AvatarCircleCard extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.18),
+              color: Colors.black.withValues(alpha: 0.18),
               blurRadius: radius * 0.35,
               offset: Offset(0, radius * 0.12),
             ),

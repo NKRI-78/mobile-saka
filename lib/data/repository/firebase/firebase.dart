@@ -20,7 +20,7 @@ class FirebaseRepo {
     required String lng
   }) async {
     try {
-      Dio dio = await DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrl}/data/user", data: 
         {
           "fcmSecret": await FirebaseMessaging.instance.getToken(),
@@ -29,7 +29,7 @@ class FirebaseRepo {
         }
       );
       debugPrint("Initialize FCM : ${res.statusCode}");
-    } on DioError catch(e) {
+    } on DioException catch(e) {
       debugPrint("initFcm (${e.response!.data.toString()})");
     } catch(e, stacktrace) {
       debugPrint("initFcm (${e.toString()})");

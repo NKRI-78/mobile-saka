@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_unnecessary_containers, use_build_context_synchronously
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,6 +26,8 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 enum StatusBlood { none, a, b, ab, o }
 
 class ProfileEditScreen extends StatefulWidget {
+  const ProfileEditScreen({super.key});
+
   @override
   ProfileEditScreenState createState() => ProfileEditScreenState();
 }
@@ -240,12 +243,12 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
             children: [
 
               ClipPath(
+                clipper: CustomClipPath(),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 200.0,
                   color: ColorResources.brown
                 ),
-                clipper: CustomClipPath(),
               ),
 
               Align(  
@@ -264,6 +267,8 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                                   color: ColorResources.black,
                                   borderRadius: BorderRadius.circular(50.0),
                                 ),
+                                width: 100.0,
+                                height: 100.0,
                                 child: Center(
                                   child: Text("...",
                                     style: robotoRegular.copyWith(
@@ -271,8 +276,6 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                                     )
                                   ),
                                 ),
-                                width: 100.0,
-                                height: 100.0,
                               ),
                             )
                           : profileProvider.profileStatus == ProfileStatus.error 
@@ -450,7 +453,7 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FittedBox(
-                  child: Container(
+                  child: SizedBox(
                     width: 150.0,
                     height: 30.0,
                     child: ElevatedButton(
@@ -474,7 +477,7 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                 Consumer<ProfileProvider>(
                   builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                     return FittedBox(
-                      child: Container(
+                      child: SizedBox(
                         width: 150.0,
                         height: 30.0,
                         child: ElevatedButton(
@@ -516,7 +519,7 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
     }
     var citiesFiltered = cities.where((item) => item.provinsiId ==  codeProvince).toList();
 
-    if(typeInput == "city")
+    if(typeInput == "city") {
       return showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
@@ -633,6 +636,7 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
         ],
       );
     });
+    }
 
     return showModalBottomSheet(
       backgroundColor: Colors.white,

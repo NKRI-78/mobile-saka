@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,7 +12,7 @@ import 'package:saka/utils/dimensions.dart';
 class EventJoinScreen extends StatelessWidget {
   final List<Join> joins;
   
-  EventJoinScreen({
+  const EventJoinScreen({
     required this.joins,
     super.key
   });

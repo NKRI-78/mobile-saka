@@ -1,3 +1,4 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -24,10 +25,10 @@ import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 class DetailNewsScreen extends StatefulWidget {
   final String contentId;
 
-  DetailNewsScreen({
-    Key? key,
+  const DetailNewsScreen({
+    super.key,
     required this.contentId
-  }) : super(key: key);
+  });
   @override
   DetailInfoPageState createState() => DetailInfoPageState();
 }
@@ -165,13 +166,13 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                               textStyle: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeExtraSmall
                               ),
+                              value: 1,
                               child: Text(getTranslated("DOWNLOAD", context),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   color: ColorResources.black
                                 )
                               ),
-                              value: 1,
                             ),
                           ]
                         );                 
@@ -183,12 +184,12 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                   background: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Container(
+                      SizedBox(
                         width: double.infinity,
                         height: double.infinity,
                         child: ClipRRect(
                           child: CachedNetworkImage(
-                            imageUrl: "${notifier.singleNewsData.first.media!.first.path}",
+                            imageUrl: notifier.singleNewsData.first.media!.first.path,
                             fit: BoxFit.cover,
                             placeholder: (BuildContext context, String url) => Center(
                             child: Image.asset("assets/images/default_image.png",

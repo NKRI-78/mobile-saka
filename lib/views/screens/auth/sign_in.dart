@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,8 @@ import 'package:saka/views/screens/auth/sign_up.dart';
 import 'package:saka/views/screens/auth/forget_password.dart';
 
 class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
+
   @override
   SignInScreenState createState() => SignInScreenState();
 }
@@ -123,7 +126,7 @@ class SignInScreenState extends State<SignInScreen> {
                   top: 50.0,
                   left: 0.0,
                   right: 0.0,
-                  child: Container(
+                  child: SizedBox(
                     height: 150.0,
                     child: Image.asset('assets/images/logo.png')
                   ),

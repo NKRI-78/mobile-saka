@@ -20,7 +20,7 @@ class PaymentReceiptVaScreen extends StatefulWidget {
   final int cost;
   final ResponseMidtransVaData responseMidtransVaData;
 
-  PaymentReceiptVaScreen({
+  const PaymentReceiptVaScreen({super.key, 
     required this.amount,
     required this.cost,
     required this.responseMidtransVaData
@@ -46,7 +46,7 @@ class PaymentReceiptVaScreenState extends State<PaymentReceiptVaScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           return;
         }
@@ -124,7 +124,7 @@ class PaymentReceiptVaScreenState extends State<PaymentReceiptVaScreen> {
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: value));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('$value',
+                    SnackBar(content: Text(value,
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault
                       ),

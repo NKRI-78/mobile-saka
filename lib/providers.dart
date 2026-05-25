@@ -49,5 +49,5 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<SplashProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<MembernearProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<LocalizationProvider>()),
-  Provider.value(value: Map<String, dynamic>())
+  Provider.value(value: <String, dynamic>{})
 ];

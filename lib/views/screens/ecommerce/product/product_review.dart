@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,7 +18,7 @@ import 'package:saka/views/basewidgets/button/custom.dart';
 
 class ProductReviewScreen extends StatefulWidget {
   final String transactionId;
-  ProductReviewScreen({
+  const ProductReviewScreen({
     required this.transactionId,
     super.key
   });
@@ -239,8 +238,8 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                           width: 50.0,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10.0),
-                                            border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                                            color: Colors.grey.withOpacity(0.5)
+                                            border: Border.all(color: Colors.grey.withValues(alpha: 0.5)),
+                                            color: Colors.grey.withValues(alpha: 0.5)
                                           ),
                                           child: Center(
                                             child: notifier.productTransactions[i].files.isEmpty

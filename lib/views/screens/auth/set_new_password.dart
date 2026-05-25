@@ -9,7 +9,7 @@ import 'package:saka/views/basewidgets/loader/circular.dart';
 class SetNewPasswordScreen extends StatefulWidget {
   final String email;
 
-  const SetNewPasswordScreen({Key? key, required this.email}) : super(key: key);
+  const SetNewPasswordScreen({super.key, required this.email});
 
   @override
   State<SetNewPasswordScreen> createState() => _SetNewPasswordScreenState();

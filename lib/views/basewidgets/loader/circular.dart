@@ -3,9 +3,9 @@ import 'package:saka/utils/color_resources.dart';
 
 class Loader extends StatelessWidget {
   final Color? color;
-  const Loader({Key? key, 
+  const Loader({super.key, 
     this.color
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Center(
