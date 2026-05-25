@@ -1,40 +1,217 @@
 {
   "project_info": {
-    "project_number": "94689171996",
-    "project_id": "communityapp-67cba",
-    "storage_bucket": "communityapp-67cba.firebasestorage.app"
+    "project_number": "223834582736",
+    "firebase_url": "https://community-d14c2-default-rtdb.firebaseio.com",
+    "project_id": "community-d14c2",
+    "storage_bucket": "community-d14c2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94689171996:android:394db4020f05ca1fec5dd9",
+        "mobilesdk_app_id": "1:223834582736:android:341255cd4fedf2809b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.amulet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-lfkic3s4q4q4sa7ia80p2hl4hmcg19mi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.amulet",
+            "certificate_hash": "2cb79893fe44e9e02b89a998140aa02c1fe0a3f4"
+          }
+        },
+        {
+          "client_id": "223834582736-nlf06tjrsq54dolfov01amhfuuqkctn5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.amulet",
+            "certificate_hash": "b70673b17d48a5643a811954eeab07788cf654ad"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:af93e9f6fb5bee979b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.amulet_agent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:03bd1f0e5bbaf5d99b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.antridisini"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:46f1e2d98d99d9fa9b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.cekpinjol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-9oataol094bbaflqjc5clhb3hd0psn64.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.cekpinjol",
+            "certificate_hash": "7a8d193b07aeb510709bd469ad38b267e60bcaa0"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:15d3bc9b377529de9b78d5",
         "android_client_info": {
           "package_name": "com.inovasi78.fasi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_id": "223834582736-a85rd8g0kake300p850sdj7gs7cdp121.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.fasi",
+            "certificate_hash": "f10b109e102cbdeca9bbf2f33fda0251c0d12ee4"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.telolet"
+                "bundle_id": "com.inovatif78.amuletagent"
               }
             }
           ]
@@ -43,34 +220,226 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94689171996:android:7b33653ef3481bfdec5dd9",
+        "mobilesdk_app_id": "1:223834582736:android:afdf7b6213a7a3159b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.hog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-efe7e84er8epbenrh87h43pjrbvb1bf8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.hog",
+            "certificate_hash": "22785ecdb459dd81b8535982c26817a140995120"
+          }
+        },
+        {
+          "client_id": "223834582736-q43csgcr9bj1rigqqq2a1nat19pqg09b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.hog",
+            "certificate_hash": "7a8d193b07aeb510709bd469ad38b267e60bcaa0"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:e57ac9a8848013a89b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.mb_w204_club_ina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-16q6247mt6vno7hhbon76alcno3mhi6b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.mb_w204_club_ina",
+            "certificate_hash": "bc6f2edffeb00268b9fc5dab58fbc4ad4f2d54cf"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:f6f47a8afe0713559b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.ppi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:5cdb4385785b6bcf9b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.sahabat_disabilitas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-nbmu80n62u7v71dpqgkjeledrq7f7qfv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.sahabat_disabilitas",
+            "certificate_hash": "93d779325a3150ea5f44afcda898d3d0352ad01e"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:c3b2b8bffaf1d7009b78d5",
         "android_client_info": {
           "package_name": "com.inovasi78.saka"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_id": "223834582736-1f02pg8motkoq1d2fjeesqqchl7k91i2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.saka",
+            "certificate_hash": "b6b91dc20d03f2d1db8024ccfb7d4ba9e612dd3a"
+          }
+        },
+        {
+          "client_id": "223834582736-ftrk48es9obtaj25u98b6555hneh2ha6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.saka",
+            "certificate_hash": "7a8d193b07aeb510709bd469ad38b267e60bcaa0"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.telolet"
+                "bundle_id": "com.inovatif78.amuletagent"
               }
             }
           ]
@@ -79,34 +448,158 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94689171996:android:55ace32804b12008ec5dd9",
+        "mobilesdk_app_id": "1:223834582736:android:902f03fa33757e979b78d5",
+        "android_client_info": {
+          "package_name": "com.inovasi78.starlet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-umfnhhiv0s83io4qe4ofkupvf3reink0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovasi78.starlet",
+            "certificate_hash": "0d9df80d26fc1b7ad02ec7fe4cd6748262c64eca"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:9ec747410b0337a49b78d5",
+        "android_client_info": {
+          "package_name": "com.inovatif78.chtc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-e94cq4ovhdgmmv7ji8o7giek2s3vkc52.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovatif78.chtc",
+            "certificate_hash": "7a8d193b07aeb510709bd469ad38b267e60bcaa0"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:6f48b4fd4e7ceac39b78d5",
+        "android_client_info": {
+          "package_name": "com.inovatif78.fiona"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.inovatif78.amuletagent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223834582736:android:c357b4b6782d28ca9b78d5",
         "android_client_info": {
           "package_name": "com.inovatif78.fspmi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.telolet"
+                "bundle_id": "com.inovatif78.amuletagent"
               }
             }
           ]
@@ -115,34 +608,34 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94689171996:android:e2377fa39416c7d2ec5dd9",
+        "mobilesdk_app_id": "1:223834582736:android:8bb5f04a85ea3ddd9b78d5",
         "android_client_info": {
-          "package_name": "com.inovatif78.hp3ki"
+          "package_name": "com.inovatif78.pepabri"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.telolet"
+                "bundle_id": "com.inovatif78.amuletagent"
               }
             }
           ]
@@ -151,34 +644,42 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:94689171996:android:7cbbef814ee8290eec5dd9",
+        "mobilesdk_app_id": "1:223834582736:android:50e187e0f44b5d5b9b78d5",
         "android_client_info": {
-          "package_name": "com.inovatif78.mhs_mobile"
+          "package_name": "com.inovatif78.tokobona"
         }
       },
       "oauth_client": [
         {
-          "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+          "client_id": "223834582736-maur58cs6bpv9f6000o6eadom0vtl5ju.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inovatif78.tokobona",
+            "certificate_hash": "7a8d193b07aeb510709bd469ad38b267e60bcaa0"
+          }
+        },
+        {
+          "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAsovVvo3tMIHcceuoeWz-Zf6i83bNR1GM"
+          "current_key": "AIzaSyDS2M0dmz_cwlp44F6qMs8dM2zLMnyI4C8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "94689171996-2458n78b3luo4ihbaqf9d0h5dn0o0lea.apps.googleusercontent.com",
+              "client_id": "223834582736-4fval0idee6m7lol1d0vub65frgdds7l.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "94689171996-e3frnk9evq3569vh3bthj5d8ud072r74.apps.googleusercontent.com",
+              "client_id": "223834582736-01s0k3feciahoehlml0bfmvorfv9qs7l.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.telolet"
+                "bundle_id": "com.inovatif78.amuletagent"
               }
             }
           ]

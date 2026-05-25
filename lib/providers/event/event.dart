@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
-import 'package:saka/services/navigation.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -203,14 +202,11 @@ class EventProvider with ChangeNotifier {
     setStateEventJoinStatus(EventJoinStatus.loading);
     try {
       await er.joinEvent(eventId: eventId);
-      Future.delayed(Duration.zero, () {
-        getEvent();
-      });
-      NS.pop();
-      setStateEventJoinStatus(EventJoinStatus.loaded);   
+      await getEvent();
+      setStateEventJoinStatus(EventJoinStatus.loaded);
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      setStateEventJoinStatus(EventJoinStatus.error);   
+      setStateEventJoinStatus(EventJoinStatus.error);
     }
   } 
 

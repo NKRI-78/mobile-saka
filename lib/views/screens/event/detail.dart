@@ -89,6 +89,14 @@ class DetailEventPageState extends State<DetailEventScreen> {
     content = widget.content;
     date = widget.date;
 
+    final eventProvider = context.watch<EventProvider>();
+    final currentEvent = eventProvider.eventData.cast<EventData?>().firstWhere(
+      (e) => e?.eventId == widget.id,
+      orElse: () => null,
+    );
+    final bool isJoined = currentEvent?.join ?? widget.join;
+    final List<Join> participantList = currentEvent?.joins ?? widget.joins;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
@@ -101,7 +109,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
             pinned: true,
             expandedHeight: 250.0,
             leading: GestureDetector(
-              onTap: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading
+              onTap: eventProvider.eventJoinStatus == EventJoinStatus.loading
                   ? () {}
                   : () => Navigator.pop(context),
               child: Container(
@@ -207,20 +215,16 @@ class DetailEventPageState extends State<DetailEventScreen> {
                           children: [
                             Expanded(
                               child: CustomButton(
-                                onTap: widget.join
+                                onTap: isJoined
                                     ? () {}
                                     : () async {
                                         await context.read<EventProvider>().joinEvent(
                                           eventId: widget.id,
                                         );
                                       },
-                                isLoading:
-                                    context.watch<EventProvider>().eventJoinStatus ==
-                                        EventJoinStatus.loading
-                                    ? true
-                                    : false,
+                                isLoading: eventProvider.eventJoinStatus == EventJoinStatus.loading,
                                 height: 40.0,
-                                btnColor: widget.join
+                                btnColor: isJoined
                                     ? ColorResources.greyDarkPrimary
                                     : ColorResources.primaryOrange,
                                 isBoxShadow: false,
@@ -242,13 +246,13 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                           return Divider();
                                         },
                                         padding: EdgeInsets.all(20.0),
-                                        itemCount: widget.joins.length,
+                                        itemCount: participantList.length,
                                         itemBuilder: (BuildContext context, int i) {
                                           return Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               CachedNetworkImage(
-                                                imageUrl: widget.joins[i].profilePic,
+                                                imageUrl: participantList[i].profilePic,
                                                 imageBuilder: (context, imageProvider) {
                                                   return CircleAvatar(
                                                     maxRadius: 20.0,
@@ -274,7 +278,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                               ),
                                               const SizedBox(width: 10.0),
                                               Text(
-                                                widget.joins[i].fullname,
+                                                participantList[i].fullname,
                                                 style: robotoRegular.copyWith(
                                                   fontSize: Dimensions.fontSizeDefault,
                                                   fontWeight: FontWeight.bold,
@@ -288,7 +292,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                   );
                                 },
                                 child: Text(
-                                  'Peserta (${widget.joins.length})',
+                                  'Peserta (${participantList.length})',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: robotoRegular.copyWith(

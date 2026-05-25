@@ -26,6 +26,68 @@ class EventScreen extends StatefulWidget {
 
 class EventScreenState extends State<EventScreen> {
 
+  void showParticipantsBottomSheet(List<dynamic> joins) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        if (joins.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text('Belum ada peserta'),
+          );
+        }
+
+        return ListView.separated(
+          shrinkWrap: true,
+          separatorBuilder: (_, __) => const Divider(),
+          padding: const EdgeInsets.all(20.0),
+          itemCount: joins.length,
+          itemBuilder: (BuildContext context, int i) {
+            final participant = joins[i];
+            final profilePic = participant.profilePic?.toString() ?? '';
+            final fullname = participant.fullname?.toString() ?? '-';
+
+            return Row(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: profilePic,
+                  imageBuilder: (_, imageProvider) {
+                    return CircleAvatar(
+                      maxRadius: 20.0,
+                      backgroundImage: imageProvider,
+                    );
+                  },
+                  errorWidget: (_, __, ___) {
+                    return const CircleAvatar(
+                      maxRadius: 20.0,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                    );
+                  },
+                  placeholder: (_, __) {
+                    return const CircleAvatar(
+                      maxRadius: 20.0,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                    );
+                  },
+                ),
+                const SizedBox(width: 10.0),
+                Expanded(
+                  child: Text(
+                    fullname,
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   DateTime focusedDay = DateTime.now();
   DateTime selectedDay = DateTime.now();
 
@@ -360,6 +422,20 @@ class EventScreenState extends State<EventScreen> {
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14.0,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6.0),
+                                          GestureDetector(
+                                            onTap: () => showParticipantsBottomSheet(
+                                              notifier.selectedEvents[i]["joins"] ?? [],
+                                            ),
+                                            child: Text(
+                                              'Peserta (${(notifier.selectedEvents[i]["joins"] as List?)?.length ?? 0})',
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeSmall,
+                                                fontWeight: FontWeight.bold,
+                                                color: ColorResources.primaryOrange,
+                                              ),
                                             ),
                                           ),
                                         ],

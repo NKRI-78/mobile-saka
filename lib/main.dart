@@ -34,9 +34,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Penting: tunggu init Firebase selesai
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp();
 
   // Locale untuk timeago
   timeago.setLocaleMessages('id', CustomLocalDate());

@@ -44,6 +44,23 @@ class EventRepo {
 
       return body.map((item) {
         final map = item as Map<String, dynamic>;
+        final joinsRaw = (map["joins"] as List?) ?? [];
+
+        final joins = joinsRaw.map((j) {
+          final jm = j as Map<String, dynamic>;
+          return Join(
+            id: jm["id"] ?? 0,
+            userId: jm["user_id"]?.toString() ?? "",
+            fullname: jm["fullname"]?.toString() ?? "",
+            profilePic: jm["profile_pic"]?.toString() ?? "",
+            eventName: jm["event_name"]?.toString() ?? "",
+            phoneNumber: jm["phone_number"]?.toString() ?? "",
+            emailAddress: jm["email_address"]?.toString() ?? "",
+            present: jm["present"] ?? 0,
+            created: DateTime.tryParse(jm["created"]?.toString() ?? "") ?? DateTime.now(),
+            updated: DateTime.tryParse(jm["updated"]?.toString() ?? "") ?? DateTime.now(),
+          );
+        }).toList();
 
         return EventData(
           eventId: map["event_id"] ?? 0,
@@ -60,8 +77,8 @@ class EventRepo {
           createdBy: map["created_by"]?.toString() ?? "",
           created: DateTime.tryParse(map["created"]?.toString() ?? "") ?? DateTime.now(),
           updated: DateTime.tryParse(map["updated"]?.toString() ?? "") ?? DateTime.now(),
-          joins: <Join>[],
-          join: false,
+          joins: joins,
+          join: map["join"] == true,
         );
       }).toList();
     } catch (e, stacktrace) {

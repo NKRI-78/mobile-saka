@@ -55,7 +55,7 @@ class HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   bool _showAllNews = false;
 
-  late EcommerceProvider ep;
+  // late EcommerceProvider ep;
   late FirebaseProvider fp;
   late NewsProvider np;
   late LocationProvider lp;
@@ -85,16 +85,16 @@ class HomeScreenState extends State<HomeScreen> {
     }
     if (mounted) {
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+      );
 
-      lp.getCurrentPosition(
-          latitude: position.latitude, longitude: position.longitude);
+      lp.getCurrentPosition(latitude: position.latitude, longitude: position.longitude);
 
       Helper.prefs?.setString("lat", position.latitude.toString());
       Helper.prefs?.setString("lng", position.longitude.toString());
     }
-    if (!mounted) return;
-    await ep.getBalance();
+    // if (!mounted) return;
+    // await ep.getBalance();
   }
 
   @override
@@ -108,7 +108,7 @@ class HomeScreenState extends State<HomeScreen> {
     pp = context.read<ProfileProvider>();
     lp = context.read<LocationProvider>();
     ap = context.read<AuthProvider>();
-    ep = context.read<EcommerceProvider>();
+    // ep = context.read<EcommerceProvider>();
 
     if (mounted) {
       // NewVersionPlus newVersion = NewVersionPlus(
@@ -134,264 +134,268 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: scaffoldKey,
-        backgroundColor: ColorResources.backgroundColor,
-        drawerEnableOpenDragGesture: false,
-        drawer: DrawerWidget(),
-        body: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            RefreshIndicator(
-                backgroundColor: ColorResources.brown,
-                color: ColorResources.white,
-                onRefresh: () {
-                  return Future.sync(() {
-                    np.getNews(context);
-                    bp.getBanner(context);
-                    pp.getUserProfile(context);
-                    ip.getInbox(context, "sos");
-                    ap.mascot(context);
-                    ep.getBalance();
-                  });
-                },
-                child: CustomScrollView(
-                  physics: BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  slivers: [
-                    SliverAppBar(
-                      systemOverlayStyle: SystemUiOverlayStyle.dark,
-                      backgroundColor: ColorResources.transparent,
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      title: Text(
-                        "SAKA DIRGANTARA",
-                        style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.bold,
-                            color: ColorResources.brown),
-                      ),
-                      actions: [
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              scaffoldKey.currentState!.openDrawer();
-                            },
-                            child: SvgPicture.asset(
-                              "assets/imagesv2/svg/hamburger-menu.svg",
-                              color: ColorResources.brown,
-                            ),
-                          ),
-                        )
-                      ],
+      key: scaffoldKey,
+      backgroundColor: ColorResources.backgroundColor,
+      drawerEnableOpenDragGesture: false,
+      drawer: DrawerWidget(),
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          RefreshIndicator(
+            backgroundColor: ColorResources.brown,
+            color: ColorResources.white,
+            onRefresh: () {
+              return Future.sync(() {
+                np.getNews(context);
+                bp.getBanner(context);
+                pp.getUserProfile(context);
+                ip.getInbox(context, "sos");
+                ap.mascot(context);
+                // ep.getBalance();
+              });
+            },
+            child: CustomScrollView(
+              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              slivers: [
+                SliverAppBar(
+                  systemOverlayStyle: SystemUiOverlayStyle.dark,
+                  backgroundColor: ColorResources.transparent,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  title: Text(
+                    "SAKA DIRGANTARA",
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault,
+                      fontWeight: FontWeight.bold,
+                      color: ColorResources.brown,
                     ),
-                    SliverList(
-                        delegate: SliverChildListDelegate([
-                      infoAccount(context),
-                      banner(context),
-                      ourService(context),
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 25.0,
-                          right: 25.0,
+                  ),
+                  actions: [
+                    Container(
+                      margin: EdgeInsets.only(right: 15.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          scaffoldKey.currentState!.openDrawer();
+                        },
+                        child: SvgPicture.asset(
+                          "assets/imagesv2/svg/hamburger-menu.svg",
+                          color: ColorResources.brown,
                         ),
-                        child: Consumer<NewsProvider>(
-                          builder: (context, newsProvider, child) {
-                            final hasMoreThanFive = newsProvider.newsData.length > 5;
-                            return Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Text(getTranslated("NEWS", context),
+                      ),
+                    ),
+                  ],
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    infoAccount(context),
+                    banner(context),
+                    ourService(context),
+                    Container(
+                      margin: EdgeInsets.only(left: 25.0, right: 25.0),
+                      child: Consumer<NewsProvider>(
+                        builder: (context, newsProvider, child) {
+                          final hasMoreThanFive = newsProvider.newsData.length > 5;
+                          return Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(
+                                getTranslated("NEWS", context),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorResources.brown,
+                                ),
+                              ),
+                              const Spacer(),
+                              if (hasMoreThanFive)
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _showAllNews = !_showAllNews;
+                                    });
+                                  },
+                                  child: Text(
+                                    _showAllNews ? "Show less" : "See all",
                                     style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        fontWeight: FontWeight.bold,
-                                        color: ColorResources.brown)),
-                                const Spacer(),
-                                if (hasMoreThanFive)
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _showAllNews = !_showAllNews;
-                                      });
-                                    },
-                                    child: Text(
-                                      _showAllNews ? "Show less" : "See all",
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeSmall,
-                                        fontWeight: FontWeight.w600,
-                                        color: ColorResources.brown,
-                                      ),
+                                      fontSize: Dimensions.fontSizeSmall,
+                                      fontWeight: FontWeight.w600,
+                                      color: ColorResources.brown,
                                     ),
                                   ),
-                              ],
-                            );
-                          },
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    newsWidget(context, showAll: _showAllNews),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 15.0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "@ PT Inovatif 78",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          fontWeight: FontWeight.bold,
+                          color: ColorResources.brown,
                         ),
                       ),
-                      newsWidget(context, showAll: _showAllNews),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 15.0),
-                        alignment: Alignment.center,
-                        child: Text(
-                          "@ PT Inovatif 78",
-                          style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              fontWeight: FontWeight.bold,
-                              color: ColorResources.brown),
-                        ),
-                      )
-                    ]))
-                  ],
-                )),
-            context.watch<AuthProvider>().mascotStatus == MascotStatus.loading
-                ? const SizedBox()
-                : context.read<AuthProvider>().isShow == 1
-                    ? DraggableFloatWidget(
-                        width: 120.0,
-                        height: 120.0,
-                        config: const DraggableFloatWidgetBaseConfig(
-                          isFullScreen: false,
-                          initPositionYInTop: false,
-                          borderRight: 5.0,
-                          initPositionXInLeft: false,
-                          initPositionYMarginBorder: 100.0,
-                        ),
-                        onTap: () {
-                          NS.push(context, EventScannerJoinScreen());
-                        },
-                        child: BounceIn(
-                          preferences: AnimationPreferences(
-                              autoPlay: AnimationPlayStates.Loop),
-                          child: Image.asset("assets/images/ic-jambore.png"),
-                        ),
-                      )
-                    : const SizedBox()
-          ],
-        ));
+                    ),
+                  ]),
+                ),
+              ],
+            ),
+          ),
+          context.watch<AuthProvider>().mascotStatus == MascotStatus.loading
+              ? const SizedBox()
+              : context.read<AuthProvider>().isShow == 1
+              ? DraggableFloatWidget(
+                  width: 120.0,
+                  height: 120.0,
+                  config: const DraggableFloatWidgetBaseConfig(
+                    isFullScreen: false,
+                    initPositionYInTop: false,
+                    borderRight: 5.0,
+                    initPositionXInLeft: false,
+                    initPositionYMarginBorder: 100.0,
+                  ),
+                  onTap: () {
+                    NS.push(context, EventScannerJoinScreen());
+                  },
+                  child: BounceIn(
+                    preferences: AnimationPreferences(autoPlay: AnimationPlayStates.Loop),
+                    child: Image.asset("assets/images/ic-jambore.png"),
+                  ),
+                )
+              : const SizedBox(),
+        ],
+      ),
+    );
   }
 }
 
 Widget banner(BuildContext context) {
   return Consumer<BannerProvider>(
-    builder:
-        (BuildContext context, BannerProvider bannerProvider, Widget? child) {
+    builder: (BuildContext context, BannerProvider bannerProvider, Widget? child) {
       if (bannerProvider.bannerStatus == BannerStatus.loading) {
         return Container(
-            margin: EdgeInsets.only(
-                top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-            width: double.infinity,
-            height: 180.0,
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[200]!,
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: ColorResources.white,
-                      borderRadius: BorderRadius.circular(15.0))),
-            ));
+          margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+          width: double.infinity,
+          height: 180.0,
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[200]!,
+            child: Container(
+              decoration: BoxDecoration(
+                color: ColorResources.white,
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+            ),
+          ),
+        );
       }
 
       if (bannerProvider.bannerStatus == BannerStatus.empty) {
         return SizedBox(
-            width: double.infinity,
-            height: 180.0,
-            child: Center(
-                child: Text(
+          width: double.infinity,
+          height: 180.0,
+          child: Center(
+            child: Text(
               getTranslated("NO_BANNER_AVAILABLE", context),
               style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black),
-            )));
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black,
+              ),
+            ),
+          ),
+        );
       }
 
       if (bannerProvider.bannerStatus == BannerStatus.error) {
         return SizedBox(
-            width: double.infinity,
-            height: 180.0,
-            child: Center(
-                child: Text(
+          width: double.infinity,
+          height: 180.0,
+          child: Center(
+            child: Text(
               getTranslated("THERE_WAS_PROBLEM", context),
               style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black),
-            )));
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black,
+              ),
+            ),
+          ),
+        );
       }
 
       return Container(
-          margin: EdgeInsets.only(
-              top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-          width: double.infinity,
-          height: 180.0,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                fit: StackFit.expand,
-                children: [
-                  CarouselSlider.builder(
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 1.0,
-                      initialPage: 3,
-                      onPageChanged:
-                          (int i, CarouselPageChangedReason reason) {
-                        bannerProvider.setCurrentIndex(i);
-                      },
-                    ),
-                    itemCount: bannerProvider.bannerListMap.length,
-                    itemBuilder: (BuildContext context, int i, int z) {
-                      return GestureDetector(
-                          onTap: () async {
-                            await launchUrl(
-                                bannerProvider.bannerListMap[i]["link"]);
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  "${bannerProvider.bannerListMap[i]["path"]}",
-                              fit: BoxFit.fill,
-                              width: double.infinity,
-                              height: double.infinity,
-                              placeholder: (context, url) {
-                                return Image.asset(
-                                    'assets/images/default_image.png');
-                              },
-                              errorWidget: (context, url, error) {
-                                return Image.asset(
-                                    'assets/images/default_image.png');
-                              },
-                            ),
-                          ));
+        margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+        width: double.infinity,
+        height: 180.0,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                CarouselSlider.builder(
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 1.0,
+                    initialPage: 3,
+                    onPageChanged: (int i, CarouselPageChangedReason reason) {
+                      bannerProvider.setCurrentIndex(i);
                     },
                   ),
-                  Positioned(
-                    bottom: 12.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: bannerProvider.bannerListMap.map((banner) {
-                        int index =
-                            bannerProvider.bannerListMap.indexOf(banner);
-                        return TabPageSelectorIndicator(
-                          backgroundColor: index ==
-                                  bannerProvider.currentIndex
-                              ? ColorResources.primaryOrange
-                              : ColorResources.brown,
-                          borderColor: Colors.white,
-                          size: 10.0,
-                        );
-                      }).toList(),
-                    ),
+                  itemCount: bannerProvider.bannerListMap.length,
+                  itemBuilder: (BuildContext context, int i, int z) {
+                    return GestureDetector(
+                      onTap: () async {
+                        await launchUrl(bannerProvider.bannerListMap[i]["link"]);
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: CachedNetworkImage(
+                          imageUrl: "${bannerProvider.bannerListMap[i]["path"]}",
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                          height: double.infinity,
+                          placeholder: (context, url) {
+                            return Image.asset('assets/images/default_image.png');
+                          },
+                          errorWidget: (context, url, error) {
+                            return Image.asset('assets/images/default_image.png');
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                Positioned(
+                  bottom: 12.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: bannerProvider.bannerListMap.map((banner) {
+                      int index = bannerProvider.bannerListMap.indexOf(banner);
+                      return TabPageSelectorIndicator(
+                        backgroundColor: index == bannerProvider.currentIndex
+                            ? ColorResources.primaryOrange
+                            : ColorResources.brown,
+                        borderColor: Colors.white,
+                        size: 10.0,
+                      );
+                    }).toList(),
                   ),
-                ],
-              )
-            ],
-          ));
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
     },
   );
 }
@@ -399,29 +403,23 @@ Widget banner(BuildContext context) {
 Widget infoAccount(BuildContext context) {
   return Container(
     height: 70.0,
-    margin: EdgeInsets.only(
-      top: 15.0, 
-      left: 16.0, right: 16.0, 
-    ),
+    margin: EdgeInsets.only(top: 15.0, left: 16.0, right: 16.0),
     child: Container(
-      padding: EdgeInsets.only(
-        top: 10.0, 
-        left: 15.0, right: 15.0,
-        bottom: 10.0
-      ),
+      padding: EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15.0),
-          topRight: Radius.circular(15.0)
+          topRight: Radius.circular(15.0),
         ),
-       ),
+      ),
       child: Consumer<ProfileProvider>(
         builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
           if (profileProvider.profileStatus == ProfileStatus.loading) {
-            return Text("...",
+            return Text(
+              "...",
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeLarge,
-                color: ColorResources.white
+                color: ColorResources.white,
               ),
             );
           }
@@ -430,7 +428,7 @@ Widget infoAccount(BuildContext context) {
               "-",
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeLarge,
-                color: ColorResources.white
+                color: ColorResources.white,
               ),
             );
           }
@@ -438,7 +436,7 @@ Widget infoAccount(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text( 
+              Text(
                 profileProvider.userProfile.fullname!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -449,15 +447,15 @@ Widget infoAccount(BuildContext context) {
                   fontSize: Dimensions.fontSizeLarge,
                 ),
               ),
-          
-              Text( 
+
+              Text(
                 profileProvider.userProfile.lanud!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: robotoRegular.copyWith(
                   overflow: TextOverflow.fade,
                   fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black
+                  color: ColorResources.black,
                 ),
               ),
             ],
@@ -525,8 +523,9 @@ Widget ourService(BuildContext context) {
 
   return LayoutBuilder(
     builder: (context, constraints) {
-      final double width =
-          constraints.maxWidth > maxContentWidth ? maxContentWidth : constraints.maxWidth;
+      final double width = constraints.maxWidth > maxContentWidth
+          ? maxContentWidth
+          : constraints.maxWidth;
 
       return Center(
         child: SizedBox(
@@ -544,12 +543,10 @@ Widget ourService(BuildContext context) {
 
 Widget newsWidget(BuildContext context, {bool showAll = false}) {
   return Consumer<NewsProvider>(
-    builder:
-        (BuildContext context, NewsProvider newsProvider, Widget? child) {
+    builder: (BuildContext context, NewsProvider newsProvider, Widget? child) {
       if (newsProvider.getNewsStatus == GetNewsStatus.loading) {
         return Container(
-          margin:
-              EdgeInsets.only(left: 25.0, right: 25.0, bottom: 10.0),
+          margin: EdgeInsets.only(left: 25.0, right: 25.0, bottom: 10.0),
           child: ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
@@ -581,8 +578,9 @@ Widget newsWidget(BuildContext context, {bool showAll = false}) {
             child: Text(
               getTranslated("THERE_IS_NO_DATA", context),
               style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black),
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black,
+              ),
             ),
           ),
         );
@@ -594,110 +592,104 @@ Widget newsWidget(BuildContext context, {bool showAll = false}) {
             child: Text(
               "Hmm... Mohon tunggu yaa",
               style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black),
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black,
+              ),
             ),
           ),
         );
       }
-      final newsItems =
-          showAll ? newsProvider.newsData : newsProvider.newsData.take(5).toList();
+      final newsItems = showAll ? newsProvider.newsData : newsProvider.newsData.take(5).toList();
       return Container(
         margin: EdgeInsets.only(left: 25.0, right: 25.0),
         child: ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemCount: newsItems.length,
-            itemBuilder: (BuildContext context, int i) {
-              return Container(
-                margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                decoration: BoxDecoration(
-                  color: ColorResources.white,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: newsItems.length,
+          itemBuilder: (BuildContext context, int i) {
+            return Container(
+              margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              decoration: BoxDecoration(
+                color: ColorResources.white,
+                borderRadius: BorderRadius.circular(15.0),
+                boxShadow: boxShadow,
+              ),
+              child: Material(
+                color: ColorResources.white,
+                borderRadius: BorderRadius.circular(15.0),
+                child: InkWell(
                   borderRadius: BorderRadius.circular(15.0),
-                  boxShadow: boxShadow,
-                ),
-                child: Material(
-                  color: ColorResources.white,
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(15.0),
-                    onTap: () {
-                      NS.push(
-                        context,
-                        DetailNewsScreen(
-                          contentId:
-                              newsItems[i].articleId.toString(),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            flex: 6,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    "${newsItems[i].media![0].path}",
-                                fit: BoxFit.fitHeight,
-                                width: 80.0,
-                                height: 80.0,
-                                placeholder: (context, url) {
-                                  return Image.asset(
-                                      'assets/images/default_image.png');
-                                },
-                                errorWidget: (context, url, error) {
-                                  return Image.asset(
-                                      'assets/images/default_image.png');
-                                },
-                              ),
+                  onTap: () {
+                    NS.push(
+                      context,
+                      DetailNewsScreen(contentId: newsItems[i].articleId.toString()),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: CachedNetworkImage(
+                              imageUrl: "${newsItems[i].media![0].path}",
+                              fit: BoxFit.fitHeight,
+                              width: 80.0,
+                              height: 80.0,
+                              placeholder: (context, url) {
+                                return Image.asset('assets/images/default_image.png');
+                              },
+                              errorWidget: (context, url, error) {
+                                return Image.asset('assets/images/default_image.png');
+                              },
                             ),
                           ),
-                          const SizedBox(width: 10.0),
-                          Expanded(
-                            flex: 19,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 150.0,
-                                  child: Text(
-                                    newsItems[i].title!,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                        ),
+                        const SizedBox(width: 10.0),
+                        Expanded(
+                          flex: 19,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 150.0,
+                                child: Text(
+                                  newsItems[i].title!,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: Text(
-                                    DateFormat('dd MMM yyyy')
-                                        .format(newsItems[i].created!),
-                                    textAlign: TextAlign.end,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.dimGrey,
-                                    ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: Text(
+                                  DateFormat('dd MMM yyyy').format(newsItems[i].created!),
+                                  textAlign: TextAlign.end,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall,
+                                    color: ColorResources.dimGrey,
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              );
-            }),
+              ),
+            );
+          },
+        ),
       );
     },
   );
