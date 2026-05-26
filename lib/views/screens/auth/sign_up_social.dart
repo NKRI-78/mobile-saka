@@ -580,7 +580,7 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
                                               onTap: () => province == null ? showAnimatedDialog(context, Dialog(
                                                 child: Container(
                                                   padding: EdgeInsets.all(8.0),
-                                                  child: Text("Silahkan pilih provinsi dahulu",
+                                                  child: Text(getTranslated("SELECT_PROVINCE_FIRST", context),
                                                     style: robotoRegular,
                                                   ),
                                                 ),
@@ -1002,10 +1002,10 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
                     );
                   },
                 ),
-                cancellationWidget: Text("Batal"),
+                cancellationWidget: Text(getTranslated("CANCEL", context)),
                 emptyWidget: Container(
                 margin: EdgeInsets.only(top: 5.0, left: 12.0),
-                child: Text( "Data tidak ditemukan",
+                child: Text( getTranslated("DATA_NOT_FOUND", context),
                   style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeSmall,
                       fontWeight: FontWeight.bold
@@ -1112,10 +1112,10 @@ class _SignUpSocialMediaScreenState extends State<SignUpSocialMediaScreen> {
                     );
                   },
                 ),
-              cancellationWidget: Text("Batal"),
+              cancellationWidget: Text(getTranslated("CANCEL", context)),
               emptyWidget: Container(
               margin: EdgeInsets.only(top: 5.0, left: 12.0),
-              child: Text( "Data tidak ditemukan",
+              child: Text( getTranslated("DATA_NOT_FOUND", context),
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeSmall,
                     fontWeight: FontWeight.bold

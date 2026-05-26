@@ -46,8 +46,8 @@ class CommentDetailScreenState extends State<CommentDetailScreen> {
           trimLines: 2,
           colorClickableText: ColorResources.black,
           trimMode: TrimMode.Line,
-          trimCollapsedText: 'Tampilkan Lebih',
-          trimExpandedText: 'Tutup',
+          trimCollapsedText: getTranslated("READ_MORE", context),
+          trimExpandedText: getTranslated("LESS_MORE", context),
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault
           ),
@@ -170,7 +170,7 @@ class CommentDetailScreenState extends State<CommentDetailScreen> {
                         ],
                       ),
                     ),
-                    Text('${feedProvider.singleComment.body!.numOfReplies.toString()} Balasan',
+                    Text('${feedProvider.singleComment.body!.numOfReplies.toString()} ${getTranslated("REPLY", context)}',
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall
                       ),

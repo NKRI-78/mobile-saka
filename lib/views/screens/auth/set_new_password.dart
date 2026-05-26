@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/providers/auth/auth.dart';
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -32,14 +33,14 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
   Future<void> submit(BuildContext context) async {
     if (newPasswordC.text.trim().length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Password minimal 8 karakter")),
+        SnackBar(content: Text(getTranslated("PASSWORD_MIN_8", context))),
       );
       return;
     }
 
     if (newPasswordC.text != confirmPasswordC.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Konfirmasi password tidak sesuai")),
+        SnackBar(content: Text(getTranslated("PASSWORD_CONFIRM_MISMATCH", context))),
       );
       return;
     }
@@ -68,7 +69,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Atur Password Baru",
+                  getTranslated("SET_NEW_PASSWORD", context),
                   style: robotoRegular.copyWith(
                     color: ColorResources.white,
                     fontWeight: FontWeight.bold,
@@ -88,7 +89,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                   controller: newPasswordC,
                   obscureText: obscureNew,
                   decoration: InputDecoration(
-                    hintText: "Password baru",
+                    hintText: getTranslated("NEW_PASSWORD", context),
                     fillColor: ColorResources.white,
                     filled: true,
                     suffixIcon: IconButton(
@@ -107,7 +108,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                   controller: confirmPasswordC,
                   obscureText: obscureConfirm,
                   decoration: InputDecoration(
-                    hintText: "Konfirmasi password baru",
+                    hintText: getTranslated("CONFIRM_NEW_PASSWORD", context),
                     fillColor: ColorResources.white,
                     filled: true,
                     suffixIcon: IconButton(
@@ -141,7 +142,7 @@ class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
                             ForgotPasswordStatus.loading
                         ? Loader(color: ColorResources.white)
                         : Text(
-                            "Simpan Password",
+                            getTranslated("SAVE_PASSWORD", context),
                             style: robotoRegular.copyWith(
                               color: ColorResources.white,
                               fontSize: Dimensions.fontSizeSmall,

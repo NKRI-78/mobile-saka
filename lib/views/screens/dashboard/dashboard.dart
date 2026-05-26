@@ -117,7 +117,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         elevation: 0.0,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            tooltip: "Home",
+            tooltip: getTranslated("HOME", context),
             icon: Container(
               margin: EdgeInsets.all(5.0),
               child: Column(
@@ -129,7 +129,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                     color: selectedIndex == 0 ? ColorResources.primaryOrange : ColorResources.white,
                   ),
                   const SizedBox(height: 8.0),
-                  Text("Beranda",
+                  Text(getTranslated("HOME", context),
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       fontWeight: FontWeight.bold,
@@ -139,10 +139,10 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 ],
               ) 
             ),
-            label: "Home"
+            label: getTranslated("HOME", context)
           ),
           BottomNavigationBarItem(
-            tooltip: "Event",
+            tooltip: getTranslated("EVENT", context),
             icon:  Container(
               margin: EdgeInsets.all(5.0),
               child: Column(
@@ -154,7 +154,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                     color: selectedIndex == 1 ? ColorResources.primaryOrange : ColorResources.white,
                   ),
                   const SizedBox(height: 8.0),
-                  Text("Kegiatan",
+                  Text(getTranslated("EVENT", context),
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       fontWeight: FontWeight.bold,
@@ -164,10 +164,10 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 ],
               ) 
             ),
-            label: "Kegiatan"
+            label: getTranslated("EVENT", context)
           ),
           BottomNavigationBarItem(
-            tooltip: "Inbox",
+            tooltip: getTranslated("INBOX", context),
             icon: Container(
               margin: EdgeInsets.only(left: 20.0),
               child: Consumer<InboxProvider>(
@@ -200,7 +200,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                           color: selectedIndex == 2 ? ColorResources.primaryOrange : ColorResources.white,
                         ),
                         const SizedBox(height: 8.0),
-                        Text("Pesan",
+                        Text(getTranslated("INBOX", context),
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
                             fontWeight: FontWeight.bold,
@@ -213,10 +213,10 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 },
               ),
             ),
-            label: "Pesan"
+            label: getTranslated("INBOX", context)
           ),
           BottomNavigationBarItem(
-            tooltip: "Media",
+            tooltip: getTranslated("MEDIA", context),
             icon: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -226,7 +226,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                   color: selectedIndex == 3 ? ColorResources.primaryOrange : ColorResources.white,
                 ),
                 const SizedBox(height: 8.0),
-                Text("Media",
+                Text(getTranslated("MEDIA", context),
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
                     fontWeight: FontWeight.bold,
@@ -235,7 +235,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 )
               ],
             ),
-            label: "Media"
+            label: getTranslated("MEDIA", context)
           ),
         ],
         currentIndex: selectedIndex,

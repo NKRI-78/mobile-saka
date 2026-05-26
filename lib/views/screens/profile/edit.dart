@@ -590,14 +590,14 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                     );
                   },
                 ),
-                cancellationWidget: Text("Batal",
+                cancellationWidget: Text(getTranslated("CANCEL", context),
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault
                   ),
                 ),
                 emptyWidget: Container(
                 margin: EdgeInsets.only(top: 5.0, left: 12.0),
-                child: Text( "Data tidak ditemukan",
+                child: Text( getTranslated("DATA_NOT_FOUND", context),
                   style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       fontWeight: FontWeight.bold
@@ -710,14 +710,14 @@ class ProfileEditScreenState extends State<ProfileEditScreen> {
                     );
                   },
                 ),
-              cancellationWidget: Text("Batal",
+              cancellationWidget: Text(getTranslated("CANCEL", context),
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
               ),
               emptyWidget: Container(
               margin: EdgeInsets.only(top: 5.0, left: 12.0),
-              child: Text( "Data tidak ditemukan",
+              child: Text( getTranslated("DATA_NOT_FOUND", context),
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
                     fontWeight: FontWeight.bold

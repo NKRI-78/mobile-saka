@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:saka/providers/feedv2/feed.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -27,36 +27,36 @@ class CreatePostDocScreenState extends State<CreatePostDocScreen> {
 
   late TextEditingController captionC;
 
-  Color? color;
-
   Widget displaySingleDoc() {
     File? file = File(widget.files!.files.single.path!);
-    switch (basename(file.path).split('.').last) {
+    Color? color;
+    switch (p.basename(file.path).split('.').last) {
       case 'pdf':
-        setState(() => color = Colors.red[300]);
+        color = Colors.red[300];
       break;
       case 'ppt':
-        setState(() => color = Colors.red[300]);
+        color = Colors.red[300];
       break;
       case 'pptx':
-        setState(() => color = Colors.red[300]);
+        color = Colors.red[300];
       break;
       case 'txt':
-        setState(() => color = Colors.blueGrey[300]);
+        color = Colors.blueGrey[300];
       break;
       case 'xls':
-        setState(() => color = Colors.green[300]);
+        color = Colors.green[300];
       break;
       case 'xlsx':
-        setState(() => color = Colors.green[300]);
+        color = Colors.green[300];
       break;
         case 'doc':
-        setState(() => color = Colors.green[300]);
+        color = Colors.green[300];
       break;
       case 'docx':
-        setState(() => color = Colors.green[300]);
+        color = Colors.green[300];
       break;
       default:
+        color = Colors.grey[500];
     }
     return Container(
       width: 200.0,
@@ -69,7 +69,7 @@ class CreatePostDocScreenState extends State<CreatePostDocScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Filename : ${basename(file.path)}', 
+          Text('${getTranslated("FILE_NAME", context)} : ${p.basename(file.path)}', 
             style: robotoRegular.copyWith(
               color: ColorResources.white,
               fontSize: Dimensions.fontSizeSmall
@@ -159,7 +159,7 @@ class CreatePostDocScreenState extends State<CreatePostDocScreen> {
                         ? const Loader(
                             color: ColorResources.white,
                           ) 
-                        : Text('Post',
+                        : Text(getTranslated("POST", context),
                           textAlign: TextAlign.center,
                           style: robotoRegular.copyWith(
                             color: ColorResources.white,
@@ -191,7 +191,7 @@ class CreatePostDocScreenState extends State<CreatePostDocScreen> {
                       fontSize: Dimensions.fontSizeDefault
                     ),
                     decoration: InputDecoration(
-                      labelText: "Caption",
+                      labelText: getTranslated("CAPTION", context),
                       labelStyle: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         color: Colors.grey

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_unnecessary_containers, library_private_types_in_public_api
 import 'package:flutter/material.dart';
+import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/color_resources.dart';
 import 'package:saka/utils/custom_themes.dart';
@@ -42,7 +43,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
              
-            CustomAppBar(title: "Aktivasi Akun Anda", isBackButtonExist: true),
+            CustomAppBar(title: getTranslated("ACTIVATE_YOUR_ACCOUNT", context), isBackButtonExist: true),
 
             Expanded(
               child: ListView(
@@ -60,7 +61,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     margin: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                     width: double.infinity,
                     child: Center(
-                      child: Text("Akun Belum diaktivasi, silahkan aktivasi terlebih dahulu",
+                      child: Text(getTranslated("ACCOUNT_NOT_ACTIVATED", context),
                         softWrap: true,
                         textAlign: TextAlign.justify,
                         style: robotoRegular.copyWith(
@@ -89,7 +90,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               SizedBox(
                                 width: 150.0,
                                 child: Text(
-                                  "Nama",
+                                  getTranslated("FULL_NAME", context),
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall
                                   ),
@@ -121,7 +122,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               SizedBox(
                                 width: 150.0,
                                 child: Text(
-                                  "No Handphone",
+                                  getTranslated("PHONE_NUMBER", context),
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall
                                   ),
@@ -153,7 +154,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               SizedBox(
                                 width: 150.0,
                                 child: Text(
-                                  "Biaya Registrasi",
+                                  getTranslated("REGISTRATION_FEE", context),
                                   style: TextStyle(fontSize: 14.0),
                                 ),
                               ),
@@ -192,7 +193,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                 ),
                                 SizedBox(
                                   width: 250.0,
-                                  child: Text("Silahkan lakukan pembayaran terlebih dahulu untuk menyelesaikan registrasi Anda.",
+                                  child: Text(getTranslated("PAYMENT_REQUIRED_FOR_REGISTRATION", context),
                                     softWrap: true,
                                     style: TextStyle(
                                       color: ColorResources.white,
@@ -237,7 +238,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               height: 32.0,
                               child: Container(
                                 margin: EdgeInsets.only(top: 6.0),
-                                child: Text("Kembali",
+                                child: Text(getTranslated("BACK", context),
                                   textAlign: TextAlign.center,
                                   style: robotoRegular.copyWith(
                                     color: ColorResources.black
@@ -276,7 +277,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               height: 32.0,
                               child: Container(
                                 margin: EdgeInsets.only(top: 6.0),
-                                child: Text("Pilih Pembayaran",
+                                child: Text(getTranslated("CHOOSE_PAYMENT", context),
                                   textAlign: TextAlign.center,
                                   style: robotoRegular.copyWith(
                                     color: ColorResources.black,

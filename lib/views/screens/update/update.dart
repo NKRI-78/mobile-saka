@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:new_version_plus/new_version_plus.dart';
+import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/services/navigation.dart';
 
@@ -76,7 +77,7 @@ class UpdateScreenState extends State<UpdateScreen> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("NEW VERSION AVAILABLE",
+                            Text(getTranslated("NEW_VERSION_AVAILABLE", context),
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 fontWeight: FontWeight.bold,
@@ -85,14 +86,14 @@ class UpdateScreenState extends State<UpdateScreen> {
                             ),
                             const SizedBox(height: 10.0),
                             if(Platform.isAndroid)
-                              Text("Versi terbaru Saka tersedia di Google Play Store",
+                              Text(getTranslated("LATEST_VERSION_ON_PLAYSTORE", context),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   color: ColorResources.black
                                 ),
                               ),
                             if(Platform.isIOS)
-                              Text("Versi terbaru Saka tersedia di App Store",
+                              Text(getTranslated("LATEST_VERSION_ON_APPSTORE", context),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   color: ColorResources.black
@@ -122,7 +123,7 @@ class UpdateScreenState extends State<UpdateScreen> {
                       isBorder: false,
                       isBoxShadow: false,
                       btnColor: ColorResources.brown,
-                      btnTxt: "Update",
+                      btnTxt: getTranslated("UPDATE", context),
                     )
                   )
       

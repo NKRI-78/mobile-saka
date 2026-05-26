@@ -293,5 +293,39 @@
   "TERMS_OF_CONDITION": "Terms of Condition",
   "TOS": "Terms of Service",
   "MY_ACCOUNT": "My Account",
-  "CARD_DIGITAL": "Card Digital"
+  "CARD_DIGITAL": "Card Digital",
+  "MEDIA": "Media",
+  "SOS": "SOS",
+  "WELCOME": "Welcome",
+  "NEWS_AND_EVENT": "News & Event",
+  "IN_APP": "In App",
+  "APP_NAME": "Saka",
+  "ALREADY_REGISTERED_EVENT": "You are already registered in Event Jambore Nasional XI",
+  "CLICK_HERE": "Click Here",
+  "THANKS_FOR_PARTICIPATING": "Thank you for participating!"
+  ,"SCAN_A_CODE": "Scan a code"
+  ,"NO_PERMISSION": "No permission"
+  ,"PICTURE": "Picture"
+  ,"PLEASE_WAIT": "Please wait..."
+  ,"DOWNLOAD_IMAGE": "Download Image"
+  ,"ACTIVATE_YOUR_ACCOUNT": "Activate Your Account"
+  ,"ACCOUNT_NOT_ACTIVATED": "Account is not activated, please activate first"
+  ,"PAYMENT_REQUIRED_FOR_REGISTRATION": "Please complete payment first to finish your registration."
+  ,"CHOOSE_PAYMENT": "Choose Payment"
+  ,"NO_PARTICIPANTS_YET": "No participants yet"
+  ,"JOINED_MEMBERS": "Joined Members"
+  ,"NO_ONE_JOINED_YET": "No one has joined yet"
+  ,"PASSWORD_MIN_8": "Password minimum 8 characters"
+  ,"PASSWORD_CONFIRM_MISMATCH": "Password confirmation does not match"
+  ,"SET_NEW_PASSWORD": "Set New Password"
+  ,"NEW_PASSWORD": "New Password"
+  ,"CONFIRM_NEW_PASSWORD": "Confirm New Password"
+  ,"SAVE_PASSWORD": "Save Password"
+  ,"NEW_VERSION_AVAILABLE": "NEW VERSION AVAILABLE"
+  ,"LATEST_VERSION_ON_PLAYSTORE": "The latest version of Saka is available on Google Play Store"
+  ,"LATEST_VERSION_ON_APPSTORE": "The latest version of Saka is available on App Store"
+  ,"SELECT_PROVINCE_FIRST": "Please select province first"
+  ,"FILE_NAME": "Filename"
+  ,"POST": "Post"
+  ,"SHARE_MEDIA": "Share Media"
 }

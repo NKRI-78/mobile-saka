@@ -138,7 +138,7 @@ class EventScannerJoinScreenState extends State<EventScannerJoinScreen> {
                             btnColor: ColorResources.primaryOrange,
                             onTap: () {
                               if(eventProvider.checkEventExist) {
-                                ShowSnackbar.snackbar("Anda sudah terdaftar di Event Jambore Nasional XI", "", ColorResources.error);
+                                ShowSnackbar.snackbar(getTranslated("ALREADY_REGISTERED_EVENT", context), "", ColorResources.error);
                                 return false;
                               } else {
                                 NS.push(context, QRViewScreen(
@@ -146,7 +146,7 @@ class EventScannerJoinScreenState extends State<EventScannerJoinScreen> {
                                 ));
                               }
                             }, 
-                            btnTxt: "Klik Disini"
+                            btnTxt: getTranslated("CLICK_HERE", context)
                           ),
                         )
                       ),
@@ -209,7 +209,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
     try { 
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrl}/content-service/scanner-joins/joining");
-      ShowSnackbar.snackbar("Terima kasih sudah berpartisipasi!", "", ColorResources.success);
+      ShowSnackbar.snackbar(getTranslated("THANKS_FOR_PARTICIPATING", context), "", ColorResources.success);
       NS.pushReplacement(context, DashboardScreen());
     } on DioException catch(e) {
       debugPrint(e.error.toString());
@@ -268,7 +268,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
                     },
                   ),
                 if(result == null)
-                  Text('Scan a code',
+                  Text(getTranslated("SCAN_A_CODE", context),
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                     ),
@@ -340,7 +340,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('no Permission',
+          content: Text(getTranslated("NO_PERMISSION", context),
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault
             ),

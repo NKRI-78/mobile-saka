@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/providers/feedv2/feed.dart';
 
@@ -59,7 +60,7 @@ class CreatePostLinkState extends State<CreatePostLink> {
               return [
                 SliverAppBar(
                   backgroundColor: ColorResources.white,
-                  title: Text('Share Media', 
+                  title: Text(getTranslated("SHARE_MEDIA", context), 
                     style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       color: ColorResources.black
@@ -99,7 +100,7 @@ class CreatePostLinkState extends State<CreatePostLink> {
                               ? const Loader(
                                   color: ColorResources.white,
                                 ) 
-                              : Text('Post',
+                              : Text(getTranslated("POST", context),
                                 textAlign: TextAlign.center,
                                 style: robotoRegular.copyWith(
                                   color: ColorResources.white
@@ -129,7 +130,7 @@ class CreatePostLinkState extends State<CreatePostLink> {
                       fontSize: Dimensions.fontSizeDefault
                     ),
                     decoration: InputDecoration(
-                      labelText: "Caption",
+                      labelText: getTranslated("CAPTION", context),
                       labelStyle: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         color: Colors.grey
@@ -176,5 +177,4 @@ class CreatePostLinkState extends State<CreatePostLink> {
   }
 
 }
-
 

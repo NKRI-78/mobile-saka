@@ -147,7 +147,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                                 children: [
 
                                 if(i == 0)
-                                  Text("Selamat Datang",
+                                  Text(getTranslated("WELCOME", context),
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeLarge, 
                                       color: ColorResources.dimGrey
@@ -155,21 +155,21 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                                   ),
                                   
                                 if(i == 1)
-                                  Text("News & Event",
+                                  Text(getTranslated("NEWS_AND_EVENT", context),
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeLarge, 
                                       color: ColorResources.redOnboarding
                                     ),
                                   ),
                                 if(i == 2)
-                                  Text("SOS",
+                                  Text(getTranslated("SOS", context),
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeLarge, 
                                       color: ColorResources.redOnboarding
                                     ),
                                   ),
                                 if(i == 3)
-                                  Text("Saka Mart",
+                                  Text(getTranslated("SAKA_MART", context),
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeLarge, 
                                       color: ColorResources.redOnboarding
@@ -180,14 +180,14 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Text("Di Aplikasi",
+                                      Text(getTranslated("IN_APP", context),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeDefault, 
                                           color: ColorResources.dimGrey
                                         ),
                                       ),
                                       SizedBox(width: 5.0),
-                                      Text("Saka",
+                                      Text(getTranslated("APP_NAME", context),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeDefault, 
                                           color: ColorResources.redOnboarding

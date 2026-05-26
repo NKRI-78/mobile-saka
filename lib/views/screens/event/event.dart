@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 
 import 'package:table_calendar/table_calendar.dart';
+import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
@@ -31,9 +32,9 @@ class EventScreenState extends State<EventScreen> {
       context: context,
       builder: (BuildContext context) {
         if (joins.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text('Belum ada peserta'),
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(getTranslated("NO_PARTICIPANTS_YET", context)),
           );
         }
 
@@ -153,7 +154,7 @@ class EventScreenState extends State<EventScreen> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: ColorResources.white,
-        title: Text("Kegiatan",
+        title: Text(getTranslated("EVENT", context),
           style: robotoRegular.copyWith(
             color: ColorResources.black,
             fontWeight: FontWeight.bold,

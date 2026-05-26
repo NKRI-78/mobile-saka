@@ -289,5 +289,39 @@
   "ME": "Saya",
   "TOS": "Syarat dan Layanan",
   "MY_ACCOUNT": "Akun Saya",
-  "CARD_DIGITAL": "Kartu Digital"
+  "CARD_DIGITAL": "Kartu Digital",
+  "MEDIA": "Media",
+  "SOS": "SOS",
+  "WELCOME": "Selamat Datang",
+  "NEWS_AND_EVENT": "Berita & Kegiatan",
+  "IN_APP": "Di Aplikasi",
+  "APP_NAME": "Saka",
+  "ALREADY_REGISTERED_EVENT": "Anda sudah terdaftar di Event Jambore Nasional XI",
+  "CLICK_HERE": "Klik Disini",
+  "THANKS_FOR_PARTICIPATING": "Terima kasih sudah berpartisipasi!"
+  ,"SCAN_A_CODE": "Pindai kode"
+  ,"NO_PERMISSION": "Tidak ada izin"
+  ,"PICTURE": "Gambar"
+  ,"PLEASE_WAIT": "Mohon tunggu..."
+  ,"DOWNLOAD_IMAGE": "Unduh Gambar"
+  ,"ACTIVATE_YOUR_ACCOUNT": "Aktivasi Akun Anda"
+  ,"ACCOUNT_NOT_ACTIVATED": "Akun belum diaktivasi, silakan aktivasi terlebih dahulu"
+  ,"PAYMENT_REQUIRED_FOR_REGISTRATION": "Silakan lakukan pembayaran terlebih dahulu untuk menyelesaikan registrasi Anda."
+  ,"CHOOSE_PAYMENT": "Pilih Pembayaran"
+  ,"NO_PARTICIPANTS_YET": "Belum ada peserta"
+  ,"JOINED_MEMBERS": "Anggota yang bergabung"
+  ,"NO_ONE_JOINED_YET": "Belum ada yang bergabung"
+  ,"PASSWORD_MIN_8": "Password minimal 8 karakter"
+  ,"PASSWORD_CONFIRM_MISMATCH": "Konfirmasi password tidak sesuai"
+  ,"SET_NEW_PASSWORD": "Atur Password Baru"
+  ,"NEW_PASSWORD": "Password baru"
+  ,"CONFIRM_NEW_PASSWORD": "Konfirmasi password baru"
+  ,"SAVE_PASSWORD": "Simpan Password"
+  ,"NEW_VERSION_AVAILABLE": "VERSI BARU TERSEDIA"
+  ,"LATEST_VERSION_ON_PLAYSTORE": "Versi terbaru Saka tersedia di Google Play Store"
+  ,"LATEST_VERSION_ON_APPSTORE": "Versi terbaru Saka tersedia di App Store"
+  ,"SELECT_PROVINCE_FIRST": "Silakan pilih provinsi dahulu"
+  ,"FILE_NAME": "Nama File"
+  ,"POST": "Post"
+  ,"SHARE_MEDIA": "Bagikan Media"
 }

@@ -250,7 +250,7 @@ class _InboxList extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 6.0),
                           child: Text(
                             it.created != null
-                                ? DateFormat('dd MMM yyyy HH:mm').format(it.created!)
+                                ? DateFormat('dd MMM yyyy HH:mm').format(it.created!.toLocal())
                                 : '-',
                             style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                           ),

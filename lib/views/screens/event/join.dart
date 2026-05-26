@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:saka/data/models/event/event.dart';
+import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/services/navigation.dart';
 
 import 'package:saka/utils/color_resources.dart';
@@ -25,7 +26,7 @@ class EventJoinScreen extends StatelessWidget {
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: ColorResources.brown,
-        title: Text("Anggota yang bergabung",
+        title: Text(getTranslated("JOINED_MEMBERS", context),
           style: robotoRegular.copyWith(
             color: ColorResources.white,
             fontWeight: FontWeight.bold,
@@ -48,7 +49,7 @@ class EventJoinScreen extends StatelessWidget {
         ),
         child: joins.isEmpty 
         ? Center(
-            child: Text("Belum ada yang bergabung",
+            child: Text(getTranslated("NO_ONE_JOINED_YET", context),
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.black

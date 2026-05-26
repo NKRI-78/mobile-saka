@@ -7,6 +7,7 @@ import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'package:saka/localization/language_constraints.dart';
 import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/utils/dimensions.dart';
 import 'package:saka/utils/color_resources.dart';
@@ -52,7 +53,7 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
         forceMaterialTransparency: true,
         centerTitle: true,
         toolbarHeight: 70.0,
-        title: Text("PICTURE ( ${current + 1} / ${widget.medias!.length} )",
+        title: Text("${getTranslated("PICTURE", context)} ( ${current + 1} / ${widget.medias!.length} )",
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeLarge,
             color: ColorResources.white
@@ -112,12 +113,12 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
                               // ShowSnackbar.snackbar("Gambar telah disimpan pada galeri", "", ColorResources.success);
                             },
                             child: loadingBtn 
-                            ? Text("Mohon tunggu...", 
+                            ? Text(getTranslated("PLEASE_WAIT", context), 
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: ColorResources.black
                               ))
-                            : Text("Unduh Gambar", 
+                            : Text(getTranslated("DOWNLOAD_IMAGE", context), 
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: ColorResources.black

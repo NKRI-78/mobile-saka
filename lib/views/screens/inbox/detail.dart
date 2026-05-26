@@ -138,7 +138,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                       
-                          Text(DateFormat('dd MMM yyyy kk:mm').format(widget.created!), 
+                          Text(DateFormat('dd MMM yyyy HH:mm').format(widget.created!.toLocal()), 
                             style: robotoRegular.copyWith(
                               color: ColorResources.black, 
                               fontSize: Dimensions.fontSizeDefault
