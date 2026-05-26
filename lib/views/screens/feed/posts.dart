@@ -35,6 +35,21 @@ import 'package:saka/views/screens/feed/widgets/post_img.dart';
 import 'package:saka/views/screens/feed/widgets/post_link.dart';
 import 'package:saka/views/screens/feed/widgets/post_text.dart';
 
+bool _isValidVisibleUsername(String? username) {
+  final value = username?.trim();
+
+  if (value == null || value.isEmpty) {
+    return false;
+  }
+
+  return !value.contains("-");
+}
+
+bool _isValidVisibleUser(User? user) {
+  debugPrint(user?.username.toString());
+  return _isValidVisibleUsername(user?.username);
+}
+
 class Posts extends StatefulWidget {
   final Forum forum;
 
@@ -61,8 +76,42 @@ class PostsState extends State<Posts> {
     super.dispose();
   }
 
+  List<UserLikes> get _visibleLikes {
+    return (widget.forum.like?.likes ?? [])
+        .where((like) => _isValidVisibleUser(like.user))
+        .toList();
+  }
+
+  List<CommentElement> get _visibleComments {
+    return (widget.forum.comment?.comments ?? [])
+        .where((comment) => _isValidVisibleUser(comment.user))
+        .toList();
+  }
+
+  int get _visibleLikeTotal {
+    return _visibleLikes.length;
+  }
+
+  int get _visibleCommentTotal {
+    return _visibleComments.length;
+  }
+
+  bool get _isCurrentUserLiked {
+    return _visibleLikes
+        .where((el) => el.user?.id == context.read<FeedProviderV2>().ar.getUserId())
+        .isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_isValidVisibleUser(widget.forum.user)) {
+      return const SizedBox.shrink();
+    }
+
+    final visibleLikes = _visibleLikes;
+    final visibleComments = _visibleComments;
+    final lastVisibleComment = visibleComments.isNotEmpty ? visibleComments.last : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -70,7 +119,7 @@ class PostsState extends State<Posts> {
         ListTile(
           dense: true,
           leading: CachedNetworkImage(
-            imageUrl: widget.forum.user!.avatar!,
+            imageUrl: widget.forum.user?.avatar ?? "",
             imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
               backgroundColor: Colors.transparent,
               backgroundImage: imageProvider,
@@ -88,20 +137,20 @@ class PostsState extends State<Posts> {
             ),
           ),
           title: Text(
-            widget.forum.user!.username!,
+            widget.forum.user?.username ?? "",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
               color: ColorResources.black,
             ),
           ),
           subtitle: Text(
-            DateHelper.formatDateTime(widget.forum.createdAt!, context),
+            DateHelper.formatDateTime(widget.forum.createdAt ?? "", context),
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeExtraSmall,
               color: ColorResources.dimGrey,
             ),
           ),
-          trailing: feedProviderV2.ar.getUserId() == widget.forum.user!.id!
+          trailing: feedProviderV2.ar.getUserId() == widget.forum.user?.id
               ? grantedDeletePost(context)
               : PopupMenuButton(
                   itemBuilder: (BuildContext buildContext) {
@@ -224,14 +273,20 @@ class PostsState extends State<Posts> {
                   onSelected: (route) async {
                     if (route == "/download-video") {
                       ProgressDialog pr = ProgressDialog(context: context);
+
                       try {
                         PermissionStatus statusStorage = await Permission.storage.status;
+
                         if (!statusStorage.isGranted) {
                           await Permission.storage.request();
                         }
+
                         pr.show(max: 1, msg: '${getTranslated("DOWNLOADING", context)}...');
+
                         // await GallerySaver.saveVideo("${widget.forum.media![0].path}");
+
                         pr.close();
+
                         ShowSnackbar.snackbar(
                           getTranslated("SAVE_TO_GALLERY", context),
                           "",
@@ -239,6 +294,7 @@ class PostsState extends State<Posts> {
                         );
                       } catch (_) {
                         pr.close();
+
                         ShowSnackbar.snackbar(
                           getTranslated("THERE_WAS_PROBLEM", context),
                           "",
@@ -246,6 +302,7 @@ class PostsState extends State<Posts> {
                         );
                       }
                     }
+
                     if (route == "/report-user") {
                       showAnimatedDialog(
                         barrierDismissible: true,
@@ -320,20 +377,18 @@ class PostsState extends State<Posts> {
                   },
                 ),
         ),
-
         Container(
           margin: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 15.0, right: 15.0),
-          child: PostText(widget.forum.caption!),
+          child: PostText(widget.forum.caption ?? ""),
         ),
-
-        if (widget.forum.type == "link") PostLink(url: widget.forum.link!),
-        if (widget.forum.type == "document") PostDoc(medias: widget.forum.media!),
+        if (widget.forum.type == "link") PostLink(url: widget.forum.link ?? ""),
+        if (widget.forum.type == "document") PostDoc(medias: widget.forum.media ?? []),
         if (widget.forum.type == "image")
           PostImage(
-            widget.forum.user!.username!,
-            widget.forum.caption!,
+            widget.forum.user?.username ?? "",
+            widget.forum.caption ?? "",
             false,
-            widget.forum.media!,
+            widget.forum.media ?? [],
           ),
         if (widget.forum.type == "video")
           // PostVideo(
@@ -362,9 +417,9 @@ class PostsState extends State<Posts> {
                                 ListView.builder(
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
-                                  itemCount: widget.forum.like!.likes.length,
+                                  itemCount: visibleLikes.length,
                                   itemBuilder: (_, int i) {
-                                    final like = widget.forum.like!.likes[i];
+                                    final like = visibleLikes[i];
 
                                     return Padding(
                                       padding: const EdgeInsets.all(20.0),
@@ -377,7 +432,7 @@ class PostsState extends State<Posts> {
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               CachedNetworkImage(
-                                                imageUrl: like.user!.avatar.toString(),
+                                                imageUrl: like.user?.avatar ?? "",
                                                 imageBuilder: (context, imageProvider) {
                                                   return CircleAvatar(
                                                     maxRadius: 25.0,
@@ -401,11 +456,9 @@ class PostsState extends State<Posts> {
                                                   );
                                                 },
                                               ),
-
                                               const SizedBox(width: 14.0),
-
                                               Text(
-                                                like.user!.username.toString(),
+                                                like.user?.username ?? "",
                                                 style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18.0,
@@ -430,11 +483,14 @@ class PostsState extends State<Posts> {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          child: Icon(Icons.thumb_up, size: 18.0, color: ColorResources.black),
+                          child: const Icon(
+                            Icons.thumb_up,
+                            size: 18.0,
+                            color: ColorResources.black,
+                          ),
                         ),
-
                         Text(
-                          '${widget.forum.like!.total}',
+                          '$_visibleLikeTotal',
                           style: robotoRegular.copyWith(
                             color: ColorResources.black,
                             fontSize: Dimensions.fontSizeDefault,
@@ -444,15 +500,13 @@ class PostsState extends State<Posts> {
                     ),
                   ),
                 ),
-
                 Text(
-                  '${widget.forum.comment!.total.toString()} ${getTranslated("COMMENT", context)}',
+                  '$_visibleCommentTotal ${getTranslated("COMMENT", context)}',
                   style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
                 ),
               ],
             ),
           ),
-
         Container(
           margin: const EdgeInsets.only(top: 5.0, bottom: 15.0, left: 15.0, right: 15.0),
           child: Row(
@@ -461,43 +515,26 @@ class PostsState extends State<Posts> {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        widget.forum.like!.likes
-                            .where(
-                              (el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId(),
-                            )
-                            .isEmpty
-                        ? null
-                        : ColorResources.error,
+                    backgroundColor: !_isCurrentUserLiked ? null : ColorResources.error,
                   ),
                   onPressed: () {
                     context.read<FeedProviderV2>().toggleLike(
                       context: context,
-                      forumId: widget.forum.id!,
+                      forumId: widget.forum.id ?? "",
                       feedLikes: widget.forum.like!,
                     );
                   },
                   child: Text(
                     getTranslated("LIKE", context),
                     style: TextStyle(
-                      color:
-                          widget.forum.like!.likes
-                              .where(
-                                (el) =>
-                                    el.user!.id == context.read<FeedProviderV2>().ar.getUserId(),
-                              )
-                              .isEmpty
-                          ? ColorResources.black
-                          : ColorResources.white,
+                      color: !_isCurrentUserLiked ? ColorResources.black : ColorResources.white,
                       fontWeight: FontWeight.bold,
                       fontSize: Dimensions.fontSizeDefault,
                     ),
                   ),
                 ),
               ),
-
               const SizedBox(width: 12.0),
-
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
@@ -531,8 +568,7 @@ class PostsState extends State<Posts> {
             ],
           ),
         ),
-
-        widget.forum.comment!.comments!.isEmpty
+        lastVisibleComment == null
             ? const SizedBox()
             : Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 15.0, left: 15.0, right: 15.0),
@@ -540,7 +576,7 @@ class PostsState extends State<Posts> {
                   children: [
                     ListTile(
                       leading: CachedNetworkImage(
-                        imageUrl: widget.forum.comment!.comments!.last.user!.avatar.toString(),
+                        imageUrl: lastVisibleComment.user?.avatar ?? "",
                         imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                           backgroundColor: Colors.transparent,
                           backgroundImage: imageProvider,
@@ -568,13 +604,12 @@ class PostsState extends State<Posts> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.forum.comment!.comments!.last.user!.username.toString(),
+                              lastVisibleComment.user?.username ?? "",
                               style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
                             ),
-
                             Text(
                               DateHelper.formatDateTime(
-                                widget.forum.comment!.comments!.last.createdAt.toString(),
+                                lastVisibleComment.createdAt ?? "",
                                 context,
                               ),
                               style: robotoRegular.copyWith(
@@ -582,14 +617,12 @@ class PostsState extends State<Posts> {
                                 color: ColorResources.dimGrey,
                               ),
                             ),
-
                             const SizedBox(height: 8.0),
-
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 DetectableText(
-                                  text: widget.forum.comment!.comments!.last.comment!,
+                                  text: lastVisibleComment.comment ?? "",
                                   detectionRegExp: atSignRegExp,
                                   detectedStyle: robotoRegular.copyWith(color: Colors.blue),
                                   basicStyle: robotoRegular,
@@ -600,11 +633,10 @@ class PostsState extends State<Posts> {
                         ),
                       ),
                       trailing:
-                          feedProviderV2.ar.getUserId() ==
-                              widget.forum.comment!.comments!.last.user!.id.toString()
+                          feedProviderV2.ar.getUserId() == lastVisibleComment.user?.id.toString()
                           ? grantedDeleteComment(
                               context,
-                              widget.forum.comment!.comments!.last.id.toString(),
+                              lastVisibleComment.id.toString(),
                               widget.forum.id.toString(),
                             )
                           : TermsPopup(),
@@ -672,12 +704,15 @@ class PostsState extends State<Posts> {
                                 ),
                                 onPressed: () async {
                                   setStateBuilder(() => deletePostBtn = true);
+
                                   await context.read<FeedDetailProviderV2>().deleteComment(
                                     context: context,
                                     forumId: forumId,
                                     commentId: commentId,
                                   );
+
                                   await context.read<FeedProviderV2>().fetchFeedMostRecent(context);
+
                                   setStateBuilder(() => deletePostBtn = false);
                                 },
                                 child: deletePostBtn
@@ -782,11 +817,13 @@ class PostsState extends State<Posts> {
                                 ),
                                 onPressed: () async {
                                   setStateBuilder(() => deletePostBtn = true);
+
                                   await context.read<FeedProviderV2>().deletePost(
                                     context,
                                     widget.forum.id!,
                                     "index",
                                   );
+
                                   setStateBuilder(() => deletePostBtn = false);
                                 },
                                 child: deletePostBtn
@@ -809,6 +846,7 @@ class PostsState extends State<Posts> {
               );
             },
           );
+
           // showAnimatedDialog(
           //   barrierDismissible: true,
           //   context: context,
@@ -865,30 +903,30 @@ class PostsState extends State<Posts> {
           //                               crossAxisAlignment: CrossAxisAlignment.center,
           //                               mainAxisSize: MainAxisSize.min,
           //                               children: [
-
+          //
           //                                 Image.asset("assets/imagesv2/remove.png",
           //                                   width: 60.0,
           //                                   height: 60.0,
           //                                 ),
-
+          //
           //                                 const SizedBox(height: 15.0),
-
+          //
           //                                 Text(getTranslated("DELETE_POST", context),
           //                                   style: robotoRegular.copyWith(
           //                                     fontSize: Dimensions.fontSizeDefault,
           //                                     color: ColorResources.black
           //                                   ),
           //                                 ),
-
+          //
           //                                 const SizedBox(height: 20.0),
-
+          //
           //                                 StatefulBuilder(
           //                                   builder: (BuildContext context, Function setStatefulBuilder) {
           //                                     return  Row(
           //                                       mainAxisAlignment: MainAxisAlignment.center,
           //                                       mainAxisSize: MainAxisSize.max,
           //                                       children: [
-
+          //
           //                                         Expanded(
           //                                           child: CustomButton(
           //                                             isBorderRadius: true,
@@ -901,9 +939,9 @@ class PostsState extends State<Posts> {
           //                                             btnTxt: getTranslated("NO", context)
           //                                           ),
           //                                         ),
-
+          //
           //                                         const SizedBox(width: 8.0),
-
+          //
           //                                         Expanded(
           //                                           child: CustomButton(
           //                                             isBorderRadius: true,
@@ -922,12 +960,12 @@ class PostsState extends State<Posts> {
           //                                             : getTranslated("YES", context)
           //                                           ),
           //                                         )
-
+          //
           //                                       ],
           //                                     );
           //                                   },
           //                                 ),
-
+          //
           //                               ],
           //                             ),
           //                           ),

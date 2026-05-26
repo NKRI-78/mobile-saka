@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +46,20 @@ import 'package:saka/utils/custom_themes.dart';
 import 'package:saka/views/basewidgets/loader/circular.dart';
 import 'package:saka/views/basewidgets/snackbar/snackbar.dart';
 
+bool _isValidVisibleUsername(String? username) {
+  final value = username?.trim();
+
+  if (value == null || value.isEmpty) {
+    return false;
+  }
+
+  return !value.contains("-");
+}
+
+bool _isValidVisibleUser(User? user) {
+  return _isValidVisibleUsername(user?.username);
+}
+
 class FeedIndex extends StatefulWidget {
   const FeedIndex({super.key});
 
@@ -86,6 +101,16 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   bool isPlaying = false;
   bool deletePostBtn = false;
 
+  List<UserLikes> visibleLikes(Forum forum) {
+    return (forum.like?.likes ?? []).where((like) => _isValidVisibleUser(like.user)).toList();
+  }
+
+  List<CommentElement> visibleComments(Forum forum) {
+    return (forum.comment?.comments ?? [])
+        .where((comment) => _isValidVisibleUser(comment.user))
+        .toList();
+  }
+
   Future<void> getData() async {
     if (!mounted) return;
     await feedProvider.fetchFeedMostRecent(context);
@@ -112,6 +137,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   @override
   void dispose() {
     tabController.dispose();
+    sc.dispose();
 
     super.dispose();
   }
@@ -148,16 +174,29 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 child: SpinKitThreeBounce(size: 20.0, color: ColorResources.primaryOrange),
               );
             }
+
             if (feedProvider.feedRecentStatus == FeedRecentStatus.empty) {
               return Center(
                 child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular),
               );
             }
+
             if (feedProvider.feedRecentStatus == FeedRecentStatus.error) {
               return Center(
                 child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
               );
             }
+
+            final visibleForums = feedProvider.forum1
+                .where((forum) => _isValidVisibleUser(forum.user))
+                .toList();
+
+            if (visibleForums.isEmpty) {
+              return Center(
+                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular),
+              );
+            }
+
             return NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification notification) {
                 if (notification is ScrollEndNotification) {
@@ -167,6 +206,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                   }
                 }
+
                 return false;
               },
               child: RefreshIndicator.adaptive(
@@ -182,21 +222,29 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     return Container(color: Colors.blueGrey[50], height: 10.0);
                   },
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: feedProvider.forum1.length,
+                  itemCount: visibleForums.length,
                   itemBuilder: (BuildContext content, int i) {
-                    if (feedProvider.forum1.length == i) {
+                    if (visibleForums.length == i) {
                       return const Center(
                         child: SpinKitThreeBounce(size: 20.0, color: ColorResources.primaryOrange),
                       );
                     }
-                    Forum forum = feedProvider.forum1[i];
+
+                    Forum forum = visibleForums[i];
+
+                    if (!_isValidVisibleUser(forum.user)) {
+                      return const SizedBox.shrink();
+                    }
 
                     final isPlaying = videoStates[i] ?? false;
                     final currentUserId = feedProvider.ar.getUserId();
-                    final isLiked = forum.like!.likes.any((el) => el.user!.id == currentUserId);
-                    final lastComment = forum.comment!.comments!.isNotEmpty
-                        ? forum.comment!.comments!.last
-                        : null;
+
+                    final filteredLikes = visibleLikes(forum);
+                    final filteredComments = visibleComments(forum);
+
+                    final isLiked = filteredLikes.any((el) => el.user?.id == currentUserId);
+
+                    final lastComment = filteredComments.isNotEmpty ? filteredComments.last : null;
 
                     return InkWell(
                       onTap: () async {
@@ -228,7 +276,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                           ListTile(
                             dense: true,
                             leading: CachedNetworkImage(
-                              imageUrl: forum.user!.avatar!,
+                              imageUrl: forum.user?.avatar ?? "",
                               imageBuilder: (BuildContext context, dynamic imageProvider) =>
                                   CircleAvatar(
                                     backgroundColor: Colors.transparent,
@@ -248,20 +296,20 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                   ),
                             ),
                             title: Text(
-                              forum.user!.username!,
+                              forum.user?.username ?? "",
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: ColorResources.black,
                               ),
                             ),
                             subtitle: Text(
-                              DateHelper.formatDateTime(forum.createdAt!, context),
+                              DateHelper.formatDateTime(forum.createdAt ?? "", context),
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeExtraSmall,
                                 color: ColorResources.dimGrey,
                               ),
                             ),
-                            trailing: feedProvider.ar.getUserId() == forum.user!.id!
+                            trailing: feedProvider.ar.getUserId() == forum.user?.id
                                 ? grantedDeletePost(context, forum.id)
                                 : PopupMenuButton(
                                     itemBuilder: (BuildContext buildContext) {
@@ -384,18 +432,24 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                     onSelected: (route) async {
                                       if (route == "/download-video") {
                                         ProgressDialog pr = ProgressDialog(context: context);
+
                                         try {
                                           PermissionStatus statusStorage =
                                               await Permission.storage.status;
+
                                           if (!statusStorage.isGranted) {
                                             await Permission.storage.request();
                                           }
+
                                           pr.show(
                                             max: 1,
                                             msg: '${getTranslated("DOWNLOADING", context)}...',
                                           );
+
                                           // await GallerySaver.saveVideo("${forum.media![0].path}");
+
                                           pr.close();
+
                                           ShowSnackbar.snackbar(
                                             getTranslated("SAVE_TO_GALLERY", context),
                                             "",
@@ -403,6 +457,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                           );
                                         } catch (_) {
                                           pr.close();
+
                                           ShowSnackbar.snackbar(
                                             getTranslated("THERE_WAS_PROBLEM", context),
                                             "",
@@ -410,6 +465,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                           );
                                         }
                                       }
+
                                       if (route == "/report-user") {
                                         showAnimatedDialog(
                                           barrierDismissible: true,
@@ -495,7 +551,6 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                     },
                                   ),
                           ),
-
                           Container(
                             margin: const EdgeInsets.only(
                               top: 5.0,
@@ -503,25 +558,28 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                               left: 15.0,
                               right: 15.0,
                             ),
-                            child: PostText(forum.caption!),
+                            child: PostText(forum.caption ?? ""),
                           ),
-
-                          if (forum.type == "link") PostLink(url: forum.link!),
-                          if (forum.type == "document") PostDoc(medias: forum.media!),
+                          if (forum.type == "link") PostLink(url: forum.link ?? ""),
+                          if (forum.type == "document") PostDoc(medias: forum.media ?? []),
                           if (forum.type == "image")
-                            PostImage(forum.user!.username!, forum.caption!, false, forum.media!),
-                          if (forum.type == "video")
+                            PostImage(
+                              forum.user?.username ?? "",
+                              forum.caption ?? "",
+                              false,
+                              forum.media ?? [],
+                            ),
+                          if (forum.type == "video" && (forum.media ?? []).isNotEmpty)
                             VisibilityDetector(
-                              key: Key('video-widget'),
+                              key: Key('video-widget-${forum.id ?? i}'),
                               onVisibilityChanged: onVisibilityChanged,
                               child: PostVideo(
-                                media: forum.media!.first.path!,
+                                media: forum.media!.first.path ?? "",
                                 isPlaying: isPlaying,
                                 onPlay: () => playVideo(i),
                                 onPause: () => pauseVideo(i),
                               ),
                             ),
-
                           Container(
                             margin: const EdgeInsets.only(
                               top: 5.0,
@@ -550,9 +608,9 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                                 ListView.builder(
                                                   shrinkWrap: true,
                                                   padding: EdgeInsets.zero,
-                                                  itemCount: forum.like!.likes.length,
-                                                  itemBuilder: (_, int i) {
-                                                    final like = forum.like!.likes[i];
+                                                  itemCount: filteredLikes.length,
+                                                  itemBuilder: (_, int likeIndex) {
+                                                    final like = filteredLikes[likeIndex];
 
                                                     return Padding(
                                                       padding: const EdgeInsets.all(20.0),
@@ -567,8 +625,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                                             mainAxisSize: MainAxisSize.max,
                                                             children: [
                                                               CachedNetworkImage(
-                                                                imageUrl: like.user!.avatar
-                                                                    .toString(),
+                                                                imageUrl: like.user?.avatar ?? "",
                                                                 imageBuilder:
                                                                     (context, imageProvider) {
                                                                       return CircleAvatar(
@@ -594,11 +651,9 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                                                   );
                                                                 },
                                                               ),
-
                                                               const SizedBox(width: 14.0),
-
                                                               Text(
-                                                                like.user!.username.toString(),
+                                                                like.user?.username ?? "",
                                                                 style: const TextStyle(
                                                                   color: Colors.black,
                                                                   fontSize: 18.0,
@@ -623,15 +678,14 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.all(5.0),
-                                          child: Icon(
+                                          child: const Icon(
                                             Icons.thumb_up,
                                             size: 18.0,
                                             color: ColorResources.black,
                                           ),
                                         ),
-
                                         Text(
-                                          '${forum.like!.total}',
+                                          '${filteredLikes.length}',
                                           style: robotoRegular.copyWith(
                                             color: ColorResources.black,
                                             fontSize: Dimensions.fontSizeDefault,
@@ -641,9 +695,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-
                                 Text(
-                                  '${forum.comment!.total.toString()} ${getTranslated("COMMENT", context)}',
+                                  '${filteredComments.length} ${getTranslated("COMMENT", context)}',
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
                                   ),
@@ -651,7 +704,6 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-
                           Container(
                             margin: const EdgeInsets.only(
                               top: 5.0,
@@ -670,7 +722,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                     onPressed: () {
                                       context.read<FeedProviderV2>().toggleLike(
                                         context: context,
-                                        forumId: forum.id!,
+                                        forumId: forum.id ?? "",
                                         feedLikes: forum.like!,
                                       );
                                     },
@@ -686,9 +738,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-
                                 const SizedBox(width: 12.0),
-
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: () {
@@ -724,7 +774,6 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-
                           lastComment == null
                               ? const SizedBox()
                               : Container(
@@ -738,7 +787,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                     children: [
                                       ListTile(
                                         leading: CachedNetworkImage(
-                                          imageUrl: lastComment.user!.avatar.toString(),
+                                          imageUrl: lastComment.user?.avatar ?? "",
                                           imageBuilder:
                                               (BuildContext context, dynamic imageProvider) =>
                                                   CircleAvatar(
@@ -774,15 +823,14 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                lastComment.user!.username.toString(),
+                                                lastComment.user?.username ?? "",
                                                 style: robotoRegular.copyWith(
                                                   fontSize: Dimensions.fontSizeDefault,
                                                 ),
                                               ),
-
                                               Text(
                                                 DateHelper.formatDateTime(
-                                                  lastComment.createdAt.toString(),
+                                                  lastComment.createdAt ?? "",
                                                   context,
                                                 ),
                                                 style: robotoRegular.copyWith(
@@ -790,14 +838,12 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                                   color: ColorResources.dimGrey,
                                                 ),
                                               ),
-
                                               const SizedBox(height: 8.0),
-
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   DetectableText(
-                                                    text: lastComment.comment!,
+                                                    text: lastComment.comment ?? "",
                                                     detectionRegExp: atSignRegExp,
                                                     detectedStyle: robotoRegular.copyWith(
                                                       color: Colors.blue,
@@ -809,7 +855,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                             ],
                                           ),
                                         ),
-                                        trailing: currentUserId == lastComment.user!.id.toString()
+                                        trailing: currentUserId == lastComment.user?.id.toString()
                                             ? grantedDeleteComment(
                                                 context,
                                                 lastComment.id.toString(),
@@ -900,12 +946,14 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                 ),
                                 onPressed: () async {
                                   setStatefulBuilder(() => deletePostBtn = true);
+
                                   try {
                                     await context.read<FeedProviderV2>().deletePost(
                                       context,
                                       forumId,
                                       "index",
                                     );
+
                                     setStatefulBuilder(() => deletePostBtn = false);
                                   } catch (e) {
                                     setStatefulBuilder(() => deletePostBtn = false);
@@ -993,12 +1041,15 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                 ),
                                 onPressed: () async {
                                   setStateBuilder(() => deletePostBtn = true);
+
                                   await context.read<FeedDetailProviderV2>().deleteComment(
                                     context: context,
                                     forumId: forumId,
                                     commentId: commentId,
                                   );
+
                                   await context.read<FeedProviderV2>().fetchFeedMostRecent(context);
+
                                   setStateBuilder(() => deletePostBtn = false);
                                 },
                                 child: deletePostBtn
@@ -1033,18 +1084,20 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
         if (didPop) {
           return;
         }
+
         setState(() {
           for (var key in videoStates.keys) {
             videoStates[key] = false;
           }
         });
+
         if (sc.position.pixels == 0.0) {
           NS.push(context, DashboardScreen());
         } else {
-          Future.delayed(Duration(milliseconds: 500), () {
+          Future.delayed(const Duration(milliseconds: 500), () {
             sc.animateTo(
               sc.position.minScrollExtent,
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               curve: Curves.easeIn,
             );
           });
@@ -1066,9 +1119,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset('assets/images/logo/logo.png', width: 70.0),
-
                     const SizedBox(height: 8.0),
-
                     Text(
                       'Forum',
                       style: robotoRegular.copyWith(
@@ -1077,9 +1128,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                         fontSize: Dimensions.fontSizeOverLarge,
                       ),
                     ),
-
                     const SizedBox(height: 8.0),
-
                     const Text(
                       "Saka Dirgantara",
                       style: TextStyle(
@@ -1098,13 +1147,14 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                         videoStates[key] = false;
                       }
                     });
+
                     if (sc.position.pixels == 0.0) {
                       NS.push(context, DashboardScreen());
                     } else {
-                      Future.delayed(Duration(milliseconds: 500), () {
+                      Future.delayed(const Duration(milliseconds: 500), () {
                         sc.animateTo(
                           sc.position.minScrollExtent,
-                          duration: Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 500),
                           curve: Curves.easeIn,
                         );
                       });
@@ -1117,7 +1167,6 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 centerTitle: true,
                 floating: true,
               ),
-
               const InputPostWidget(),
             ];
           },

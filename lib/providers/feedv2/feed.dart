@@ -33,13 +33,27 @@ enum FeedRecentStatus { idle, loading, loaded, empty, error }
 enum FeedPopulerStatus { idle, loading, loaded, empty, error }
 enum FeedSelfStatus { idle, loading, loaded, empty, error }
 
+bool _isValidVisibleUsername(String? username) {
+  final value = username?.trim();
+
+  if (value == null || value.isEmpty) {
+    return false;
+  }
+
+  return !value.contains("-");
+}
+
+bool _isValidVisibleUser(User? user) {
+  return _isValidVisibleUsername(user?.username);
+}
+
 class FeedProviderV2 with ChangeNotifier {
   final AuthRepo ar;
   final FeedRepoV2 fr;
-  
+
   FeedProviderV2({
     required this.ar,
-    required this.fr
+    required this.fr,
   });
 
   bool hasMore = true;
@@ -78,8 +92,10 @@ class FeedProviderV2 with ChangeNotifier {
 
   FeedRecentStatus _feedRecentStatus = FeedRecentStatus.loading;
   FeedRecentStatus get feedRecentStatus => _feedRecentStatus;
+
   FeedPopulerStatus _feedPopulerStatus = FeedPopulerStatus.loading;
   FeedPopulerStatus get feedPopulerStatus => _feedPopulerStatus;
+
   FeedSelfStatus _feedSelfStatus = FeedSelfStatus.loading;
   FeedSelfStatus get feedSelfStatus => _feedSelfStatus;
 
@@ -96,10 +112,12 @@ class FeedProviderV2 with ChangeNotifier {
     _feedRecentStatus = feedRecentStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
+
   void setStateFeedPopulerStatus(FeedPopulerStatus feedPopulerStatus) {
     _feedPopulerStatus = feedPopulerStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
+
   void setStateFeedSelfStatus(FeedSelfStatus feedSelfStatus) {
     _feedSelfStatus = feedSelfStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -115,22 +133,29 @@ class FeedProviderV2 with ChangeNotifier {
 
   final List<Forum> _forum1 = [];
   List<Forum> get forum1 => [..._forum1];
+
   final List<Forum> _forum2 = [];
   List<Forum> get forum2 => [..._forum2];
+
   final List<Forum> _forum3 = [];
   List<Forum> get forum3 => [..._forum3];
 
   Future<void> fetchFeedMostRecent(BuildContext context) async {
+    setStateFeedRecentStatus(FeedRecentStatus.loading);
     pageKey = 1;
     hasMore = true;
 
     try {
+      FeedModel? g = await fr.fetchFeedMostRecent(
+        context,
+        pageKey,
+        ar.getUserId().toString(),
+      );
 
-      FeedModel? g = await fr.fetchFeedMostRecent(context, pageKey, ar.getUserId().toString());
       _fd = g!.data!;
 
       _forum1.clear();
-      _forum1.addAll(g.data!.forums!);
+      _forum1.addAll(g.data!.forums ?? []);
       setStateFeedRecentStatus(FeedRecentStatus.loaded);
 
       if (_forum1.isEmpty) {
@@ -150,11 +175,16 @@ class FeedProviderV2 with ChangeNotifier {
     hasMore2 = true;
 
     try {
-      FeedModel? g = await fr.fetchFeedPopuler(context, pageKey, ar.getUserId().toString());
+      FeedModel? g = await fr.fetchFeedPopuler(
+        context,
+        pageKey2,
+        ar.getUserId().toString(),
+      );
+
       _fd = g!.data!;
 
       _forum2.clear();
-      _forum2.addAll(g.data!.forums!);
+      _forum2.addAll(g.data!.forums ?? []);
       setStateFeedPopulerStatus(FeedPopulerStatus.loaded);
 
       if (_forum2.isEmpty) {
@@ -174,11 +204,16 @@ class FeedProviderV2 with ChangeNotifier {
     hasMore3 = true;
 
     try {
-      FeedModel? g = await fr.fetchFeedSelf(context, pageKey, ar.getUserId().toString());
+      FeedModel? g = await fr.fetchFeedSelf(
+        context,
+        pageKey3,
+        ar.getUserId().toString(),
+      );
+
       _fd = g!.data!;
 
       _forum3.clear();
-      _forum3.addAll(g.data!.forums!);
+      _forum3.addAll(g.data!.forums ?? []);
       setStateFeedSelfStatus(FeedSelfStatus.loaded);
 
       if (_forum3.isEmpty) {
@@ -195,43 +230,64 @@ class FeedProviderV2 with ChangeNotifier {
   Future<void> loadMoreRecent({required BuildContext context}) async {
     pageKey++;
 
-    FeedModel? g = await fr.fetchFeedMostRecent(context, pageKey, ar.getUserId().toString());
+    FeedModel? g = await fr.fetchFeedMostRecent(
+      context,
+      pageKey,
+      ar.getUserId().toString(),
+    );
 
     hasMore = g!.data!.pageDetail!.hasMore!;
-    _forum1.addAll(g.data!.forums!);
+    _forum1.addAll(g.data!.forums ?? []);
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   Future<void> loadMorePopuler({required BuildContext context}) async {
     pageKey2++;
 
-    FeedModel? g = await fr.fetchFeedPopuler(context, pageKey2, ar.getUserId().toString());
+    FeedModel? g = await fr.fetchFeedPopuler(
+      context,
+      pageKey2,
+      ar.getUserId().toString(),
+    );
 
     hasMore2 = g!.data!.pageDetail!.hasMore!;
-    _forum2.addAll(g.data!.forums!);
+    _forum2.addAll(g.data!.forums ?? []);
     Future.delayed(Duration.zero, () => notifyListeners());
   }
+
   Future<void> loadMoreSelf({required BuildContext context}) async {
     pageKey3++;
 
-    FeedModel? g = await fr.fetchFeedSelf(context, pageKey3, ar.getUserId().toString());
+    FeedModel? g = await fr.fetchFeedSelf(
+      context,
+      pageKey3,
+      ar.getUserId().toString(),
+    );
 
     hasMore3 = g!.data!.pageDetail!.hasMore!;
-    _forum3.addAll(g.data!.forums!);
+    _forum3.addAll(g.data!.forums ?? []);
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> post(BuildContext context,String type, List<File> files) async {
+  Future<void> post(BuildContext context, String type, List<File> files) async {
     String forumId = const Uuid().v4();
-    
+
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(
+        getTranslated("CAPTION_IS_REQUIRED", context),
+        "",
+        ColorResources.error,
+      );
     }
 
-    if(postC.text.trim().length > 1000) {
+    if (postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("CAPTION_MAXIMAL", context),
+        "",
+        ColorResources.error,
+      );
       return;
     }
 
@@ -240,39 +296,44 @@ class FeedProviderV2 with ChangeNotifier {
     if (feedType == "text") {
       await fr.post(
         forumId: forumId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: 'media.jpg', 
-        caption: postC.text, 
-        link: '', 
+        appName: 'saka',
+        userId: ar.getUserId().toString(),
+        feedType: type,
+        media: 'media.jpg',
+        caption: postC.text,
+        link: '',
       );
 
       Navigator.of(context).pop();
     }
 
     if (feedType == "image") {
-
       for (File p in files) {
-        Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(p.path));
-      
-        await fr.postMedia(forumId: forumId, path: d!["data"]["path"], size: d["data"]["size"]);
+        Map<String, dynamic>? d = await fr.uploadMedia(
+          folder: "images",
+          media: File(p.path),
+        );
+
+        await fr.postMedia(
+          forumId: forumId,
+          path: d!["data"]["path"],
+          size: d["data"]["size"],
+        );
       }
 
       await fr.post(
         forumId: forumId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
+        appName: 'saka',
+        userId: ar.getUserId().toString(),
+        feedType: type,
         media: 'media.jpg',
-        link: '', 
-        caption: postC.text, 
+        link: '',
+        caption: postC.text,
       );
 
       for (int i = 0; i < 2; i++) {
         Navigator.of(context).pop();
       }
-
     }
 
     setStateWritePost(WritePostStatus.loaded);
@@ -284,37 +345,55 @@ class FeedProviderV2 with ChangeNotifier {
     });
   }
 
-  Future<void> postImageCamera(BuildContext context,String type, File files) async {
+  Future<void> postImageCamera(
+    BuildContext context,
+    String type,
+    File files,
+  ) async {
     String forumId = const Uuid().v4();
-    
+
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(
+        getTranslated("CAPTION_IS_REQUIRED", context),
+        "",
+        ColorResources.error,
+      );
     }
 
-    if(postC.text.trim().length > 1000) {
+    if (postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("CAPTION_MAXIMAL", context),
+        "",
+        ColorResources.error,
+      );
       return;
     }
 
     setStateWritePost(WritePostStatus.loading);
 
     if (feedType == "image") {
-      Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(files.path));
-      
-      await fr.post(
-        forumId: forumId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: d!["data"]["path"], 
-        link: '',
-        caption: postC.text, 
+      Map<String, dynamic>? d = await fr.uploadMedia(
+        folder: "images",
+        media: File(files.path),
       );
 
-      await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
+      await fr.post(
+        forumId: forumId,
+        appName: 'saka',
+        userId: ar.getUserId().toString(),
+        feedType: type,
+        media: d!["data"]["path"],
+        link: '',
+        caption: postC.text,
+      );
 
+      await fr.postMedia(
+        forumId: forumId,
+        path: d["data"]["path"],
+        size: d["data"]["size"],
+      );
     }
 
     for (int i = 0; i < 2; i++) {
@@ -330,17 +409,29 @@ class FeedProviderV2 with ChangeNotifier {
     });
   }
 
-  Future<void> postVideo(BuildContext context,String type, File files) async {
+  Future<void> postVideo(
+    BuildContext context,
+    String type,
+    File files,
+  ) async {
     String forumId = const Uuid().v4();
-    
+
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(
+        getTranslated("CAPTION_IS_REQUIRED", context),
+        "",
+        ColorResources.error,
+      );
     }
 
-    if(postC.text.trim().length > 1000) {
+    if (postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("CAPTION_MAXIMAL", context),
+        "",
+        ColorResources.error,
+      );
       return;
     }
 
@@ -362,21 +453,30 @@ class FeedProviderV2 with ChangeNotifier {
       if (d == null || d["data"] == null || d["data"]["path"] == null) {
         setVideoUploadProgress(null);
         setStateWritePost(WritePostStatus.error);
-        ShowSnackbar.snackbar("Upload video gagal. Coba lagi beberapa saat.", "", ColorResources.error);
+        ShowSnackbar.snackbar(
+          "Upload video gagal. Coba lagi beberapa saat.",
+          "",
+          ColorResources.error,
+        );
         return;
       }
-      
+
       await fr.post(
         forumId: forumId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: d["data"]["path"], 
+        appName: 'saka',
+        userId: ar.getUserId().toString(),
+        feedType: type,
+        media: d["data"]["path"],
         link: '',
-        caption: postC.text, 
+        caption: postC.text,
       );
 
-      await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
+      await fr.postMedia(
+        forumId: forumId,
+        path: d["data"]["path"],
+        size: d["data"]["size"],
+      );
+
       setVideoUploadProgress(100);
 
       for (int i = 0; i < 2; i++) {
@@ -386,59 +486,82 @@ class FeedProviderV2 with ChangeNotifier {
 
     setStateWritePost(WritePostStatus.loaded);
     setVideoUploadProgress(null);
-    
+
     Future.delayed(Duration.zero, () {
       fetchFeedMostRecent(context);
     });
   }
 
-  Future<void> postLink(BuildContext context,String type, String link) async {
-
+  Future<void> postLink(
+    BuildContext context,
+    String type,
+    String link,
+  ) async {
     setStateWritePost(WritePostStatus.loading);
     String forumId = const Uuid().v4();
-    
+
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(
+        getTranslated("CAPTION_IS_REQUIRED", context),
+        "",
+        ColorResources.error,
+      );
     }
 
-    if(postC.text.trim().length > 1000) {
+    if (postC.text.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("CAPTION_MAXIMAL", context),
+        "",
+        ColorResources.error,
+      );
       return;
     }
 
-    if(postC.text.trim().isNotEmpty) {
-      if(postC.text.trim().length < 10) {
+    if (postC.text.trim().isNotEmpty) {
+      if (postC.text.trim().length < 10) {
         setStateWritePost(WritePostStatus.error);
-        ShowSnackbar.snackbar(getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(
+          getTranslated("CAPTION_MINIMUM", context),
+          "",
+          ColorResources.error,
+        );
         return;
       }
-    } 
+    }
 
-    if(link.trim().isEmpty) {
+    if (link.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("URL_IS_REQUIRED", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("URL_IS_REQUIRED", context),
+        "",
+        ColorResources.error,
+      );
       return;
-    } 
+    }
 
     bool validURL = Uri.parse(link.trim()).isAbsolute;
 
-    if(!validURL) {
+    if (!validURL) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("URL_FORMAT", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("URL_FORMAT", context),
+        "",
+        ColorResources.error,
+      );
       return;
     }
 
     if (feedType == "link") {
       await fr.post(
         forumId: forumId,
-        appName: 'saka', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
+        appName: 'saka',
+        userId: ar.getUserId().toString(),
+        feedType: type,
         media: 'media.jpg',
-        link: link, 
-        caption: postC.text, 
+        link: link,
+        caption: postC.text,
       );
     }
 
@@ -455,37 +578,53 @@ class FeedProviderV2 with ChangeNotifier {
     });
   }
 
-  Future<void> postVDoc(BuildContext context, String caption ,String type, File files) async {
+  Future<void> postVDoc(
+    BuildContext context,
+    String caption,
+    String type,
+    File files,
+  ) async {
     setStateWritePost(WritePostStatus.loading);
     String forumId = const Uuid().v4();
-    
+
     if (caption.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
-      return ShowSnackbar.snackbar(getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
+      return ShowSnackbar.snackbar(
+        getTranslated("CAPTION_IS_REQUIRED", context),
+        "",
+        ColorResources.error,
+      );
     }
 
-    if(caption.trim().length > 1000) {
+    if (caption.trim().length > 1000) {
       setStateWritePost(WritePostStatus.error);
-      ShowSnackbar.snackbar(getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+        getTranslated("CAPTION_MAXIMAL", context),
+        "",
+        ColorResources.error,
+      );
       return;
     }
 
-    Map<String, dynamic>? d = await fr.uploadMedia(folder: "documents", media: files);
+    Map<String, dynamic>? d = await fr.uploadMedia(
+      folder: "documents",
+      media: files,
+    );
 
     await fr.post(
       forumId: forumId,
-      appName: 'saka', 
-      userId: ar.getUserId().toString(), 
-      feedType: type, 
-      media: "media.jpg", 
+      appName: 'saka',
+      userId: ar.getUserId().toString(),
+      feedType: type,
+      media: "media.jpg",
       link: d!["data"]["path"],
-      caption: caption, 
+      caption: caption,
     );
-    
-    await fr.postMedia( 
-      forumId: forumId, 
-      path: d["data"]["path"], 
-      size: d["data"]["size"]
+
+    await fr.postMedia(
+      forumId: forumId,
+      path: d["data"]["path"],
+      size: d["data"]["size"],
     );
 
     setStateWritePost(WritePostStatus.loaded);
@@ -493,7 +632,7 @@ class FeedProviderV2 with ChangeNotifier {
     for (int i = 0; i < 2; i++) {
       Navigator.of(context).pop();
     }
-    
+
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
@@ -501,7 +640,11 @@ class FeedProviderV2 with ChangeNotifier {
     });
   }
 
-  Future<void> deletePost(BuildContext context, String postId, String from) async {
+  Future<void> deletePost(
+    BuildContext context,
+    String postId,
+    String from,
+  ) async {
     await fr.deletePost(context, postId);
 
     Future.delayed(Duration.zero, () {
@@ -510,7 +653,7 @@ class FeedProviderV2 with ChangeNotifier {
       fetchFeedPopuler(context);
     });
 
-    if(from == "index") {
+    if (from == "index") {
       for (int i = 0; i < 1; i++) {
         Navigator.of(context).pop();
       }
@@ -533,32 +676,47 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> toggleLike({
     required BuildContext context,
-    required String forumId, 
-    required ForumLikes feedLikes
+    required String forumId,
+    required ForumLikes feedLikes,
   }) async {
     try {
-      
-      int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      int idxLikes = feedLikes.likes.indexWhere(
+        (el) => el.user!.id == ar.getUserId().toString(),
+      );
 
       if (idxLikes != -1) {
         feedLikes.likes.removeAt(idxLikes);
 
         feedLikes.total = feedLikes.total - 1;
       } else {
-        feedLikes.likes.add(UserLikes(
-          user: User(
-          id: context.read<ProfileProvider>().userProfile.userId.toString(),
-          avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(),
-          username: context.read<ProfileProvider>().userProfile.fullname.toString()
-        )));
-        
+        feedLikes.likes.add(
+          UserLikes(
+            user: User(
+              id: context.read<ProfileProvider>().userProfile.userId.toString(),
+              avatar: context
+                  .read<ProfileProvider>()
+                  .userProfile
+                  .profilePic
+                  .toString(),
+              username: context
+                  .read<ProfileProvider>()
+                  .userProfile
+                  .fullname
+                  .toString(),
+            ),
+          ),
+        );
+
         feedLikes.total = feedLikes.total + 1;
       }
 
-      await fr.toggleLike(context: context, forumId: forumId, userId: ar.getUserId().toString());
+      await fr.toggleLike(
+        context: context,
+        forumId: forumId,
+        userId: ar.getUserId().toString(),
+      );
 
       notifyListeners();
-
     } on CustomException catch (e) {
       debugPrint(e.toString());
     } catch (e) {
@@ -598,5 +756,5 @@ class FeedProviderV2 with ChangeNotifier {
   //   }
   //   Future.delayed(Duration.zero, () => notifyListeners());
   // }
-  
 }
+
