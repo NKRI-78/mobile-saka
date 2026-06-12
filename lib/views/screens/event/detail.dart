@@ -62,12 +62,36 @@ class DetailEventPageState extends State<DetailEventScreen> {
     return scrollController.hasClients && scrollController.offset > (250 - kToolbarHeight);
   }
 
+  DateTime _toLocalEventDate(DateTime value) {
+    if (value.isUtc) {
+      return value.toLocal();
+    }
+
+    return value;
+  }
+
+  String _formatEventDate(DateTime value) {
+    final DateTime localDate = _toLocalEventDate(value);
+
+    return DateFormat('dd MMM yyyy HH:mm').format(localDate);
+  }
+
+  String _formatLocation(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      return 'Lokasi belum tersedia';
+    }
+
+    return trimmed;
+  }
+
   @override
   void initState() {
     super.initState();
 
     scrollController = ScrollController();
     scrollController.addListener(scrollListener);
+
     if (widget.title.length > 24) {
       titleMore = widget.title.substring(0, 24);
     } else {
@@ -78,6 +102,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
   @override
   void dispose() {
     scrollController.removeListener(scrollListener);
+    scrollController.dispose();
 
     super.dispose();
   }
@@ -87,13 +112,15 @@ class DetailEventPageState extends State<DetailEventScreen> {
     imageUrl = widget.imageUrl;
     title = widget.title;
     content = widget.content;
-    date = widget.date;
+    date = _toLocalEventDate(widget.date);
 
     final eventProvider = context.watch<EventProvider>();
+
     final currentEvent = eventProvider.eventData.cast<EventData?>().firstWhere(
       (e) => e?.eventId == widget.id,
       orElse: () => null,
     );
+
     final bool isJoined = currentEvent?.join ?? widget.join;
     final List<Join> participantList = currentEvent?.joins ?? widget.joins;
 
@@ -101,7 +128,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         controller: scrollController,
-        slivers: <Widget>[
+        slivers: [
           SliverAppBar(
             elevation: 0,
             backgroundColor: Colors.white,
@@ -113,7 +140,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                   ? () {}
                   : () => Navigator.pop(context),
               child: Container(
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 height: 50,
                 width: 50,
                 decoration: BoxDecoration(
@@ -123,10 +150,10 @@ class DetailEventPageState extends State<DetailEventScreen> {
                 child: Center(
                   child: Platform.isIOS
                       ? Container(
-                          margin: EdgeInsets.only(left: 8),
-                          child: Icon(Icons.arrow_back_ios),
+                          margin: const EdgeInsets.only(left: 8),
+                          child: const Icon(Icons.arrow_back_ios),
                         )
-                      : Icon(Icons.arrow_back),
+                      : const Icon(Icons.arrow_back),
                 ),
               ),
             ),
@@ -142,7 +169,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                         imageUrl: "$imageUrl",
                         fit: BoxFit.cover,
                         placeholder: (BuildContext context, String url) =>
-                            Center(child: CircularProgressIndicator()),
+                            const Center(child: CircularProgressIndicator()),
                         errorWidget: (BuildContext context, String url, error) => Center(
                           child: Image.asset(
                             "assets/images/profile.png",
@@ -158,7 +185,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
               ),
               title: AnimatedOpacity(
                 opacity: isShrink ? 1.0 : 0.0,
-                duration: Duration(milliseconds: 150),
+                duration: const Duration(milliseconds: 150),
                 child: Text(
                   "${titleMore!}...",
                   maxLines: 1,
@@ -171,12 +198,11 @@ class DetailEventPageState extends State<DetailEventScreen> {
               ),
             ),
           ),
-
           SliverList(
             delegate: SliverChildListDelegate([
               Container(
                 width: double.infinity,
-                margin: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                margin: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -184,10 +210,10 @@ class DetailEventPageState extends State<DetailEventScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(bottom: 5.0),
+                          margin: const EdgeInsets.only(bottom: 5.0),
                           child: AnimatedOpacity(
                             opacity: isShrink ? 0.0 : 1.0,
-                            duration: Duration(milliseconds: 250),
+                            duration: const Duration(milliseconds: 250),
                             child: Text(
                               title!,
                               textAlign: TextAlign.start,
@@ -200,15 +226,42 @@ class DetailEventPageState extends State<DetailEventScreen> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(bottom: 10.0),
+                          margin: const EdgeInsets.only(bottom: 10.0),
                           child: Text(
-                            DateFormat('dd MMM yyyy kk:mm').format(date!),
+                            _formatEventDate(date!),
                             style: robotoRegular.copyWith(
                               color: Colors.grey,
                               fontSize: Dimensions.fontSizeDefault,
                             ),
                           ),
                         ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 10.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 1.5),
+                                child: Icon(
+                                  Icons.location_on_outlined,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(width: 6.0),
+                              Expanded(
+                                child: Text(
+                                  _formatLocation(currentEvent?.location ?? ''),
+                                  style: robotoRegular.copyWith(
+                                    color: Colors.grey,
+                                    fontSize: Dimensions.fontSizeDefault,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         const SizedBox(height: 6.0),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,9 +296,9 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                       return ListView.separated(
                                         shrinkWrap: true,
                                         separatorBuilder: (context, index) {
-                                          return Divider();
+                                          return const Divider();
                                         },
-                                        padding: EdgeInsets.all(20.0),
+                                        padding: const EdgeInsets.all(20.0),
                                         itemCount: participantList.length,
                                         itemBuilder: (BuildContext context, int i) {
                                           return Row(
@@ -260,7 +313,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                                   );
                                                 },
                                                 errorWidget: (context, url, error) {
-                                                  return CircleAvatar(
+                                                  return const CircleAvatar(
                                                     maxRadius: 20.0,
                                                     backgroundImage: AssetImage(
                                                       'assets/images/default_avatar.jpg',
@@ -268,7 +321,7 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                                   );
                                                 },
                                                 placeholder: (context, url) {
-                                                  return CircleAvatar(
+                                                  return const CircleAvatar(
                                                     maxRadius: 20.0,
                                                     backgroundImage: AssetImage(
                                                       'assets/images/default_avatar.jpg',
@@ -306,13 +359,10 @@ class DetailEventPageState extends State<DetailEventScreen> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 6.0),
-
-                    Divider(height: 4.0, thickness: 1.0),
-
+                    const Divider(height: 4.0, thickness: 1.0),
                     Container(
-                      margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                      margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
                       child: Text(
                         content!,
                         textAlign: TextAlign.justify,
