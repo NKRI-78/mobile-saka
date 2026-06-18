@@ -97,9 +97,6 @@ class SplashScreenState extends State<SplashScreen> {
       Permission.camera,
       Permission.microphone,
       Permission.notification,
-      // Catatan: Permission.storage deprecated di Android 13+,
-      // pertimbangkan gunakan Permission.photos atau manage external storage sesuai kebutuhan.
-      Permission.storage,
     ];
 
     try {

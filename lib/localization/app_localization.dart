@@ -23,7 +23,11 @@ class AppLocalization {
   }
 
   String translate(String key) {
-    return _localizedValues[key]!;
+    final value = _localizedValues[key];
+    if (value == null || value.isEmpty) {
+      return key;
+    }
+    return value;
   }
 
   static const LocalizationsDelegate<AppLocalization> delegate = _DemoLocalizationsDelegate();

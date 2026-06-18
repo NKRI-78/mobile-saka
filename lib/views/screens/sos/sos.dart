@@ -62,7 +62,7 @@ class SosScreenState extends State<SosScreen> {
           elevation: 0.0,
           centerTitle: true,
           backgroundColor: ColorResources.brown,
-          title: Text("SOS",
+          title: Text(getTranslated("SOS", context),
             style: robotoRegular.copyWith(
               color: ColorResources.white,
               fontSize: Dimensions.fontSizeDefault,

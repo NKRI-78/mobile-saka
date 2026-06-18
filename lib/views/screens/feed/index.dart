@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -434,13 +433,6 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                         ProgressDialog pr = ProgressDialog(context: context);
 
                                         try {
-                                          PermissionStatus statusStorage =
-                                              await Permission.storage.status;
-
-                                          if (!statusStorage.isGranted) {
-                                            await Permission.storage.request();
-                                          }
-
                                           pr.show(
                                             max: 1,
                                             msg: '${getTranslated("DOWNLOADING", context)}...',

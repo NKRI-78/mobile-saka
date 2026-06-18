@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -275,12 +274,6 @@ class PostsState extends State<Posts> {
                       ProgressDialog pr = ProgressDialog(context: context);
 
                       try {
-                        PermissionStatus statusStorage = await Permission.storage.status;
-
-                        if (!statusStorage.isGranted) {
-                          await Permission.storage.request();
-                        }
-
                         pr.show(max: 1, msg: '${getTranslated("DOWNLOADING", context)}...');
 
                         // await GallerySaver.saveVideo("${widget.forum.media![0].path}");

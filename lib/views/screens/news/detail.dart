@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -144,10 +143,6 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                           onSelected: (int i) async {
                             ProgressDialog pr = ProgressDialog(context: context);
                             try {
-                              PermissionStatus statusStorage = await Permission.storage.status;
-                              if(!statusStorage.isGranted) {
-                                await Permission.storage.request();
-                              } 
                               pr.show(
                                 max: 1,
                                 msg: '${getTranslated("DOWNLOADING", context)}...'

@@ -328,4 +328,8 @@
   ,"FILE_NAME": "Filename"
   ,"POST": "Post"
   ,"SHARE_MEDIA": "Share Media"
+  ,"OTHERS": "Others"
+  ,"NO_MESSAGE_YET": "No messages yet"
+  ,"EMERGENCY": "Emergency"
+  ,"SOS_ALERT_RECEIVED": "SOS help request received"
 }

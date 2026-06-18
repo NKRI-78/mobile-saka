@@ -436,9 +436,12 @@ class FeedProviderV2 with ChangeNotifier {
     }
 
     setStateWritePost(WritePostStatus.loading);
+    setVideoUploadProgress(0);
 
-    if (feedType == "video") {
-      setVideoUploadProgress(0);
+    try {
+      if (feedType != "video") {
+        throw Exception("Invalid post type");
+      }
 
       Map<String, dynamic>? d = await fr.uploadMedia(
         folder: "videos",
@@ -451,14 +454,7 @@ class FeedProviderV2 with ChangeNotifier {
       );
 
       if (d == null || d["data"] == null || d["data"]["path"] == null) {
-        setVideoUploadProgress(null);
-        setStateWritePost(WritePostStatus.error);
-        ShowSnackbar.snackbar(
-          "Upload video gagal. Coba lagi beberapa saat.",
-          "",
-          ColorResources.error,
-        );
-        return;
+        throw Exception("Upload video gagal");
       }
 
       await fr.post(
@@ -478,18 +474,28 @@ class FeedProviderV2 with ChangeNotifier {
       );
 
       setVideoUploadProgress(100);
+      setStateWritePost(WritePostStatus.loaded);
 
-      for (int i = 0; i < 2; i++) {
-        Navigator.of(context).pop();
+      if (context.mounted) {
+        for (int i = 0; i < 2; i++) {
+          Navigator.of(context).pop();
+        }
       }
+
+      Future.delayed(Duration.zero, () {
+        fetchFeedMostRecent(context);
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+      setStateWritePost(WritePostStatus.error);
+      ShowSnackbar.snackbar(
+        "Upload video gagal. Coba lagi beberapa saat.",
+        "",
+        ColorResources.error,
+      );
+    } finally {
+      setVideoUploadProgress(null);
     }
-
-    setStateWritePost(WritePostStatus.loaded);
-    setVideoUploadProgress(null);
-
-    Future.delayed(Duration.zero, () {
-      fetchFeedMostRecent(context);
-    });
   }
 
   Future<void> postLink(
@@ -757,4 +763,3 @@ class FeedProviderV2 with ChangeNotifier {
   //   Future.delayed(Duration.zero, () => notifyListeners());
   // }
 }
-

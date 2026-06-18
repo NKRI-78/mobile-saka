@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
 import 'package:saka/providers/ecommerce/ecommerce.dart';
+import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/services/navigation.dart';
 
@@ -65,7 +66,10 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      await ep.howToPayment(channelId: widget.field7!);
+    if ((widget.typeInbox ?? '').toLowerCase() == 'sos') return;
+    final channelId = widget.field7;
+    if (channelId == null || channelId.isEmpty) return;
+    await ep.howToPayment(channelId: channelId);
   }
 
   @override
@@ -84,8 +88,42 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
  
   @override
   Widget build(BuildContext context) {
+    final isSos = (widget.typeInbox ?? '').toLowerCase() == 'sos';
 
-    DateTime targetDate = widget.field4!.isEmpty ? DateTime.now() : DateTime.parse(widget.field4.toString());
+    String localizedSosText(String raw) {
+      if (raw.trim().isEmpty) return raw;
+      final upper = raw.toUpperCase();
+
+      final hasAmbulance = upper.contains('AMBULANCE');
+      final hasAccident = upper.contains('ACCIDENT');
+      final hasWildfire = upper.contains('WILDFIRE') || upper.contains('FIRE');
+      final hasDisaster = upper.contains('DISASTER');
+      final hasNeedHelp = upper.contains('I_NEED_HELP') || upper.contains('I NEED HELP');
+
+      if (hasNeedHelp || hasAmbulance || hasAccident || hasWildfire || hasDisaster) {
+        String label = '';
+        if (hasAmbulance) label = getTranslated('AMBULANCE', context);
+        if (hasAccident) label = getTranslated('ACCIDENT', context);
+        if (hasWildfire) label = getTranslated('WILDFIRE', context);
+        if (hasDisaster) label = getTranslated('DISASTER', context);
+        final prefix = getTranslated('I_NEED_HELP', context);
+        return label.isEmpty ? prefix : '$prefix $label';
+      }
+
+      if (upper == 'EMERGENCY') {
+        return getTranslated('EMERGENCY', context);
+      }
+      return getTranslated('SOS_ALERT_RECEIVED', context);
+    }
+
+    final subjectRaw = widget.subject ?? '';
+    final bodyRaw = widget.body ?? '';
+    final subjectText = isSos ? localizedSosText(subjectRaw) : subjectRaw;
+    final bodyText = isSos ? localizedSosText(bodyRaw) : bodyRaw;
+
+    DateTime targetDate = (widget.field4 == null || widget.field4!.isEmpty)
+        ? DateTime.now()
+        : DateTime.parse(widget.field4.toString());
     Duration duration = targetDate.difference(DateTime.now());
 
     return Scaffold(
@@ -106,7 +144,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
             centerTitle: true,
             elevation: 0.0,
             automaticallyImplyLeading: false,
-            title: Text(widget.subject!,
+            title: Text(isSos ? getTranslated('SOS', context) : subjectText,
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 fontWeight: FontWeight.bold,
@@ -133,7 +171,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
             
-                      Column(
+                      if (!isSos) Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -204,13 +242,13 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                         ],
                       ),
             
-                      const SizedBox(height: 8.0),
+                      if (!isSos) const SizedBox(height: 8.0),
             
-                      Divider(),
+                      if (!isSos) Divider(),
             
-                      const SizedBox(height: 8.0),
+                      if (!isSos) const SizedBox(height: 8.0),
             
-                      Text(widget.body.toString(),
+                      Text(bodyText,
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           color: ColorResources.black
@@ -219,7 +257,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
             
                       const SizedBox(height: 25.0),
             
-                      widget.field3 != "WAITING_PAYMENT" || widget.subject == "Topup berhasil"
+                      isSos || widget.field3 != "WAITING_PAYMENT" || widget.subject == "Topup berhasil"
                       ? const SizedBox() 
                       : widget.field2.toString() == "gopay" || widget.field2.toString() == "shopee" 
                       || widget.field2.toString() == "ovo" || widget.field2.toString() == "dana"
@@ -290,7 +328,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
             
                       const SizedBox(height: 25.0),
                       
-                      widget.subject == "Topup berhasil"
+                      isSos || widget.subject == "Topup berhasil"
                       ? const SizedBox() 
                       : widget.field2.toString() == "gopay" || widget.field2.toString() == "shopee" 
                       || widget.field2.toString() == "ovo" || widget.field2.toString() == "dana" 
@@ -308,18 +346,18 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                               );
                             },
                           )
-                        ) 
-                      : const SizedBox(),
-            
-                        if(widget.field2.toString() != "gopay" && widget.field2.toString() != "shopee" 
-                        && widget.field2.toString() != "ovo" && widget.field2.toString() != "dana") 
-                          Column(
+	                        )
+	                      : const SizedBox(),
+
+	                        if(!isSos && widget.field2.toString() != "gopay" && widget.field2.toString() != "shopee"
+	                        && widget.field2.toString() != "ovo" && widget.field2.toString() != "dana")
+	                          Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
             
                               widget.field3 != "WAITING_PAYMENT" || widget.subject == "Topup berhasil"
-                              ? const SizedBox() 
+	                              ? const SizedBox()
                               : expired 
                               ? Container(
                                   padding: EdgeInsets.all(5.0),
@@ -410,7 +448,7 @@ class InboxDetailScreenState extends State<InboxDetailScreen> {
                     ),
                   ),
             
-                  Consumer<EcommerceProvider>(
+                  if (!isSos) Consumer<EcommerceProvider>(
                     builder: (__, notifier, _) {
                       
                       if(notifier.howToPaymentStatus == HowToPaymentStatus.loading) {

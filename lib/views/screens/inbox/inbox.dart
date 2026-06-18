@@ -95,9 +95,9 @@ class InboxScreenState extends State<InboxScreen> with TickerProviderStateMixin 
                   indicatorColor: ColorResources.brown,
                   tabBarIndicatorSize: TabBarIndicatorSize.tab,
                 ),
-                tabs: const [
-                  Tab(text: 'SOS'),
-                  Tab(text: 'Lainnya'),
+                tabs: [
+                  Tab(text: getTranslated('SOS', context)),
+                  Tab(text: getTranslated('OTHERS', context)),
                 ],
               ),
             ),
@@ -112,6 +112,32 @@ class InboxScreenState extends State<InboxScreen> with TickerProviderStateMixin 
 class _InboxList extends StatelessWidget {
   final String type;
   const _InboxList({required this.type});
+
+  String _localizedSosText(BuildContext context, String raw) {
+    if (raw.trim().isEmpty) return raw;
+    final upper = raw.toUpperCase();
+
+    final hasAmbulance = upper.contains('AMBULANCE');
+    final hasAccident = upper.contains('ACCIDENT');
+    final hasWildfire = upper.contains('WILDFIRE') || upper.contains('FIRE');
+    final hasDisaster = upper.contains('DISASTER');
+    final hasNeedHelp = upper.contains('I_NEED_HELP') || upper.contains('I NEED HELP');
+
+    if (hasNeedHelp || hasAmbulance || hasAccident || hasWildfire || hasDisaster) {
+      String label = '';
+      if (hasAmbulance) label = getTranslated('AMBULANCE', context);
+      if (hasAccident) label = getTranslated('ACCIDENT', context);
+      if (hasWildfire) label = getTranslated('WILDFIRE', context);
+      if (hasDisaster) label = getTranslated('DISASTER', context);
+      final prefix = getTranslated('I_NEED_HELP', context);
+      return label.isEmpty ? prefix : '$prefix $label';
+    }
+
+    if (upper == 'EMERGENCY') {
+      return getTranslated('EMERGENCY', context);
+    }
+    return getTranslated('SOS_ALERT_RECEIVED', context);
+  }
 
   Future<void> _refresh(BuildContext context) async {
     await context.read<InboxProvider>().getInbox(context, type);
@@ -150,7 +176,7 @@ class _InboxList extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.6,
                   child: Center(
                     child: Text(
-                      'Belum ada pesan',
+                      getTranslated('NO_MESSAGE_YET', context),
                       style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
                     ),
                   ),
@@ -173,7 +199,12 @@ class _InboxList extends StatelessWidget {
             separatorBuilder: (_, __) => const Divider(height: 1),
             itemBuilder: (context, i) {
               final it = items[i];
-              final isEmergency = (it.subject == 'Emergency');
+              final subjectRaw = it.subject ?? '...';
+              final bodyRaw = it.body ?? '...';
+              final isEmergency = subjectRaw.toLowerCase() == 'emergency';
+              final isSos = type == 'sos';
+              final subjectText = isSos ? getTranslated('SOS', context) : subjectRaw;
+              final bodyText = isSos ? _localizedSosText(context, bodyRaw) : bodyRaw;
 
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
@@ -186,17 +217,18 @@ class _InboxList extends StatelessWidget {
                       await context.read<InboxProvider>().updateInbox(context, it.inboxId!, type);
 
                       if (isEmergency) {
-                        // preload profil
-                        context.read<ProfileProvider>().getSingleUser(context, it.senderId!);
-                        _showEmergencyDialog(context, it.body ?? '');
+                        if ((it.senderId ?? '').isNotEmpty) {
+                          context.read<ProfileProvider>().getSingleUser(context, it.senderId!);
+                        }
+                        _showEmergencyDialog(context, _localizedSosText(context, it.body ?? ''));
                       } else {
                         NS.push(
                           context,
                           InboxDetailScreen(
                             inboxId: it.inboxId,
                             type: it.type ?? '',
-                            body: it.body ?? '',
-                            subject: it.subject,
+                            body: bodyRaw,
+                            subject: subjectRaw,
                             field1: it.field1,
                             field2: it.field2,
                             field3: it.field3,
@@ -222,7 +254,7 @@ class _InboxList extends StatelessWidget {
                     title: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Text(
-                        it.subject ?? '...',
+                        subjectText,
                         style: robotoRegular.copyWith(
                           fontWeight: (it.read ?? false) ? FontWeight.normal : FontWeight.bold,
                           fontSize: Dimensions.fontSizeSmall,
@@ -236,7 +268,7 @@ class _InboxList extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2.0),
                           child: Text(
-                            it.body ?? '...',
+                            bodyText,
                             overflow: isEmergency ? TextOverflow.fade : TextOverflow.ellipsis,
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
@@ -275,87 +307,80 @@ class _InboxList extends StatelessWidget {
         return Dialog(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Consumer<ProfileProvider>(
-              builder: (context, profileProvider, _) {
-                final st = profileProvider.singleUserDataStatus;
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 20),
+                Image.asset(Images.sos, width: 30, height: 30),
+                const SizedBox(height: 16),
+                Consumer<ProfileProvider>(
+                  builder: (context, profileProvider, _) {
+                    final st = profileProvider.singleUserDataStatus;
 
-                Widget avatar;
-                if (st == SingleUserDataStatus.loading) {
-                  avatar = const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(ColorResources.white),
-                    ),
-                  );
-                } else if (st == SingleUserDataStatus.error) {
-                  avatar = const CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: AssetImage('assets/images/profile.png'),
-                    radius: 30,
-                  );
-                } else {
-                  avatar = CachedNetworkImage(
-                    imageUrl: profileProvider.singleUserData.profilePic ?? '',
-                    imageBuilder: (_, img) => CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: img,
-                      radius: 30,
-                    ),
-                    errorWidget: (_, __, ___) => const CircleAvatar(
+                    Widget avatar = const CircleAvatar(
                       backgroundColor: Colors.transparent,
                       backgroundImage: AssetImage('assets/images/profile.png'),
                       radius: 30,
-                    ),
-                    placeholder: (_, __) => const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(ColorResources.white),
-                      ),
-                    ),
-                  );
-                }
-
-                String name = '...';
-                String phone = '...';
-                if (st == SingleUserDataStatus.loaded) {
-                  name = profileProvider.singleUserData.fullname ?? '-';
-                  phone = profileProvider.singleUserData.phoneNumber ?? '-';
-                }
-
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 20),
-                    avatar,
-                    const SizedBox(height: 16),
-
-                    // info user
-                    _InfoRowCard(label: 'Nama', value: name),
-                    _InfoRowCard(label: 'No HP', value: phone),
-
-                    // pesan
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            message,
-                            textAlign: TextAlign.justify,
-                            style: robotoRegular.copyWith(
-                              height: 1.4,
-                              fontSize: Dimensions.fontSizeDefault,
-                            ),
+                    );
+                    if (st == SingleUserDataStatus.loaded) {
+                      final profilePic = profileProvider.singleUserData.profilePic ?? '';
+                      if (profilePic.trim().isNotEmpty) {
+                        avatar = CachedNetworkImage(
+                          imageUrl: profilePic,
+                          imageBuilder: (_, img) => CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: img,
+                            radius: 30,
                           ),
+                          errorWidget: (_, __, ___) => const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: AssetImage('assets/images/profile.png'),
+                            radius: 30,
+                          ),
+                        );
+                      }
+                    }
+
+                    final name = st == SingleUserDataStatus.loaded
+                        ? (profileProvider.singleUserData.fullname ?? '-')
+                        : '-';
+                    final address = st == SingleUserDataStatus.loaded
+                        ? (profileProvider.singleUserData.address ?? '-')
+                        : '-';
+                    final phone = st == SingleUserDataStatus.loaded
+                        ? (profileProvider.singleUserData.phoneNumber ?? '-')
+                        : '-';
+
+                    return Column(
+                      children: [
+                        avatar,
+                        const SizedBox(height: 10),
+                        _InfoRowCard(label: getTranslated('NAME', context), value: name),
+                        _InfoRowCard(label: getTranslated('ADDRESS', context), value: address),
+                        _InfoRowCard(label: getTranslated('PHONE_NUMBER', context), value: phone),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Card(
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.justify,
+                        style: robotoRegular.copyWith(
+                          height: 1.4,
+                          fontSize: Dimensions.fontSizeDefault,
                         ),
                       ),
                     ),
-                  ],
-                );
-              },
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -384,7 +409,14 @@ class _InfoRowCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(label, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
-              Text(value, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+                ),
+              ),
             ],
           ),
         ),

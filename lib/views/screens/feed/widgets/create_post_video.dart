@@ -35,7 +35,7 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   late VideoPlayerController videoPlayerController;
   late FeedProviderV2 fdv2;
 
-  File? fileX;
+  late final File fileX;
 
   @override
   void initState() {
@@ -45,9 +45,8 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
     fdv2.postC = TextEditingController();
     fdv2.setVideoUploadProgress(null);
     
-    setState(() => fileX = File(widget.file!.path));
-
-    videoPlayerController = VideoPlayerController.file(fileX!);
+    fileX = File(widget.file!.path);
+    videoPlayerController = VideoPlayerController.file(fileX);
   }
 
   @override
@@ -93,7 +92,7 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                   children: [
                     InkWell(
                       onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                        File f = File(fileX!.path);
+                        File f = File(fileX.path);
                         fdv2.feedType = "video";
                         await fdv2.postVideo(context, "video", f);
                       },
@@ -180,14 +179,24 @@ class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
     final uploadProgress = context.watch<FeedProviderV2>().videoUploadProgress;
     final progressBar = (uploadProgress ?? 0).toInt();
 
-    return widget.thumbnail == null && widget.videoSize == null ? const CircularProgressIndicator()
-    : Column(
+    return widget.videoSize == null
+        ? const CircularProgressIndicator()
+        : Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.memory(
-          widget.thumbnail!, 
-          height: 100.0
-        ),
+        widget.thumbnail == null
+            ? Container(
+                height: 100.0,
+                width: double.infinity,
+                alignment: Alignment.center,
+                color: Colors.grey.shade200,
+                child: const Icon(Icons.videocam, color: ColorResources.primaryOrange),
+              )
+            : Image.memory(
+                widget.thumbnail!,
+                height: 100.0,
+                fit: BoxFit.cover,
+              ),
         const SizedBox(height: 10.0),
         Text("${getTranslated("FILE_SIZE", context)}: ${widget.videoSize.toString()}",
           style: robotoRegular.copyWith(
