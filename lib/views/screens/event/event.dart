@@ -26,7 +26,6 @@ class EventScreen extends StatefulWidget {
 }
 
 class EventScreenState extends State<EventScreen> {
-
   void showParticipantsBottomSheet(List<dynamic> joins) {
     showModalBottomSheet(
       context: context,
@@ -61,13 +60,17 @@ class EventScreenState extends State<EventScreen> {
                   errorWidget: (_, __, ___) {
                     return const CircleAvatar(
                       maxRadius: 20.0,
-                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      backgroundImage: AssetImage(
+                        'assets/images/default_avatar.jpg',
+                      ),
                     );
                   },
                   placeholder: (_, __) {
                     return const CircleAvatar(
                       maxRadius: 20.0,
-                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      backgroundImage: AssetImage(
+                        'assets/images/default_avatar.jpg',
+                      ),
                     );
                   },
                 ),
@@ -93,20 +96,18 @@ class EventScreenState extends State<EventScreen> {
   DateTime selectedDay = DateTime.now();
 
   late EventProvider ep;
-  
+
   static int getHashCode(DateTime key) {
     return key.day * 1000000 + key.month * 10000 + key.year;
   }
 
-  List<Map<String, dynamic>> getEventsForDay(DateTime day) {   
-
+  List<Map<String, dynamic>> getEventsForDay(DateTime day) {
     final kEvents = LinkedHashMap<DateTime, List<Map<String, dynamic>>>(
       equals: isSameDay,
       hashCode: getHashCode,
     )..addAll(ep.events);
-  
-    return kEvents[day] ?? [];
 
+    return kEvents[day] ?? [];
   }
 
   void onDaySelected(DateTime selectedDayParam, DateTime focusedDayParam) {
@@ -121,10 +122,9 @@ class EventScreenState extends State<EventScreen> {
     }
   }
 
-
   Future<void> getData() async {
-    if(!mounted) return;
-      ep.getEvent();
+    if (!mounted) return;
+    ep.getEvent();
   }
 
   @override
@@ -136,14 +136,13 @@ class EventScreenState extends State<EventScreen> {
     Future.microtask(() => getData());
   }
 
-  @override 
+  @override
   void dispose() {
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     DateTime kToday = DateTime.now();
     DateTime kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
     DateTime kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
@@ -154,35 +153,35 @@ class EventScreenState extends State<EventScreen> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: ColorResources.white,
-        title: Text(getTranslated("EVENT", context),
+        title: Text(
+          getTranslated("EVENT", context),
           style: robotoRegular.copyWith(
             color: ColorResources.black,
             fontWeight: FontWeight.bold,
-            fontSize: Dimensions.fontSizeDefault
+            fontSize: Dimensions.fontSizeDefault,
           ),
         ),
       ),
       body: Consumer<EventProvider>(
-         builder: (context, EventProvider notifier,  Widget? child) {
-           return CustomScrollView(
+        builder: (context, EventProvider notifier, Widget? child) {
+          return CustomScrollView(
             physics: BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics() 
+              parent: AlwaysScrollableScrollPhysics(),
             ),
             slivers: [
-
-              if(notifier.eventStatus == EventStatus.loading)
+              if (notifier.eventStatus == EventStatus.loading)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
                     child: SizedBox(
                       width: 18.0,
                       height: 18.0,
-                      child: CircularProgressIndicator()
-                    )
-                  )
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
                 ),
 
-              if(notifier.eventStatus == EventStatus.loaded)
+              if (notifier.eventStatus == EventStatus.loaded)
                 SliverToBoxAdapter(
                   child: TableCalendar<Map<String, dynamic>>(
                     locale: 'id_ID',
@@ -192,33 +191,30 @@ class EventScreenState extends State<EventScreen> {
                     daysOfWeekHeight: 20.0,
                     calendarBuilders: CalendarBuilders(
                       markerBuilder: (context, day, events) {
-                        return events.isNotEmpty 
-                        ? Container(
-                          margin: EdgeInsets.only(
-                            top: 45.0,
-                            left: 15.0,
-                          ),
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: events.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                width: 5.0,
-                                height: 5.0,
-                                margin: EdgeInsets.only(
-                                  left: 1.0,
-                                  right: 1.0
+                        return events.isNotEmpty
+                            ? Container(
+                                margin: EdgeInsets.only(top: 45.0, left: 15.0),
+                                child: ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: events.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      width: 5.0,
+                                      height: 5.0,
+                                      margin: EdgeInsets.only(
+                                        left: 1.0,
+                                        right: 1.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.black,
+                                      ),
+                                    );
+                                  },
                                 ),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                        : const SizedBox();
+                              )
+                            : const SizedBox();
                       },
                       todayBuilder: (context, _, __) {
                         return Container(
@@ -230,15 +226,16 @@ class EventScreenState extends State<EventScreen> {
                             color: const Color(0xff5690FF),
                             border: Border.all(
                               color: const Color(0xffFFFFFF),
-                              width: 2.0
+                              width: 2.0,
                             ),
-                            borderRadius: BorderRadius.circular(8.0)
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Text("${DateTime.now().day}",
+                          child: Text(
+                            "${DateTime.now().day}",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: Dimensions.fontSizeSmall,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         );
@@ -247,10 +244,11 @@ class EventScreenState extends State<EventScreen> {
                         return Container(
                           margin: const EdgeInsets.all(10.0),
                           padding: EdgeInsets.zero,
-                          child: Text("${day.day}",
+                          child: Text(
+                            "${day.day}",
                             style: TextStyle(
                               fontSize: Dimensions.fontSizeSmall,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         );
@@ -264,14 +262,15 @@ class EventScreenState extends State<EventScreen> {
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: const Color(0xff5690FF),
-                              width: 2.0
+                              width: 2.0,
                             ),
-                            borderRadius: BorderRadius.circular(8.0)
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Text("${focusedDay.day}",
+                          child: Text(
+                            "${focusedDay.day}",
                             style: TextStyle(
                               fontSize: Dimensions.fontSizeSmall,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         );
@@ -282,35 +281,36 @@ class EventScreenState extends State<EventScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.white,
-                          boxShadow: kElevationToShadow[4]
+                          boxShadow: kElevationToShadow[4],
                         ),
                         padding: const EdgeInsets.all(5.0),
                         child: const Icon(
                           Icons.chevron_left,
                           size: 30.0,
-                          color: Colors.black,  
-                        )
+                          color: Colors.black,
+                        ),
                       ),
                       rightChevronIcon: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.white,
-                          boxShadow: kElevationToShadow[4]
+                          boxShadow: kElevationToShadow[4],
                         ),
                         padding: const EdgeInsets.all(5.0),
                         child: const Icon(
                           Icons.chevron_right,
                           size: 30.0,
                           color: Colors.black,
-                        )
+                        ),
                       ),
                       titleCentered: true,
                       titleTextStyle: const TextStyle(
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
                       ),
                       formatButtonVisible: false,
                     ),
-                    selectedDayPredicate: (DateTime day) => isSameDay(selectedDay, day),
+                    selectedDayPredicate: (DateTime day) =>
+                        isSameDay(selectedDay, day),
                     calendarFormat: CalendarFormat.month,
                     startingDayOfWeek: StartingDayOfWeek.monday,
                     eventLoader: getEventsForDay,
@@ -323,271 +323,285 @@ class EventScreenState extends State<EventScreen> {
                     },
                   ),
                 ),
-                            
-              if(notifier.eventStatus == EventStatus.loaded)
+
+              if (notifier.eventStatus == EventStatus.loaded)
                 SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int i) {
-                      return GestureDetector(
-                        onTap: () {
-                          NS.push(context, DetailEventScreen(
+                  delegate: SliverChildBuilderDelegate((
+                    BuildContext context,
+                    int i,
+                  ) {
+                    return GestureDetector(
+                      onTap: () {
+                        NS.push(
+                          context,
+                          DetailEventScreen(
                             id: notifier.selectedEvents[i]["id"],
                             join: notifier.selectedEvents[i]["join"],
                             joins: notifier.selectedEvents[i]["joins"],
-                            title: notifier.selectedEvents[i]["name"], 
-                            content: notifier.selectedEvents[i]["content"], 
-                            imageUrl: notifier.selectedEvents[i]["attachment"], 
-                            date: notifier.selectedEvents[i]["createdAt"]
-                          ));
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            top: 15.0, 
-                            left: 30.0,
-                            right: 30.0,
-                            bottom: 15.0
+                            title: notifier.selectedEvents[i]["name"],
+                            content: notifier.selectedEvents[i]["content"],
+                            imageUrl: notifier.selectedEvents[i]["attachment"],
+                            startDate: notifier.selectedEvents[i]["startDate"],
+                            endDate: notifier.selectedEvents[i]["endDate"],
+                            startTime: notifier.selectedEvents[i]["startTime"],
+                            endTime: notifier.selectedEvents[i]["endTime"],
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30.0),
-                            boxShadow: kElevationToShadow[3],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CachedNetworkImage(
-                                imageUrl: notifier.selectedEvents[i]["attachment"].toString(),
-                                imageBuilder: (_, imageProvider) {
-                                  return Container(
-                                    height: 200.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        topRight: Radius.circular(30),
-                                      ),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.fitWidth,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                errorWidget: (__, ___, _) {
-                                  return Container(
-                                    height: 200.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        topRight: Radius.circular(30),
-                                      ),
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/default_image.png'),
-                                        fit: BoxFit.fitWidth,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                placeholder: (_, __) {
-                                  return Container(
-                                    height: 200.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        topRight: Radius.circular(30),
-                                      ),
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/default_image.png'),
-                                        fit: BoxFit.fitWidth,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              Container(
-                                width: 350.0,
-                                padding: const EdgeInsets.all(10.0),
-                                margin: EdgeInsets.only(left: 15.0, right: 15.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            notifier.selectedEvents[i]["name"].toString(),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14.0,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6.0),
-                                          GestureDetector(
-                                            onTap: () => showParticipantsBottomSheet(
-                                              notifier.selectedEvents[i]["joins"] ?? [],
-                                            ),
-                                            child: Text(
-                                              'Peserta (${(notifier.selectedEvents[i]["joins"] as List?)?.length ?? 0})',
-                                              style: robotoRegular.copyWith(
-                                                fontSize: Dimensions.fontSizeSmall,
-                                                fontWeight: FontWeight.bold,
-                                                color: ColorResources.primaryOrange,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const Icon(
-                                      Icons.navigate_next,
-                                      size: 30.0,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          top: 15.0,
+                          left: 30.0,
+                          right: 30.0,
+                          bottom: 15.0,
                         ),
-                      );
-                    },
-                    childCount: notifier.selectedEvents.length,
-                  ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30.0),
+                          boxShadow: kElevationToShadow[3],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: notifier.selectedEvents[i]["attachment"]
+                                  .toString(),
+                              imageBuilder: (_, imageProvider) {
+                                return Container(
+                                  height: 200.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
+                                    ),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorWidget: (__, ___, _) {
+                                return Container(
+                                  height: 200.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
+                                    ),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        'assets/images/default_image.png',
+                                      ),
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                );
+                              },
+                              placeholder: (_, __) {
+                                return Container(
+                                  height: 200.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
+                                    ),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        'assets/images/default_image.png',
+                                      ),
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            Container(
+                              width: 350.0,
+                              padding: const EdgeInsets.all(10.0),
+                              margin: EdgeInsets.only(left: 15.0, right: 15.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          notifier.selectedEvents[i]["name"]
+                                              .toString(),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14.0,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6.0),
+                                        GestureDetector(
+                                          onTap: () => showParticipantsBottomSheet(
+                                            notifier.selectedEvents[i]["joins"] ??
+                                                [],
+                                          ),
+                                          child: Text(
+                                            'Peserta (${(notifier.selectedEvents[i]["joins"] as List?)?.length ?? 0})',
+                                            style: robotoRegular.copyWith(
+                                              fontSize:
+                                                  Dimensions.fontSizeSmall,
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  ColorResources.primaryOrange,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(Icons.navigate_next, size: 30.0),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }, childCount: notifier.selectedEvents.length),
                 ),
-                // SliverToBoxAdapter(
-                //   child: ListView.builder(
-                //     physics: NeverScrollableScrollPhysics(),
-                //     shrinkWrap: true,
-                //     itemCount: notifier.selectedEvents.length,
-                //     itemBuilder: (BuildContext context, int i) {
-                //       return GestureDetector(
-                //         onTap: () {
-                //           NS.push(context, DetailEventScreen(
-                //             title: notifier.selectedEvents[i]["name"], 
-                //             content: notifier.selectedEvents[i]["content"], 
-                //             imageUrl: notifier.selectedEvents[i]["attachment"], 
-                //             date: notifier.selectedEvents[i]["createdAt"]
-                //           ));
-                //         },
-                //         child: Container(
-                //           margin: EdgeInsets.only(
-                //             top: 15.0,
-                //             left: 30.0,
-                //             right: 30.0,
-                //             bottom: 15.0
-                //           ),
-                //           decoration: BoxDecoration(
-                //             color: Colors.white,
-                //             borderRadius: BorderRadius.circular(30.0),
-                //             boxShadow: kElevationToShadow[3]
-                //           ),
-                //           child: Column(
-                //             crossAxisAlignment: CrossAxisAlignment.start,
-                //             mainAxisSize: MainAxisSize.min,
-                //             children: [
-                        
-                //               CachedNetworkImage(
-                //                 imageUrl: notifier.selectedEvents[i]["attachment"].toString(),
-                //                 imageBuilder: (_, imageProvider) {
-                //                   return Container(
-                //                     height: 200.0,
-                //                     decoration: BoxDecoration(
-                //                       borderRadius: const BorderRadius.only(
-                //                         topLeft: Radius.circular(30.0),
-                //                         topRight: Radius.circular(30.0)
-                //                       ),
-                //                       image: DecorationImage(
-                //                         image: imageProvider,
-                //                         fit: BoxFit.fitWidth
-                //                       )
-                //                     ),
-                //                   );
-                //                 },
-                //                 errorWidget: (__, ___, _) {
-                //                   return Container(
-                //                     height: 200.0,
-                //                     decoration: BoxDecoration(
-                //                       borderRadius: const BorderRadius.only(
-                //                         topLeft: Radius.circular(30/0),
-                //                         topRight: Radius.circular(30.0)
-                //                       ),
-                //                       image: DecorationImage(
-                //                         image: AssetImage('assets/images/default_image.png'),
-                //                         fit: BoxFit.fitWidth
-                //                       )
-                //                     ),
-                //                   );
-                //                 },
-                //                 placeholder: (_, __) {
-                //                   return Container(
-                //                     height: 200.0,
-                //                     decoration: BoxDecoration(
-                //                       borderRadius: const BorderRadius.only(
-                //                         topLeft: Radius.circular(30.0),
-                //                         topRight: Radius.circular(30.0)
-                //                       ),
-                //                       image: DecorationImage(
-                //                         image: AssetImage('assets/images/default_image.png'),
-                //                         fit: BoxFit.fitWidth
-                //                       )
-                //                     ),
-                //                   );
-                //                 },
-                //               ),
-                        
-                //               Container(
-                //                 width: 350.0,
-                //                 padding:const  EdgeInsets.all(10.0),
-                //                 margin: EdgeInsets.only(
-                //                   left: 15.0,
-                //                   right: 15.0
-                //                 ),
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //                   mainAxisSize: MainAxisSize.max,
-                //                   children: [
-                                        
-                //                     Expanded(
-                //                       child: Column(
-                //                         crossAxisAlignment: CrossAxisAlignment.start,
-                //                         mainAxisSize: MainAxisSize.min,
-                //                         children: [
-                                                                
-                //                           Text(notifier.selectedEvents[i]["name"].toString(),
-                //                             overflow: TextOverflow.ellipsis,
-                //                             style: TextStyle(
-                //                               fontWeight: FontWeight.bold,
-                //                               fontSize: 14.0
-                //                             ),
-                //                           ),
-                                      
-                //                         ],
-                //                       ),
-                //                     ),
-                                        
-                //                     const Icon(
-                //                       Icons.navigate_next,
-                //                       size: 30.0,
-                //                     )
-                                        
-                //                   ],
-                //                 ),
-                //               )
-                //             ],
-                //           )
-                //         ),
-                //       );
-                //     }
-                //   ),
-                // )
-           
+
+              // SliverToBoxAdapter(
+              //   child: ListView.builder(
+              //     physics: NeverScrollableScrollPhysics(),
+              //     shrinkWrap: true,
+              //     itemCount: notifier.selectedEvents.length,
+              //     itemBuilder: (BuildContext context, int i) {
+              //       return GestureDetector(
+              //         onTap: () {
+              //           NS.push(context, DetailEventScreen(
+              //             title: notifier.selectedEvents[i]["name"],
+              //             content: notifier.selectedEvents[i]["content"],
+              //             imageUrl: notifier.selectedEvents[i]["attachment"],
+              //             date: notifier.selectedEvents[i]["createdAt"]
+              //           ));
+              //         },
+              //         child: Container(
+              //           margin: EdgeInsets.only(
+              //             top: 15.0,
+              //             left: 30.0,
+              //             right: 30.0,
+              //             bottom: 15.0
+              //           ),
+              //           decoration: BoxDecoration(
+              //             color: Colors.white,
+              //             borderRadius: BorderRadius.circular(30.0),
+              //             boxShadow: kElevationToShadow[3]
+              //           ),
+              //           child: Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: [
+
+              //               CachedNetworkImage(
+              //                 imageUrl: notifier.selectedEvents[i]["attachment"].toString(),
+              //                 imageBuilder: (_, imageProvider) {
+              //                   return Container(
+              //                     height: 200.0,
+              //                     decoration: BoxDecoration(
+              //                       borderRadius: const BorderRadius.only(
+              //                         topLeft: Radius.circular(30.0),
+              //                         topRight: Radius.circular(30.0)
+              //                       ),
+              //                       image: DecorationImage(
+              //                         image: imageProvider,
+              //                         fit: BoxFit.fitWidth
+              //                       )
+              //                     ),
+              //                   );
+              //                 },
+              //                 errorWidget: (__, ___, _) {
+              //                   return Container(
+              //                     height: 200.0,
+              //                     decoration: BoxDecoration(
+              //                       borderRadius: const BorderRadius.only(
+              //                         topLeft: Radius.circular(30/0),
+              //                         topRight: Radius.circular(30.0)
+              //                       ),
+              //                       image: DecorationImage(
+              //                         image: AssetImage('assets/images/default_image.png'),
+              //                         fit: BoxFit.fitWidth
+              //                       )
+              //                     ),
+              //                   );
+              //                 },
+              //                 placeholder: (_, __) {
+              //                   return Container(
+              //                     height: 200.0,
+              //                     decoration: BoxDecoration(
+              //                       borderRadius: const BorderRadius.only(
+              //                         topLeft: Radius.circular(30.0),
+              //                         topRight: Radius.circular(30.0)
+              //                       ),
+              //                       image: DecorationImage(
+              //                         image: AssetImage('assets/images/default_image.png'),
+              //                         fit: BoxFit.fitWidth
+              //                       )
+              //                     ),
+              //                   );
+              //                 },
+              //               ),
+
+              //               Container(
+              //                 width: 350.0,
+              //                 padding:const  EdgeInsets.all(10.0),
+              //                 margin: EdgeInsets.only(
+              //                   left: 15.0,
+              //                   right: 15.0
+              //                 ),
+              //                 child: Row(
+              //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                   mainAxisSize: MainAxisSize.max,
+              //                   children: [
+
+              //                     Expanded(
+              //                       child: Column(
+              //                         crossAxisAlignment: CrossAxisAlignment.start,
+              //                         mainAxisSize: MainAxisSize.min,
+              //                         children: [
+
+              //                           Text(notifier.selectedEvents[i]["name"].toString(),
+              //                             overflow: TextOverflow.ellipsis,
+              //                             style: TextStyle(
+              //                               fontWeight: FontWeight.bold,
+              //                               fontSize: 14.0
+              //                             ),
+              //                           ),
+
+              //                         ],
+              //                       ),
+              //                     ),
+
+              //                     const Icon(
+              //                       Icons.navigate_next,
+              //                       size: 30.0,
+              //                     )
+
+              //                   ],
+              //                 ),
+              //               )
+              //             ],
+              //           )
+              //         ),
+              //       );
+              //     }
+              //   ),
+              // )
             ],
           );
-        }
-      )
+        },
+      ),
     );
   }
 }

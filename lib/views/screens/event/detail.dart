@@ -22,7 +22,10 @@ class DetailEventScreen extends StatefulWidget {
   final bool join;
   final List<Join> joins;
   final String imageUrl;
-  final DateTime date;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String startTime;
+  final String endTime;
 
   const DetailEventScreen({
     super.key,
@@ -32,7 +35,10 @@ class DetailEventScreen extends StatefulWidget {
     required this.join,
     required this.joins,
     required this.imageUrl,
-    required this.date,
+    required this.startDate,
+    required this.endDate,
+    required this.startTime,
+    required this.endTime,
   });
 
   @override
@@ -46,7 +52,6 @@ class DetailEventPageState extends State<DetailEventScreen> {
   String? title;
   String? content;
   String? titleMore;
-  DateTime? date;
 
   bool lastStatus = true;
 
@@ -59,10 +64,11 @@ class DetailEventPageState extends State<DetailEventScreen> {
   }
 
   bool get isShrink {
-    return scrollController.hasClients && scrollController.offset > (250 - kToolbarHeight);
+    return scrollController.hasClients &&
+        scrollController.offset > (250 - kToolbarHeight);
   }
 
-  DateTime _toLocalEventDate(DateTime value) {
+  DateTime _toLocalDate(DateTime value) {
     if (value.isUtc) {
       return value.toLocal();
     }
@@ -70,10 +76,54 @@ class DetailEventPageState extends State<DetailEventScreen> {
     return value;
   }
 
-  String _formatEventDate(DateTime value) {
-    final DateTime localDate = _toLocalEventDate(value);
+  String _formatTime(String value) {
+    final trimmed = value.trim();
 
-    return DateFormat('dd MMM yyyy HH:mm').format(localDate);
+    if (trimmed.isEmpty) {
+      return '';
+    }
+
+    return trimmed;
+  }
+
+  String _formatEventDateRange({
+    required DateTime startDate,
+    required DateTime endDate,
+    required String startTime,
+    required String endTime,
+  }) {
+    final DateTime localStartDate = _toLocalDate(startDate);
+    final DateTime localEndDate = _toLocalDate(endDate);
+    final String formattedStartDate = DateFormat(
+      'dd MMM yyyy',
+    ).format(localStartDate);
+    final String formattedEndDate = DateFormat(
+      'dd MMM yyyy',
+    ).format(localEndDate);
+    final String formattedStartTime = _formatTime(startTime);
+    final String formattedEndTime = _formatTime(endTime);
+    final bool sameDay = DateUtils.isSameDay(localStartDate, localEndDate);
+
+    if (sameDay) {
+      if (formattedStartTime.isEmpty && formattedEndTime.isEmpty) {
+        return formattedStartDate;
+      }
+
+      if (formattedEndTime.isEmpty) {
+        return '$formattedStartDate $formattedStartTime';
+      }
+
+      return '$formattedStartDate $formattedStartTime - $formattedEndTime';
+    }
+
+    final String startLabel = formattedStartTime.isEmpty
+        ? formattedStartDate
+        : '$formattedStartDate $formattedStartTime';
+    final String endLabel = formattedEndTime.isEmpty
+        ? formattedEndDate
+        : '$formattedEndDate $formattedEndTime';
+
+    return '$startLabel - $endLabel';
   }
 
   String _formatLocation(String value) {
@@ -112,7 +162,6 @@ class DetailEventPageState extends State<DetailEventScreen> {
     imageUrl = widget.imageUrl;
     title = widget.title;
     content = widget.content;
-    date = _toLocalEventDate(widget.date);
 
     final eventProvider = context.watch<EventProvider>();
 
@@ -132,7 +181,9 @@ class DetailEventPageState extends State<DetailEventScreen> {
           SliverAppBar(
             elevation: 0,
             backgroundColor: Colors.white,
-            iconTheme: IconThemeData(color: isShrink ? Colors.black : Colors.white),
+            iconTheme: IconThemeData(
+              color: isShrink ? Colors.black : Colors.white,
+            ),
             pinned: true,
             expandedHeight: 250.0,
             leading: GestureDetector(
@@ -170,14 +221,15 @@ class DetailEventPageState extends State<DetailEventScreen> {
                         fit: BoxFit.cover,
                         placeholder: (BuildContext context, String url) =>
                             const Center(child: CircularProgressIndicator()),
-                        errorWidget: (BuildContext context, String url, error) => Center(
-                          child: Image.asset(
-                            "assets/images/profile.png",
-                            height: double.infinity,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        errorWidget:
+                            (BuildContext context, String url, error) => Center(
+                              child: Image.asset(
+                                "assets/images/profile.png",
+                                height: double.infinity,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                       ),
                     ),
                   ),
@@ -202,7 +254,11 @@ class DetailEventPageState extends State<DetailEventScreen> {
             delegate: SliverChildListDelegate([
               Container(
                 width: double.infinity,
-                margin: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                margin: const EdgeInsets.only(
+                  top: 16.0,
+                  left: 16.0,
+                  right: 16.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -228,7 +284,14 @@ class DetailEventPageState extends State<DetailEventScreen> {
                         Container(
                           margin: const EdgeInsets.only(bottom: 10.0),
                           child: Text(
-                            _formatEventDate(date!),
+                            _formatEventDateRange(
+                              startDate:
+                                  currentEvent?.startDate ?? widget.startDate,
+                              endDate: currentEvent?.endDate ?? widget.endDate,
+                              startTime:
+                                  currentEvent?.start ?? widget.startTime,
+                              endTime: currentEvent?.end ?? widget.endTime,
+                            ),
                             style: robotoRegular.copyWith(
                               color: Colors.grey,
                               fontSize: Dimensions.fontSizeDefault,
@@ -271,11 +334,13 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                 onTap: isJoined
                                     ? () {}
                                     : () async {
-                                        await context.read<EventProvider>().joinEvent(
-                                          eventId: widget.id,
-                                        );
+                                        await context
+                                            .read<EventProvider>()
+                                            .joinEvent(eventId: widget.id);
                                       },
-                                isLoading: eventProvider.eventJoinStatus == EventJoinStatus.loading,
+                                isLoading:
+                                    eventProvider.eventJoinStatus ==
+                                    EventJoinStatus.loading,
                                 height: 40.0,
                                 btnColor: isJoined
                                     ? ColorResources.greyDarkPrimary
@@ -305,13 +370,16 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               CachedNetworkImage(
-                                                imageUrl: participantList[i].profilePic,
-                                                imageBuilder: (context, imageProvider) {
-                                                  return CircleAvatar(
-                                                    maxRadius: 20.0,
-                                                    backgroundImage: imageProvider,
-                                                  );
-                                                },
+                                                imageUrl: participantList[i]
+                                                    .profilePic,
+                                                imageBuilder:
+                                                    (context, imageProvider) {
+                                                      return CircleAvatar(
+                                                        maxRadius: 20.0,
+                                                        backgroundImage:
+                                                            imageProvider,
+                                                      );
+                                                    },
                                                 errorWidget: (context, url, error) {
                                                   return const CircleAvatar(
                                                     maxRadius: 20.0,
@@ -333,7 +401,8 @@ class DetailEventPageState extends State<DetailEventScreen> {
                                               Text(
                                                 participantList[i].fullname,
                                                 style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeDefault,
+                                                  fontSize: Dimensions
+                                                      .fontSizeDefault,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
