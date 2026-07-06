@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:saka/firebase_options.dart';
 import 'localization/app_localization.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -30,24 +31,33 @@ import 'package:saka/views/screens/feed/post_detail.dart';
 import 'package:saka/views/screens/news/detail.dart';
 
 @pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  debugPrint('>>> BACKGROUND MESSAGE TRIGGERED');
+  debugPrint('>>> background data: ${message.data}');
+  debugPrint(
+    '>>> background notification: '
+    '${message.notification?.title} / ${message.notification?.body}',
+  );
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Penting: tunggu init Firebase selesai
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   // Locale untuk timeago
   timeago.setLocaleMessages('id', CustomLocalDate());
 
   await Helper.initSharedPreferences();
   await core.init();
+  await NotificationService.init();
 
-  runApp(
-    MultiProvider(
-      providers: providers,
-      child: const MyApp(),
-    ),
-  );
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -74,19 +84,23 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> _initNotifications() async {
     if (!mounted) return;
 
-    // 1) init plugin notifikasi
-    await NotificationService.init();
+    final firebaseProvider = context.read<FirebaseProvider>();
+
+    // 1) request permission, ambil token FCM, dan kirim ke BE
+    await firebaseProvider.initFcm();
 
     if (!mounted) return;
 
     // 2) listen pesan foreground
-    context.read<FirebaseProvider>().listenNotification(context);
+    firebaseProvider.listenNotification(context);
 
     // 3) pesan ketika app dibuka dari notif (terminated/background)
-    await context.read<FirebaseProvider>().setupInteractedMessage(context);
+    await firebaseProvider.setupInteractedMessage(context);
 
     // 4) klik notif lokal
-    _notifSub = NotificationService.onNotifications.stream.listen(_onClickedNotification);
+    _notifSub = NotificationService.onNotifications.stream.listen(
+      _onClickedNotification,
+    );
   }
 
   @override
@@ -126,17 +140,18 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     Map<String, dynamic> data;
     try {
       final decoded = json.decode(payload);
-      if (decoded is Map<String, dynamic>) {
-        data = decoded;
-      } else {
+      if (decoded is! Map) {
         return;
       }
+      data = Map<String, dynamic>.from(decoded);
     } catch (_) {
       // payload bukan JSON valid -> abaikan
       return;
     }
 
-    final action = (data['click_action'] as String?) ?? '';
+    final action =
+        (data['click_action'] ?? data['type'] ?? data['broadcast_type'] ?? '')
+            .toString();
     final ctx = navigatorKey.currentState?.context ?? context;
 
     switch (action) {

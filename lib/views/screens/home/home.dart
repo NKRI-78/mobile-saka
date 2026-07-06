@@ -22,12 +22,10 @@ import 'package:saka/localization/language_constraints.dart';
 
 import 'package:saka/providers/inbox/inbox.dart';
 import 'package:saka/providers/banner/banner.dart';
-import 'package:saka/providers/firebase/firebase.dart';
 import 'package:saka/providers/profile/profile.dart';
 import 'package:saka/providers/news/news.dart';
 import 'package:saka/providers/location/location.dart';
 import 'package:saka/providers/auth/auth.dart';
-import 'package:saka/providers/ecommerce/ecommerce.dart';
 
 import 'package:saka/utils/helper.dart';
 import 'package:saka/utils/color_resources.dart';
@@ -56,7 +54,6 @@ class HomeScreenState extends State<HomeScreen> {
   bool _showAllNews = false;
 
   // late EcommerceProvider ep;
-  late FirebaseProvider fp;
   late NewsProvider np;
   late LocationProvider lp;
   late InboxProvider ip;
@@ -65,9 +62,6 @@ class HomeScreenState extends State<HomeScreen> {
   late AuthProvider ap;
 
   Future<void> getData() async {
-    if (mounted) {
-      fp.initFcm(context);
-    }
     if (mounted) {
       ip.getInbox(context, "sos");
     }
@@ -88,7 +82,10 @@ class HomeScreenState extends State<HomeScreen> {
         desiredAccuracy: LocationAccuracy.bestForNavigation,
       );
 
-      lp.getCurrentPosition(latitude: position.latitude, longitude: position.longitude);
+      lp.getCurrentPosition(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
 
       Helper.prefs?.setString("lat", position.latitude.toString());
       Helper.prefs?.setString("lng", position.longitude.toString());
@@ -101,7 +98,6 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    fp = context.read<FirebaseProvider>();
     np = context.read<NewsProvider>();
     ip = context.read<InboxProvider>();
     bp = context.read<BannerProvider>();
@@ -155,7 +151,9 @@ class HomeScreenState extends State<HomeScreen> {
               });
             },
             child: CustomScrollView(
-              physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               slivers: [
                 SliverAppBar(
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -194,7 +192,8 @@ class HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.only(left: 25.0, right: 25.0),
                       child: Consumer<NewsProvider>(
                         builder: (context, newsProvider, child) {
-                          final hasMoreThanFive = newsProvider.newsData.length > 5;
+                          final hasMoreThanFive =
+                              newsProvider.newsData.length > 5;
                           return Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -263,7 +262,9 @@ class HomeScreenState extends State<HomeScreen> {
                     NS.push(context, EventScannerJoinScreen());
                   },
                   child: BounceIn(
-                    preferences: AnimationPreferences(autoPlay: AnimationPlayStates.Loop),
+                    preferences: AnimationPreferences(
+                      autoPlay: AnimationPlayStates.Loop,
+                    ),
                     child: Image.asset("assets/images/ic-jambore.png"),
                   ),
                 )
@@ -276,127 +277,149 @@ class HomeScreenState extends State<HomeScreen> {
 
 Widget banner(BuildContext context) {
   return Consumer<BannerProvider>(
-    builder: (BuildContext context, BannerProvider bannerProvider, Widget? child) {
-      if (bannerProvider.bannerStatus == BannerStatus.loading) {
-        return Container(
-          margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-          width: double.infinity,
-          height: 180.0,
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[200]!,
-            child: Container(
-              decoration: BoxDecoration(
-                color: ColorResources.white,
-                borderRadius: BorderRadius.circular(15.0),
+    builder:
+        (BuildContext context, BannerProvider bannerProvider, Widget? child) {
+          if (bannerProvider.bannerStatus == BannerStatus.loading) {
+            return Container(
+              margin: EdgeInsets.only(
+                top: 10.0,
+                bottom: 10.0,
+                left: 25.0,
+                right: 25.0,
               ),
-            ),
-          ),
-        );
-      }
-
-      if (bannerProvider.bannerStatus == BannerStatus.empty) {
-        return SizedBox(
-          width: double.infinity,
-          height: 180.0,
-          child: Center(
-            child: Text(
-              getTranslated("NO_BANNER_AVAILABLE", context),
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black,
-              ),
-            ),
-          ),
-        );
-      }
-
-      if (bannerProvider.bannerStatus == BannerStatus.error) {
-        return SizedBox(
-          width: double.infinity,
-          height: 180.0,
-          child: Center(
-            child: Text(
-              getTranslated("THERE_WAS_PROBLEM", context),
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black,
-              ),
-            ),
-          ),
-        );
-      }
-
-      return Container(
-        margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-        width: double.infinity,
-        height: 180.0,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              fit: StackFit.expand,
-              children: [
-                CarouselSlider.builder(
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 1.0,
-                    initialPage: 3,
-                    onPageChanged: (int i, CarouselPageChangedReason reason) {
-                      bannerProvider.setCurrentIndex(i);
-                    },
+              width: double.infinity,
+              height: 180.0,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[200]!,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: ColorResources.white,
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                  itemCount: bannerProvider.bannerListMap.length,
-                  itemBuilder: (BuildContext context, int i, int z) {
-                    return GestureDetector(
-                      onTap: () async {
-                        await launchUrl(bannerProvider.bannerListMap[i]["link"]);
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: CachedNetworkImage(
-                          imageUrl: "${bannerProvider.bannerListMap[i]["path"]}",
-                          fit: BoxFit.fill,
-                          width: double.infinity,
-                          height: double.infinity,
-                          placeholder: (context, url) {
-                            return Image.asset('assets/images/default_image.png');
-                          },
-                          errorWidget: (context, url, error) {
-                            return Image.asset('assets/images/default_image.png');
-                          },
-                        ),
-                      ),
-                    );
-                  },
                 ),
-                Positioned(
-                  bottom: 12.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: bannerProvider.bannerListMap.map((banner) {
-                      int index = bannerProvider.bannerListMap.indexOf(banner);
-                      return TabPageSelectorIndicator(
-                        backgroundColor: index == bannerProvider.currentIndex
-                            ? ColorResources.primaryOrange
-                            : ColorResources.brown,
-                        borderColor: Colors.white,
-                        size: 10.0,
-                      );
-                    }).toList(),
+              ),
+            );
+          }
+
+          if (bannerProvider.bannerStatus == BannerStatus.empty) {
+            return SizedBox(
+              width: double.infinity,
+              height: 180.0,
+              child: Center(
+                child: Text(
+                  getTranslated("NO_BANNER_AVAILABLE", context),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.black,
                   ),
+                ),
+              ),
+            );
+          }
+
+          if (bannerProvider.bannerStatus == BannerStatus.error) {
+            return SizedBox(
+              width: double.infinity,
+              height: 180.0,
+              child: Center(
+                child: Text(
+                  getTranslated("THERE_WAS_PROBLEM", context),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.black,
+                  ),
+                ),
+              ),
+            );
+          }
+
+          return Container(
+            margin: EdgeInsets.only(
+              top: 10.0,
+              bottom: 10.0,
+              left: 25.0,
+              right: 25.0,
+            ),
+            width: double.infinity,
+            height: 180.0,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  fit: StackFit.expand,
+                  children: [
+                    CarouselSlider.builder(
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 1.0,
+                        initialPage: 3,
+                        onPageChanged:
+                            (int i, CarouselPageChangedReason reason) {
+                              bannerProvider.setCurrentIndex(i);
+                            },
+                      ),
+                      itemCount: bannerProvider.bannerListMap.length,
+                      itemBuilder: (BuildContext context, int i, int z) {
+                        return GestureDetector(
+                          onTap: () async {
+                            await launchUrl(
+                              bannerProvider.bannerListMap[i]["link"],
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "${bannerProvider.bannerListMap[i]["path"]}",
+                              fit: BoxFit.fill,
+                              width: double.infinity,
+                              height: double.infinity,
+                              placeholder: (context, url) {
+                                return Image.asset(
+                                  'assets/images/default_image.png',
+                                );
+                              },
+                              errorWidget: (context, url, error) {
+                                return Image.asset(
+                                  'assets/images/default_image.png',
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      bottom: 12.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: bannerProvider.bannerListMap.map((banner) {
+                          int index = bannerProvider.bannerListMap.indexOf(
+                            banner,
+                          );
+                          return TabPageSelectorIndicator(
+                            backgroundColor:
+                                index == bannerProvider.currentIndex
+                                ? ColorResources.primaryOrange
+                                : ColorResources.brown,
+                            borderColor: Colors.white,
+                            size: 10.0,
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      );
-    },
+          );
+        },
   );
 }
 
@@ -405,7 +428,12 @@ Widget infoAccount(BuildContext context) {
     height: 70.0,
     margin: EdgeInsets.only(top: 15.0, left: 16.0, right: 16.0),
     child: Container(
-      padding: EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0, bottom: 10.0),
+      padding: EdgeInsets.only(
+        top: 10.0,
+        left: 15.0,
+        right: 15.0,
+        bottom: 10.0,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15.0),
@@ -413,54 +441,59 @@ Widget infoAccount(BuildContext context) {
         ),
       ),
       child: Consumer<ProfileProvider>(
-        builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-          if (profileProvider.profileStatus == ProfileStatus.loading) {
-            return Text(
-              "...",
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-                color: ColorResources.white,
-              ),
-            );
-          }
-          if (profileProvider.profileStatus == ProfileStatus.error) {
-            return Text(
-              "-",
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-                color: ColorResources.white,
-              ),
-            );
-          }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                profileProvider.userProfile.fullname!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: robotoRegular.copyWith(
-                  overflow: TextOverflow.fade,
-                  color: ColorResources.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: Dimensions.fontSizeLarge,
-                ),
-              ),
+        builder:
+            (
+              BuildContext context,
+              ProfileProvider profileProvider,
+              Widget? child,
+            ) {
+              if (profileProvider.profileStatus == ProfileStatus.loading) {
+                return Text(
+                  "...",
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeLarge,
+                    color: ColorResources.white,
+                  ),
+                );
+              }
+              if (profileProvider.profileStatus == ProfileStatus.error) {
+                return Text(
+                  "-",
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeLarge,
+                    color: ColorResources.white,
+                  ),
+                );
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    profileProvider.userProfile.fullname!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: robotoRegular.copyWith(
+                      overflow: TextOverflow.fade,
+                      color: ColorResources.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: Dimensions.fontSizeLarge,
+                    ),
+                  ),
 
-              Text(
-                profileProvider.userProfile.lanud!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: robotoRegular.copyWith(
-                  overflow: TextOverflow.fade,
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black,
-                ),
-              ),
-            ],
-          );
-        },
+                  Text(
+                    profileProvider.userProfile.lanud!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: robotoRegular.copyWith(
+                      overflow: TextOverflow.fade,
+                      fontSize: Dimensions.fontSizeDefault,
+                      color: ColorResources.black,
+                    ),
+                  ),
+                ],
+              );
+            },
       ),
     ),
   );
@@ -470,7 +503,12 @@ Widget ourService(BuildContext context) {
   final List<Map<String, dynamic>> menus = [
     {"id": 1, "name": "Radio", "asset": "radio.png", "link": const SizedBox()},
     {"id": 2, "name": "Forum", "asset": "forum.png", "link": FeedIndex()},
-    {"id": 3, "name": "Nearby", "asset": "nearby.png", "link": MemberNearScreen()},
+    {
+      "id": 3,
+      "name": "Nearby",
+      "asset": "nearby.png",
+      "link": MemberNearScreen(),
+    },
   ];
 
   const double maxContentWidth = 420;
@@ -599,7 +637,9 @@ Widget newsWidget(BuildContext context, {bool showAll = false}) {
           ),
         );
       }
-      final newsItems = showAll ? newsProvider.newsData : newsProvider.newsData.take(5).toList();
+      final newsItems = showAll
+          ? newsProvider.newsData
+          : newsProvider.newsData.take(5).toList();
       return Container(
         margin: EdgeInsets.only(left: 25.0, right: 25.0),
         child: ListView.builder(
@@ -623,7 +663,9 @@ Widget newsWidget(BuildContext context, {bool showAll = false}) {
                   onTap: () {
                     NS.push(
                       context,
-                      DetailNewsScreen(contentId: newsItems[i].articleId.toString()),
+                      DetailNewsScreen(
+                        contentId: newsItems[i].articleId.toString(),
+                      ),
                     );
                   },
                   child: Padding(
@@ -641,10 +683,14 @@ Widget newsWidget(BuildContext context, {bool showAll = false}) {
                               width: 80.0,
                               height: 80.0,
                               placeholder: (context, url) {
-                                return Image.asset('assets/images/default_image.png');
+                                return Image.asset(
+                                  'assets/images/default_image.png',
+                                );
                               },
                               errorWidget: (context, url, error) {
-                                return Image.asset('assets/images/default_image.png');
+                                return Image.asset(
+                                  'assets/images/default_image.png',
+                                );
                               },
                             ),
                           ),
@@ -671,7 +717,9 @@ Widget newsWidget(BuildContext context, {bool showAll = false}) {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  DateFormat('dd MMM yyyy').format(newsItems[i].created!),
+                                  DateFormat(
+                                    'dd MMM yyyy',
+                                  ).format(newsItems[i].created!),
                                   textAlign: TextAlign.end,
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall,

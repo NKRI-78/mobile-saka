@@ -17,8 +17,6 @@ import 'package:saka/data/repository/profile/profile.dart';
 import 'package:saka/data/repository/sos/sos.dart';
 import 'package:saka/data/repository/splash/splash.dart';
 
-import 'package:saka/services/notification.dart';
-
 import 'package:saka/providers/feed/feed.dart';
 import 'package:saka/providers/firebase/firebase.dart';
 import 'package:saka/providers/onboarding/onboarding.dart';
@@ -42,136 +40,73 @@ import 'package:saka/providers/event/event.dart';
 final getIt = GetIt.instance;
 
 Future<void> init() async {
-  getIt.registerLazySingleton(() => NotificationService());
-
-  getIt.registerLazySingleton(() => AuthRepo(
-    sp: getIt()
-  ));
+  getIt.registerLazySingleton(() => AuthRepo(sp: getIt()));
 
   getIt.registerLazySingleton(() => EcommerceRepo(sp: getIt()));
 
   getIt.registerLazySingleton(() => CategoryRepo());
   getIt.registerLazySingleton(() => SosRepo());
-  getIt.registerLazySingleton(() => BannerRepo(
-    sp: getIt()
-  ));
+  getIt.registerLazySingleton(() => BannerRepo(sp: getIt()));
 
-  getIt.registerLazySingleton(() => FirebaseRepo(
-    ar: getIt(),
-    sp: getIt()
-  ));
+  getIt.registerLazySingleton(() => FirebaseRepo(ar: getIt(), sp: getIt()));
 
-  getIt.registerLazySingleton(() => MembernearRepo(
-    sp: getIt() 
-  ));
+  getIt.registerLazySingleton(() => MembernearRepo(sp: getIt()));
 
-  getIt.registerLazySingleton(() => EventRepo(
-    sp: getIt(),
-    ar: getIt()
-  ));
+  getIt.registerLazySingleton(() => EventRepo(sp: getIt(), ar: getIt()));
 
-  getIt.registerLazySingleton(() => OnboardingRepo(
-    sp: getIt()
-  ));
+  getIt.registerLazySingleton(() => OnboardingRepo(sp: getIt()));
 
   getIt.registerLazySingleton(() => MediaRepo());
-  
-  getIt.registerLazySingleton(() => ProfileRepo(
-    ar: getIt(),
-    sp: getIt()
-  ));
 
-  getIt.registerLazySingleton(() => FeedRepo(
-    sp: getIt(),
-  ));
-  
-  getIt.registerLazySingleton(() => FeedRepoV2(
-    sp: getIt(),
-  ));
+  getIt.registerLazySingleton(() => ProfileRepo(ar: getIt(), sp: getIt()));
 
-  getIt.registerLazySingleton(() => SplashRepo(
-    sp: getIt()
-  ));
+  getIt.registerLazySingleton(() => FeedRepo(sp: getIt()));
 
-  getIt.registerFactory(() => FeedProvider(
-    ar: getIt(), 
-    fr: getIt()
-  ));
-  getIt.registerFactory(() => FeedProviderV2(
-    ar: getIt(), 
-    fr: getIt()
-  ));
-  getIt.registerFactory(() => FeedDetailProviderV2(
-    ar: getIt(), 
-    fr: getIt()
-  ));
-  getIt.registerFactory(() => FeedReplyProvider(
-    ar: getIt(), 
-    fr: getIt()
-  ));
+  getIt.registerLazySingleton(() => FeedRepoV2(sp: getIt()));
 
-  getIt.registerFactory(() => AuthProvider(
-    ar: getIt(), 
-    sp: getIt(),
-  ));
+  getIt.registerLazySingleton(() => SplashRepo(sp: getIt()));
+
+  getIt.registerFactory(() => FeedProvider(ar: getIt(), fr: getIt()));
+  getIt.registerFactory(() => FeedProviderV2(ar: getIt(), fr: getIt()));
+  getIt.registerFactory(() => FeedDetailProviderV2(ar: getIt(), fr: getIt()));
+  getIt.registerFactory(() => FeedReplyProvider(ar: getIt(), fr: getIt()));
+
+  getIt.registerFactory(() => AuthProvider(ar: getIt(), sp: getIt()));
 
   getIt.registerFactory(() => CategoryProvider(cr: getIt()));
-  getIt.registerFactory(() => SosProvider(
-    sr: getIt(),
-    ar: getIt(),
-    lp: getIt(),
-  ));
+  getIt.registerFactory(
+    () => SosProvider(sr: getIt(), ar: getIt(), lp: getIt()),
+  );
 
-  getIt.registerFactory(() => BannerProvider(
-    br: getIt()
-  ));
+  getIt.registerFactory(() => BannerProvider(br: getIt()));
 
-  getIt.registerFactory(() => EcommerceProvider(
-    er: getIt(),
-    mr: getIt()
-  ));
+  getIt.registerFactory(() => EcommerceProvider(er: getIt(), mr: getIt()));
 
   getIt.registerFactory(() => LocationProvider(sp: getIt()));
 
-  getIt.registerFactory(() => OnboardingProvider(  
-    or: getIt()
-  ));
-  
-  getIt.registerFactory(() => MediaProvider(
-    mr: getIt(),
-  ));
+  getIt.registerFactory(() => OnboardingProvider(or: getIt()));
+
+  getIt.registerFactory(() => MediaProvider(mr: getIt()));
 
   getIt.registerFactory(() => NewsProvider());
-  
-  getIt.registerFactory(() => MembernearProvider(
-    mr: getIt(), 
-    sp: getIt(),
-    lp: getIt()
-  ));
+
+  getIt.registerFactory(
+    () => MembernearProvider(mr: getIt(), sp: getIt(), lp: getIt()),
+  );
 
   getIt.registerFactory(() => InboxProvider());
-  
-  getIt.registerFactory(() => FirebaseProvider(
-    ap: getIt(),
-    fp: getIt(),
-    sp: getIt()
-  ));
 
-  getIt.registerFactory(() => EventProvider(
-    ar: getIt(),
-    er: getIt(),
-    sp: getIt()
-  ));
+  getIt.registerFactory(
+    () => FirebaseProvider(ap: getIt(), fp: getIt(), sp: getIt()),
+  );
 
-  getIt.registerFactory(() => ProfileProvider(
-    ar: getIt(),
-    pr: getIt()
-  ));
+  getIt.registerFactory(
+    () => EventProvider(ar: getIt(), er: getIt(), sp: getIt()),
+  );
 
-  getIt.registerFactory(() => SplashProvider(
-    sr: getIt(),
-    sp: getIt()
-  ));
+  getIt.registerFactory(() => ProfileProvider(ar: getIt(), pr: getIt()));
+
+  getIt.registerFactory(() => SplashProvider(sr: getIt(), sp: getIt()));
 
   getIt.registerFactory(() => LocalizationProvider(sharedPreferences: getIt()));
 
